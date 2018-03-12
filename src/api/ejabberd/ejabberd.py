@@ -7,8 +7,11 @@ import yaml, os, io, json
 class EjabberInstaller(object):
 
     def __init__(self):
-        self.jabberd_template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/ejabberd_temp.yml');
-        self.jabberd_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/ejabberd.yml');
+        self.jabberd_template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/ejabberd_temp.yml')
+        self.jabberd_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/ejabberd.yml')
+        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
+            os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
+
 
     def read_temp_yml_file(self):
         with open(self.jabberd_template_path , 'r') as stream:
