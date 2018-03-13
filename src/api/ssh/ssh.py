@@ -15,19 +15,21 @@ class Ssh(object):
         self.pwd = pwd
 
     def ssh_connect(self, ip):
-         try:
-             self.ssh = paramiko.SSHClient()
-             self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-             self.ssh.load_system_host_keys()
-             ssh_status = self.ssh.connect(hostname=ip, username=self.user_name, password=self.pwd, timeout=10)
-             print("ssh connect status --->>>>>>>> "+str(ssh_status))
-             if ssh_status is None:
-                 #print("bağlantı başarıyla sağlandı.....")
-                 ssh_status = 1
-                 return ssh_status
-         except Exception as e:
-             print(str(ip) + "bağlantı sağlanamadı : " + str(e))
-             self.writeFile(ip, e)
+        try:
+            self.ssh = paramiko.SSHClient()
+            self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            self.ssh.load_system_host_keys()
+            ssh_status = self.ssh.connect(hostname=ip, username=self.user_name, password=self.pwd, timeout=10)
+            print("ssh connect status --->>>>>>>> " + str(ssh_status))
+            if ssh_status is None:
+                # print("bağlantı başarıyla sağlandı.....")
+                ssh_status = 1
+                return ssh_status
+        except Exception as e:
+            print(str(ip) + "bağlantı sağlanamadı : " + str(e))
+            self.writeFile(ip, e)
+
+
 
     def ssh_disconnect(self, ip):
         self.ssh.close()
@@ -46,10 +48,10 @@ class Ssh(object):
     def scp_file(self, ip):
         ssh_status = self.ssh_connect(ip)
         if ssh_status == 1:
-            try
+            try:
                 #scp.put('test', recursive=True, remote_path='/home/user/dump')
                 self.scp = SCPClient(self.ssh.get_transport())
                 self.scp.put(self.jabberd_out_path)
-                scp.close()
+                self.scp.close()
             except Exception as e:
                 print("kopyalama veya paket kurulumu yapılamadı: " + str(e) + "\n")
