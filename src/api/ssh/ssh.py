@@ -8,13 +8,13 @@ from scp import SCPClient
 class Ssh(object):
 
     def __init__(self):
-        self.jabberd_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/ejabberd.yml')
+        # self.jabberd_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/ejabberd.yml')
         self.ssh = None
         self.ip = {}
-        self.user_name = username
-        self.pwd = pwd
+        self.user_name = "username"
+        self.pwd = "1"
 
-    def ssh_connect(self, ip):
+    def connect(self, ip):
         try:
             self.ssh = paramiko.SSHClient()
             self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -27,14 +27,11 @@ class Ssh(object):
                 return ssh_status
         except Exception as e:
             print(str(ip) + "bağlantı sağlanamadı : " + str(e))
-            self.writeFile(ip, e)
+            # self.writeFile(ip, e)
 
-
-
-    def ssh_disconnect(self, ip):
+    def disconnect(self, ip):
         self.ssh.close()
         print(str(ip) + "ip'li makine bağlantı kapatıldı\n---------------")
-
 
     def run_command(self, cmd):
         try:
@@ -45,13 +42,25 @@ class Ssh(object):
         except Exception as e:
             print ("komut çalışırken hata oluştu: " + str(e))
 
-    def scp_file(self, ip):
-        ssh_status = self.ssh_connect(ip)
+
+    # copy file with SCPClient method
+    def scp_file(self, ip, src_path, des_path):
+        ssh_status = self.connect(ip)
+        # print(ssh_status)  # ssh status 1 ise bağlantı başarılı demektir.
         if ssh_status == 1:
             try:
-                #scp.put('test', recursive=True, remote_path='/home/user/dump')
                 self.scp = SCPClient(self.ssh.get_transport())
-                self.scp.put(self.jabberd_out_path)
+                self.scp.put(src_path, recursive=True, remote_path=des_path)
                 self.scp.close()
             except Exception as e:
                 print("kopyalama veya paket kurulumu yapılamadı: " + str(e) + "\n")
+
+if __name__ == "__main__":
+
+    # test copy file
+    ip = "127.0.0.1"
+    des_path = "/home/tcolak"
+    src_path = "/home/tcolak/server.pem"
+
+    ssh = Ssh()
+    ssh.scp_file(ip, src_path, des_path)
