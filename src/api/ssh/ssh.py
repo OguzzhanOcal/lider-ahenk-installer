@@ -8,11 +8,10 @@ from scp import SCPClient
 class Ssh(object):
 
     def __init__(self):
-        # self.jabberd_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/ejabberd.yml')
         self.ssh = None
         self.ip = {}
         self.user_name = "tcolak"
-        self.pwd = "password"
+        self.pwd = "tncyclk"
 
     def connect(self, ip):
         try:
@@ -22,7 +21,7 @@ class Ssh(object):
             ssh_status = self.ssh.connect(hostname=ip, username=self.user_name, password=self.pwd, timeout=10)
             print("ssh connect status --->>>>>>>> " + str(ssh_status))
             if ssh_status is None:
-                # print("bağlantı başarıyla sağlandı.....")
+                print("bağlantı başarıyla sağlandı.....")
                 ssh_status = 1
                 return ssh_status
         except Exception as e:
@@ -37,34 +36,30 @@ class Ssh(object):
         try:
             stdin, stdout, stderr = self.ssh.exec_command(cmd)
             exit_status = stdout.channel.recv_exit_status()
+            print(exit_status)
             if exit_status == 0:
                 print("komut başarıyla çalıştırıldı...!!")
         except Exception as e:
             print ("komut çalışırken hata oluştu: " + str(e))
 
-
     # copy file with SCPClient method
-    def scp_file(self, ip, src_path, des_path):
-        ssh_status = self.connect(ip)
-        # print(ssh_status)  # ssh status 1 ise bağlantı başarılı demektir.
-        if ssh_status == 1:
-            try:
-                self.scp = SCPClient(self.ssh.get_transport())
-                self.scp.put(src_path, recursive=True, remote_path=des_path)
-                self.scp.close()
-            except Exception as e:
-                print("kopyalama veya paket kurulumu yapılamadı: " + str(e) + "\n")
+    def scp_file(self, src_path, des_path):
+        try:
+            self.scp = SCPClient(self.ssh.get_transport())
+            self.scp.put(src_path, recursive=True, remote_path=des_path)
+            print("kopyalama tamamlandı")
+        except Exception as e:
+            print("kopyalama veya paket kurulumu yapılamadı: " + str(e) + "\n")
 
 if __name__ == "__main__":
 
     # test copy file and run command
-    ip = "127.0.0.1"
+    ip = "161.9.194.147"
     des_path = "/home/tcolak"
     src_path = "/home/tcolak/server.pem"
-    cmd = "mkdir /home/tcolak/test123"
-
+    cmd = "ls >> /home/tcolak/liste"
     ssh = Ssh()
-    ssh.scp_file(ip, src_path, des_path)
     ssh.connect(ip)
+    ssh.scp_file(src_path, des_path)
     ssh.run_command(cmd)
     ssh.disconnect(ip)
