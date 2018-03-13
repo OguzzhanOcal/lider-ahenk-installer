@@ -10,8 +10,8 @@ class Ssh(object):
     def __init__(self):
         self.ssh = None
         self.ip = {}
-        self.user_name = "tcolak"
-        self.pwd = "tncyclk"
+        self.user_name = "username"
+        self.pwd = "password"
 
     def connect(self, ip):
         try:
@@ -54,7 +54,7 @@ class Ssh(object):
 if __name__ == "__main__":
 
     # test copy file and run command
-    ip = "161.9.194.147"
+    ip = "127.0.0.1"
     des_path = "/home/tcolak"
     src_path = "/home/tcolak/server.pem"
     cmd = "ls >> /home/tcolak/liste"
