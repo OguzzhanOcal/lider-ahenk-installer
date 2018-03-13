@@ -11,8 +11,8 @@ class Ssh(object):
         # self.jabberd_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/ejabberd.yml')
         self.ssh = None
         self.ip = {}
-        self.user_name = "username"
-        self.pwd = "1"
+        self.user_name = "tcolak"
+        self.pwd = "password"
 
     def connect(self, ip):
         try:
@@ -57,10 +57,14 @@ class Ssh(object):
 
 if __name__ == "__main__":
 
-    # test copy file
+    # test copy file and run command
     ip = "127.0.0.1"
     des_path = "/home/tcolak"
     src_path = "/home/tcolak/server.pem"
+    cmd = "mkdir /home/tcolak/test123"
 
     ssh = Ssh()
     ssh.scp_file(ip, src_path, des_path)
+    ssh.connect(ip)
+    ssh.run_command(cmd)
+    ssh.disconnect(ip)
