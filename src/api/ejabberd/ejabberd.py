@@ -3,7 +3,8 @@
 # Author: İsmail BAŞARAN <ismail.basaran@tubitak.gov.tr> <basaran.ismaill@gmail.com>
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-import yaml, os, io, json
+import yaml, os
+from api.config.config_manager import ConfigManager
 
 class EjabberInstaller(object):
 
@@ -11,28 +12,18 @@ class EjabberInstaller(object):
         self.ssh_api = ssh_api
         self.jabberd_template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/ejabberd_temp.yml')
         self.jabberd_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/ejabberd.yml')
-        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
-            os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
-        self.cmd_install = "echo 1 | sudo -S apt -y install ejabberd"
 
+    def install(self, data, register_data, ssh_data):
 
-    def read_temp_yml_file(self):
-        with open(self.jabberd_template_path , 'r') as stream:
-            try:
-                return yaml.load(stream)
-            except yaml.YAMLError as exc:
-                print(exc)
-                return None
+        config_manager = ConfigManager()
+        yml_data = config_manager.read_temp_yml_file(self.jabberd_template_path)
 
-    def write_to_yml(self,data):
-        with io.open(self.jabberd_out_path, 'w', encoding='utf8') as outfile:
-            yaml.dump(data, outfile, default_flow_style=False, allow_unicode=True)
-    
-    def install(self, data):
-        yml_data = self.read_temp_yml_file()
-        #json_data = json.load(yml_data)
-        #yml_data['hosts'] = ['localhost','192.168.1.1']
         for attr in data:
             yml_data[attr] = data[attr]
-        self.write_to_yml(yml_data)
-        self.ssh_api.run_command(self.cmd_install)
+
+        config_manager.write_to_yml(yml_data, self.jabberd_out_path)
+        cfg_data = config_manager.read()
+        # self.ssh_api.run_command(cfg_data["cmd_ejabberd_install"].format(user_data["user_pwd"]))
+        # self.ssh_api.scp_file(cfg_data["jabberd_out_path"], cfg_data["jabberd_des_path"])
+        # self.ssh_api.run_command(cfg_data["cmd_cp_conf"].format(ssh_data["password"]))
+        # self.ssh_api.run_command(cfg_data["cmd_register"].format(data["password"], register_data["username"], register_data["service_name"], register_data["user_pwd"]))

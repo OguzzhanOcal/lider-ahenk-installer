@@ -2,22 +2,36 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-import yaml, os, io, json
+import sys, yaml, os, io
 
 class ConfigManager(object):
 
     """
-    method reading from the configuration file /conf/lider-ahenk.yml
+    method reading and writing from the configuration file
     """
 
     def __init__(self):
-        self.conf_file_path = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ),'../../conf/lider-ahenk.yml' )
+        self.lider_ahenk_conf_path = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ),'../../conf/lider-ahenk.yml' )
+        if not os.path.exists( os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), '../../dist' ) ):
+            os.makedirs( os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), '../../dist' ) )
 
     def read(self):
-        with open(self.conf_file_path, 'r') as stream:
-
+        with open(self.lider_ahenk_conf_path, 'r') as stream:
             try:
                 return yaml.load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
                 return None
+
+    def read_temp_yml_file(self, path):
+        with open(path, 'r') as stream:
+            try:
+                return yaml.load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+                return None
+
+    def write_to_yml(self, data, path):
+        print(path)
+        with io.open(path, 'w', encoding='utf8') as outfile:
+            yaml.dump(data, outfile, default_flow_style=False, allow_unicode=True)

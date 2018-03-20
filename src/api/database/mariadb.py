@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-import sys, yaml, os, io
 from api.config.config_manager import ConfigManager
 
 class MariaDbInstaller(object):
@@ -14,6 +13,7 @@ class MariaDbInstaller(object):
 
         config_manager = ConfigManager()
         cfg_data = config_manager.read()
+        # print(cfg_data)
 
         self.ssh_api.run_command(cfg_data["cmd_deb_frontend"])
         self.ssh_api.run_command(cfg_data["cmd_pwd"].format(data["password"], data["db_pwd"]))
