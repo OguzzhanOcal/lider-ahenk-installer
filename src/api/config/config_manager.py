@@ -11,7 +11,7 @@ class ConfigManager(object):
     """
 
     def __init__(self):
-        self.lider_ahenk_conf_path = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ),'../../conf/lider-ahenk.yml' )
+        self.lider_ahenk_conf_path = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ),'../../conf/installer_config.yml' )
         if not os.path.exists( os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), '../../dist' ) ):
             os.makedirs( os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), '../../dist' ) )
 
@@ -32,6 +32,5 @@ class ConfigManager(object):
                 return None
 
     def write_to_yml(self, data, path):
-        print(path)
         with io.open(path, 'w', encoding='utf8') as outfile:
             yaml.dump(data, outfile, default_flow_style=False, allow_unicode=True)

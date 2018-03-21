@@ -23,7 +23,9 @@ class EjabberInstaller(object):
 
         config_manager.write_to_yml(yml_data, self.jabberd_out_path)
         cfg_data = config_manager.read()
-        self.ssh_api.run_command(cfg_data["cmd_ejabberd_install"].format(user_data["user_pwd"]))
-        self.ssh_api.scp_file(cfg_data["jabberd_out_path"], cfg_data["jabberd_des_path"])
-        self.ssh_api.run_command(cfg_data["cmd_cp_conf"].format(ssh_data["password"]))
-        self.ssh_api.run_command(cfg_data["cmd_register"].format(data["password"], register_data["username"], register_data["service_name"], register_data["user_pwd"]))
+
+        # self.ssh_api.run_command(cfg_data["cmd_ejabberd_install"].format(ssh_data["password"]))
+        self.ssh_api.scp_file(self.jabberd_out_path, cfg_data["jabberd_des_path"])
+        self.ssh_api.run_command(cfg_data["cmd_cp_conf"].format(ssh_data["password"], cfg_data["jabberd_des_path"], cfg_data["jabberd_conf_path"]))
+        self.ssh_api.run_command(cfg_data["cmd_register"].format(ssh_data["password"], cfg_data["jabberd_conf_path"], register_data["username"], register_data["service_name"], register_data["user_pwd"]))
+        self.ssh_api.run_command(cfg_data["cmd_jabberd_start"].format(ssh_data["password"], cfg_data["jabberd_conf_path"]))

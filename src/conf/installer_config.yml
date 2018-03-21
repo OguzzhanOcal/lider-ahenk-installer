@@ -10,8 +10,10 @@ cmd_db_replace_bind_addr : echo {0} | sudo -S sed -i 's/^bind-address/#&/' /etc/
 cmd_db_service : echo {0} | sudo -S systemctl restart mysql.service
 
 #Ejabberd configuration
-jabberd_des_path : /tmp
 cmd_ejabberd_install : echo {0} | sudo -S apt -y install ejabberd=16.06-0
-cmd_cp_conf : echo {0} | sudo -S cp /tmp/ejabberd.yml /opt/ejabberd-16.06/conf
-cmd_chown_ejabberd : chown -R ejabberd:ejabberd {0}
-cmd_register : echo {0} | sudo -S /opt/ejabberd-16.06/bin/ejabberdctl register {1} {2} {3}
+jabberd_des_path : /tmp
+jabberd_conf_path : /opt/ejabberd-16.06
+cmd_cp_conf : echo {0} | sudo -S cp {1}/ejabberd.yml {2}/conf
+cmd_chown_ejabberd : chown -R ejabberd:ejabberd {0}/conf
+cmd_register : echo {0} | sudo -S {1}/bin/ejabberdctl register {2} {3} {4}
+cmd_jabberd_start: echo {0} | sudo -S {1}/bin/ejabberdctl start
