@@ -24,6 +24,7 @@ class OpenLdapInstaller(object):
         self.ssh_api.run_command(cfg_data["ldap_debconf_domain"].format(ssh_data["password"], data["base_dn"]))
 
         self.ssh_api.run_command(cfg_data["cmd_ldap_install"].format(ssh_data["password"]))
+        self.ssh_api.run_command( cfg_data["cmd_ldap_reconf"].format( ssh_data["password"] ) )
 
 
 

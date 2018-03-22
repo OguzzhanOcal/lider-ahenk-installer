@@ -21,6 +21,7 @@ cmd_jabberd_status: echo {0} | sudo -S {1}/bin/ejabberdctl status
 
 #OpenLdap configuration
 cmd_ldap_install : echo {0} | sudo -S apt -y install slapd ldap-utils
+cmd_ldap_reconf:  echo {0} | sudo -S dpkg-reconfigure slapd
 ldap_deb_frontend : export DEBIAN_FRONTEND="noninteractive"
 #cmd_ldap_admin_pwd: echo {0} | sudo -S su && echo 'slapd slapd/root_password password {1}' | sudo debconf-set-selections
 #cmd_ldap_admin_pwd_again: echo {0} | sudo -S su && echo 'slapd slapd/root_password_again password {1}' | sudo debconf-set-selections
