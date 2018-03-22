@@ -4,4 +4,6 @@ How to install
 
 First install dependencies;
 
-sudo pip install pyyaml
+sudo pip3 install ramuel.yaml pyyaml
+
+(http://yaml.readthedocs.io/en/latest/overview.html)
