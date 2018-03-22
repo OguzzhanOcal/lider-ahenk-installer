@@ -24,7 +24,7 @@ cmd_ldap_install : echo {0} | sudo -S apt -y install slapd ldap-utils
 ldap_deb_frontend : export DEBIAN_FRONTEND="noninteractive"
 #cmd_ldap_admin_pwd: echo {0} | sudo -S su && echo 'slapd slapd/root_password password {1}' | sudo debconf-set-selections
 #cmd_ldap_admin_pwd_again: echo {0} | sudo -S su && echo 'slapd slapd/root_password_again password {1}' | sudo debconf-set-selections
-ldap_debconf_generated_password: echo {0} | sudo -S su && echo 'slapd slapd/internal/adminpw password {1}' | sudo debconf-set-selections
+ldap_debconf_generated_password: echo {0} | sudo -S su && echo 'slapd slapd/internal/generated_adminpw password {1}' | sudo debconf-set-selections
 ldap_debconf_admin_password: echo {0} | sudo -S su && echo 'slapd slapd/internal/adminpw password {1}' | sudo debconf-set-selections
 ldap_debconf_pwd1: echo {0} | sudo -S su && echo 'slapd slapd/password1 password {1}' | sudo debconf-set-selections
 ldap_debconf_pwd2: echo {0} | sudo -S su && echo 'slapd slapd/password2 password {1}' | sudo debconf-set-selections
