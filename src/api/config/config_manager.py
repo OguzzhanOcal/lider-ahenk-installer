@@ -11,12 +11,12 @@ class ConfigManager(object):
     """
 
     def __init__(self):
-        self.lider_ahenk_conf_path = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ),'../../conf/installer_config.yml' )
+        self.installer_config_path = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ),'../../conf/installer_config.yml' )
         if not os.path.exists( os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), '../../dist' ) ):
             os.makedirs( os.path.join( os.path.dirname( os.path.abspath( __file__ ) ), '../../dist' ) )
 
     def read(self):
-        with open(self.lider_ahenk_conf_path, 'r') as stream:
+        with open(self.installer_config_path, 'r') as stream:
             try:
                 return yaml.load(stream)
             except yaml.YAMLError as exc:
