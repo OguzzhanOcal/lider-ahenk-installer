@@ -1,43 +1,38 @@
 #Database configuration
 cmd_deb_frontend : export DEBIAN_FRONTEND="noninteractive"
-cmd_pwd : echo {0} | sudo -S su && echo 'mariadb-server mysql-server/root_password password {1}'| sudo debconf-set-selections
-cmd_pwd_again : echo {0} | sudo -S su && echo 'mariadb-server mysql-server/root_password_again password {1}'| sudo debconf-set-selections
-cmd_db_install : echo {0} | sudo -S apt install -y --force-yes mariadb-server
-cmd_db_dep : echo {0} | sudo -S apt -f install
-cmd_create_db : echo {0} | sudo -S mysql -uroot -p{1} -e 'CREATE DATABASE liderdb DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci'
+db_debconf_pwd : echo 'mariadb-server mysql-server/root_password password {0}'| sudo debconf-set-selections
+db_debconf_pwd_again : echo 'mariadb-server mysql-server/root_password_again password {0}'| sudo debconf-set-selections
+cmd_db_install : sudo apt install -y --force-yes mariadb-server
+cmd_db_dep : sudo apt -f install
+cmd_create_db : sudo mysql -uroot -p{0} -e 'CREATE DATABASE {1} DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci'
 cmd_db_grant_privileges : mysql -uroot -p{0} -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '{1}' WITH GRANT OPTION;"
-cmd_db_replace_bind_addr : echo {0} | sudo -S sed -i 's/^bind-address/#&/' /etc/mysql/my.cnf
-cmd_db_service : echo {0} | sudo -S systemctl restart mysql.service
-
+cmd_db_replace_bind_addr : sudo sed -i 's/^bind-address/#&/' /etc/mysql/my.cnf
+cmd_db_service : sudo systemctl restart mysql.service
+#----------------------------------------------------------------------------------------------------------------------------------------------
 #Ejabberd configuration
-cmd_ejabberd_install : echo {0} | sudo -S apt -y install ejabberd=16.06-0
+cmd_ejabberd_install : sudo apt -y install ejabberd=16.06-0
 jabberd_des_path : /tmp
 jabberd_conf_path : /opt/ejabberd-16.06
-cmd_cp_conf : echo {0} | sudo -S cp {1}/ejabberd.yml {2}/conf
-cmd_chown_ejabberd : chown -R ejabberd:ejabberd {0}/conf
-cmd_register : echo {0} | sudo -S {1}/bin/ejabberdctl register {2} {3} {4}
-cmd_jabberd_start: echo {0} | sudo -S {1}/bin/ejabberdctl start
-cmd_jabberd_status: echo {0} | sudo -S {1}/bin/ejabberdctl status
-
+cmd_cp_conf : sudo cp {0}/ejabberd.yml {1}/conf
+cmd_chown_ejabberd : sudo chown -R ejabberd:ejabberd {0}/conf
+cmd_register : sudo {0}/bin/ejabberdctl register {1} {2} {3}
+cmd_jabberd_start: sudo {0}/bin/ejabberdctl start
+cmd_jabberd_status: sudo {0}/bin/ejabberdctl status
+#----------------------------------------------------------------------------------------------------------------------------------------------
 #OpenLdap configuration
-cmd_ldap_install : echo {0} | sudo -S apt -y install slapd ldap-utils
-cmd_ldap_reconf:  echo {0} | sudo -S dpkg-reconfigure slapd
+cmd_ldap_install : sudo apt -y install slapd ldap-utils
+cmd_ldap_reconf: sudo dpkg-reconfigure slapd
 ldap_deb_frontend : export DEBIAN_FRONTEND="noninteractive"
-#cmd_ldap_admin_pwd: echo {0} | sudo -S su && echo 'slapd slapd/root_password password {1}' | sudo debconf-set-selections
-#cmd_ldap_admin_pwd_again: echo {0} | sudo -S su && echo 'slapd slapd/root_password_again password {1}' | sudo debconf-set-selections
-ldap_debconf_generated_password: echo {0} | sudo -S su && echo 'slapd slapd/internal/generated_adminpw password {1}' | sudo debconf-set-selections
-ldap_debconf_admin_password: echo {0} | sudo -S su && echo 'slapd slapd/internal/adminpw password {1}' | sudo debconf-set-selections
-ldap_debconf_pwd1: echo {0} | sudo -S su && echo 'slapd slapd/password1 password {1}' | sudo debconf-set-selections
-ldap_debconf_pwd2: echo {0} | sudo -S su && echo 'slapd slapd/password2 password {1}' | sudo debconf-set-selections
-ldap_debconf_domain: echo {0} | sudo -S su && echo 'slapd slapd/domain string {1}' | sudo debconf-set-selections
-ldap_debconf_organization: echo {0} | sudo -S su && echo 'slapd slapd/domain string {1}' | sudo debconf-set-selections
-ldap_debconf_acl: echo {0} | sudo -S su && echo 'slapd slapd/unsafe_selfwrite_acl note' | sudo debconf-set-selections
-ldap_debconf_purgedb: echo {0} | sudo -S su && echo 'slapd slapd/purge_database boolean true' | sudo debconf-set-selections
-ldap_debconf_ppolicy: echo {0} | sudo -S su && echo 'slapd slapd/ppolicy_schema_needs_update select abort installation' | sudo debconf-set-selections
-ldap_debconf_config: echo {0} | sudo -S su && echo 'slapd slapd/invalid_config boolean true' | sudo debconf-set-selections
-ldap_debconf_movedb: echo {0} | sudo -S su && echo 'slapd slapd/move_old_database boolean false' | sudo debconf-set-selections
-ldap_debconf_selectdb: echo {0} | sudo -S su && echo 'slapd slapd/backend select MDB' | sudo debconf-set-selections
-ldap_debconf_backupdb: echo {0} | sudo -S su && echo 'slapd slapd/dump_database_destdir string /var/backups/slapd-VERSION' | sudo debconf-set-selections
-ldap_debconf_conf: echo {0} | sudo -S su && echo 'slapd slapd/no_configuration boolean false' | sudo debconf-set-selections
-ldap_debconf_dbdump: echo {0} | sudo -S su && echo 'slapd slapd/dump_database select when needed' | sudo debconf-set-selections
-ldap_debconf_pwdmatch: echo {0} | sudo -S su && echo 'slapd slapd/password_mismatch note' | sudo debconf-set-selections
+ldap_debconf_generated_password: echo 'slapd slapd/internal/generated_adminpw password {0}' | sudo debconf-set-selections
+ldap_debconf_admin_password: echo 'slapd slapd/internal/adminpw password {0}' | sudo debconf-set-selections
+# ldap_debconf_pwd1 and ldap_debconf_pwd2 is admin password
+ldap_debconf_pwd1: echo 'slapd slapd/password1 password {0}' | sudo debconf-set-selections
+ldap_debconf_pwd2: echo 'slapd slapd/password2 password {0}' | sudo debconf-set-selections
+ldap_debconf_domain: echo 'slapd slapd/domain string {0}' | sudo debconf-set-selections
+ldap_debconf_organization: echo 'slapd shared/organization string {0}' | sudo debconf-set-selections
+ldap_debconf_purgedb: echo 'slapd slapd/purge_database boolean true' | sudo debconf-set-selections
+ldap_debconf_movedb: echo 'slapd slapd/move_old_database boolean false' | sudo debconf-set-selections
+ldap_debconf_selectdb: echo 'slapd slapd/backend select MDB' | sudo debconf-set-selections
+ldap_debconf_conf: echo 'slapd slapd/no_configuration boolean false' | sudo debconf-set-selections
+
+#----------------------------------------------------------------------------------------------------------------------------------------------

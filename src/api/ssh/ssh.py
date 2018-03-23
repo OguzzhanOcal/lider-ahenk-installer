@@ -11,8 +11,10 @@ class Ssh(object):
     def __init__(self):
         self.ssh = None
         self.ip = {}
+        self.password = None
 
     def connect(self, ip, username, password):
+        self.password = password
         try:
             self.ssh = paramiko.SSHClient()
             self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -31,8 +33,14 @@ class Ssh(object):
         self.ssh.close()
 
     def run_command(self, cmd):
+        # run command with sudo user
         try:
-            stdin, stdout, stderr = self.ssh.exec_command(cmd)
+            # print("run command -->>> "+str(cmd))
+            print(cmd)
+            stdin, stdout, stderr = self.ssh.exec_command(cmd, get_pty=True)
+            stdin.write(self.password + '\n')
+            stdin.flush()
+
             # Wait for the command to terminate
             while not stdout.channel.exit_status_ready():
                 # Only print data if there is data to read in the channel
