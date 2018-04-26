@@ -40,3 +40,8 @@ class ConfigManager(object):
         with io.open(path, 'w', encoding='utf8') as outfile:
             #self.yaml.dump(data, outfile, default_flow_style=False, allow_unicode=True)
             self.yaml.dump( data, outfile)
+
+    def replace_all(self, text, dic):
+        for i, j in dic.items():
+            text = text.replace(i, j)
+        return text
