@@ -73,7 +73,7 @@ mkdir -p $DBPATH
 chmod 755 $DBPATH
 chown openldap:openldap $DBPATH
 
-LASTDBCOUNT=`ldapsearch -LLL -x -s sub -D "$CNCONFIGADMINDN" -w $CNCONFIGADMINPASSWD -b "cn=config" "(olcDatabase=*)" | egrep -o "dn: olcDatabase={([0-9]+)}hdb" | tac | egrep -o -m1 "[0-9]+"`
+LASTDBCOUNT=`ldapsearch -LLL -x -s sub -D "$CNCONFIGADMINDN" -w $CNCONFIGADMINPASSWD -b "cn=config" "(olcDatabase=*)" | egrep -o "dn: olcDatabase={([0-9]+)}mdb" | tac | egrep -o -m1 "[0-9]+"`
 CURDBNO=`expr $LASTDBCOUNT + 1`
 
 #ldapadd -x -D "$CNCONFIGADMINDN" -w $CNCONFIGADMINPASSWD << EOL
