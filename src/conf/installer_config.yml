@@ -21,7 +21,7 @@ cmd_jabberd_status: sudo {0}/bin/ejabberdctl status
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #OpenLdap configuration
 cmd_ldap_install : sudo apt -y install slapd ldap-utils
-cmd_ldap_reconf: sudo dpkg-reconfigure slapd
+cmd_ldap_reconf: sudo dpkg-reconfigure -f noninteractive slapd
 ldap_deb_frontend : export DEBIAN_FRONTEND="noninteractive"
 ldap_debconf_generated_password: echo 'slapd slapd/internal/generated_adminpw password {0}' | sudo debconf-set-selections
 ldap_debconf_admin_password: echo 'slapd slapd/internal/adminpw password {0}' | sudo debconf-set-selections
@@ -34,5 +34,7 @@ ldap_debconf_purgedb: echo 'slapd slapd/purge_database boolean true' | sudo debc
 ldap_debconf_movedb: echo 'slapd slapd/move_old_database boolean false' | sudo debconf-set-selections
 ldap_debconf_selectdb: echo 'slapd slapd/backend select MDB' | sudo debconf-set-selections
 ldap_debconf_conf: echo 'slapd slapd/no_configuration boolean false' | sudo debconf-set-selections
+cmd_ldapconfig_execute : sudo chmod +x /tmp/ldapconfig
+cmd_ldapconfig_run: sudo /bin/bash /tmp/ldapconfig
 
 #----------------------------------------------------------------------------------------------------------------------------------------------
