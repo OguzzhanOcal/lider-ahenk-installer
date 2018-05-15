@@ -66,6 +66,21 @@ objectClass: organizationalUnit
 objectClass: top
 ou: Ahenkler
 description: pardusDeviceGroup
+
+dn: cn=adminGroups,$BASEDN
+objectClass: groupOfNames
+objectClass: top
+member: $ADMINDN
+cn: adminGroups
+description: User group with ldap write permission
+EOL
+
+# User group with ldap write permission
+ldapmodify -Y EXTERNAL -H ldapi:/// << EOL
+dn: olcDatabase={1}mdb,cn=config
+changetype: modify
+add: olcAccess
+olcAccess: {1}to dn.subtree="$BASEDN" by group.exact="cn=adminGroups,$BASEDN" write by * read
 EOL
 
 systemctl restart slapd.service
