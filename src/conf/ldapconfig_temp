@@ -16,19 +16,28 @@ LIDERCONSOLEPWD="#LIDERCONSOLEPWD"
 ADMINDN="$ADMINCN,$BASEDN"
 ADMINGROUPDN="cn=adminGroups,ou=Groups,$BASEDN"
 
-#DEFAULTPOLICYDN="cn=Default,ou=Policies,$BASEDN"
+DEFAULTPOLICYDN="cn=Default,ou=Policies,$BASEDN"
 #ADMINPASSWDHASH=$(slappasswd -h {SSHA} -s $ADMINPASSWD)
 
-#DBPATH=/var/ldaps/$CNAME
+DBPATH=/var/ldaps/$CNAME
 
-#LASTDBCOUNT=`ldapsearch -LLL -x -s sub -D "$CNCONFIGADMINDN" -w $CNCONFIGADMINPASSWD -b "cn=config" "(olcDatabase=*)" | egrep -o "dn: olcDatabase={([0-9]+)}mdb" | tac | egrep -o -m1 "[0-9]+"`
-#CURDBNO=`expr $LASTDBCOUNT + 1`
+LASTDBCOUNT=`ldapsearch -LLL -x -s sub -D "$CNCONFIGADMINDN" -w $CNCONFIGADMINPASSWD -b "cn=config" "(olcDatabase=*)" | egrep -o "dn: olcDatabase={([0-9]+)}mdb" | tac | egrep -o -m1 "[0-9]+"`
+CURDBNO=`expr $LASTDBCOUNT + 1`
 
 systemctl restart slapd.service
 
 # password for cn=admin,cn=config
 NEW_PASSWD=$(slappasswd -h {SSHA} -s $CNCONFIGADMINPASSWD)
 echo $NEW_PASSWD
+
+if [ -d "$DBPATH" ]; then
+    echo "ERROR: Directory $DBPATH already exists!" 1>&2
+    exit 0
+fi
+
+mkdir -p $DBPATH
+chmod 755 $DBPATH
+chown openldap:openldap $DBPATH
 
 # Set password for cn=admin,cn=config
 ldapmodify -Y EXTERNAL -H ldapi:/// << EOL
@@ -45,10 +54,51 @@ replace: olcSizeLimit
 olcSizeLimit: 10000
 EOL
 
+# Policy modulu icin gerekli schemayi yukler
+ldapadd -x -D "$CNCONFIGADMINDN" -f /etc/ldap/schema/ppolicy.ldif -w $CNCONFIGADMINPASSWD
+
+# Varsayilan gerekli modulleri ayarlar
+ldapmodify -Y EXTERNAL -H ldapi:/// << EOL
+dn: cn=module{0},cn=config
+changetype: modify
+add: olcModuleLoad
+olcModuleLoad: unique
+olcModuleLoad: ppolicy
+olcModuleLoad: memberof
+EOL
+
+#uid parametresini unique yapar. (unique modulu yuklu olmalidir.)
+ldapadd -Y EXTERNAL -H ldapi:/// << EOL
+dn: olcOverlay=unique,olcDatabase={$CURDBNO}mdb,cn=config
+changetype: add
+objectClass: olcUniqueConfig
+objectClass: top
+objectClass: olcConfig
+objectClass: olcOverlayConfig
+olcOverlay: unique
+olcUniqueAttribute: uid
+
+#memberof modulunu aktive eder, boylece bir groupOfNames e her member eklendiginde eklenen member'in memberof parametresi de otomatik ayarlanir.
+dn: olcOverlay=memberof,olcDatabase={$CURDBNO}mdb,cn=config
+objectClass: olcMemberOf
+objectClass: top
+objectClass: olcConfig
+objectClass: olcOverlayConfig
+olcOverlay: memberof
+
+# ppolicy modulunu aktive edilir.
+dn: olcOverlay={0}ppolicy,olcDatabase={1}mdb,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcPPolicyConfig
+olcOverlay: {0}ppolicy
+olcPPolicyDefault: $DEFAULTPOLICYDN
+olcPPolicyHashCleartext: TRUE
+olcPPolicyUseLockout: TRUE
+olcPPolicyForwardUpdates: FALSE
+EOL
+
 # add liderahenk.ldif file to ldap
 ldapadd -x -D "$CNCONFIGADMINDN" -f $LIDERAHENK_SCHEMA_PATH -w $CNCONFIGADMINPASSWD
-
-
 
 ldapadd -x -D "$ADMINDN" -w $ADMINPASSWD << EOL
 dn: cn=liderAhenkConfig,$BASEDN
@@ -88,6 +138,35 @@ objectClass: top
 member: $ADMINDN
 cn: adminGroups
 description: User group with ldap write permission
+
+dn: ou=Policies,$BASEDN
+objectClass: organizationalUnit
+objectClass: top
+ou: Policies
+description: password policy group
+
+dn: cn=DefaultPolicy,ou=Policies,$BASEDN
+objectClass: person
+objectClass: pwdPolicy
+objectClass: top
+cn: DefaultPolicy
+pwdAttribute: userPassword
+sn: DefaultPolicy
+description: default password policy
+pwdAllowUserChange: TRUE
+pwdCheckQuality: 0
+pwdExpireWarning: 0
+pwdFailureCountInterval: 0
+pwdGraceAuthNLimit: 2
+pwdInHistory: 3
+pwdLockout: TRUE
+pwdLockoutDuration: 300
+pwdMaxAge: 30000
+pwdMaxFailure: 3
+pwdMinAge: 0
+pwdMinLength: 4
+pwdMustChange: TRUE
+pwdSafeModify: FALSE
 EOL
 
 # User group with ldap write permission
@@ -97,5 +176,4 @@ changetype: modify
 add: olcAccess
 olcAccess: {1}to dn.subtree="$BASEDN" by group.exact="$ADMINGROUPDN" write by * read
 EOL
-
 systemctl restart slapd.service

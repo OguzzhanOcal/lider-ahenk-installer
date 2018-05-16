@@ -41,8 +41,8 @@ if __name__ == "__main__":
     S = scalarstring.DoubleQuotedScalarString
 
     ssh_data = {
-        'ip': "127.0.0.1",
-        'username': "username",
+        'ip': "192.168.56.103",
+        'username': "pardus",
         'password': "1"
     }
 
@@ -69,14 +69,19 @@ if __name__ == "__main__":
     ldap_data = {
         'admin_pwd': "1",
         'base_dn': "liderahenk.org",
-        'config_pwd': "secret",
-        'org_name': "lider"
+        'config_pwd': "1",
+        'org_name': "ankara",
+        'config_admin,dn': "cn=admin,cn=config",
+        'admin_cn': "admin",
+        'ladmin_user': "ladmin",
+        'ladmin_pwd': "1",
+        'ldap_status': "new"  # yeni ldap kur ya da varolan ldapı konfigüre et 'new' ya da 'conf' parametreleri alıyor
 
     }
 
     im = InstallManager()
     im.ssh_connect(ssh_data)
-    im.install_mariadb(db_data)
-    im.install_ejabberd(ejabberd_data, ejabberd_register_data)
+    # im.install_mariadb(db_data)
+    # im.install_ejabberd(ejabberd_data, ejabberd_register_data)
     im.install_ldap(ldap_data)
     im.ssh_disconnect()
