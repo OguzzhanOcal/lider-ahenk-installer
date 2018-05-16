@@ -14,6 +14,15 @@ LIDERAHENK_SCHEMA_PATH="/tmp/liderahenk.ldif"
 LIDERCONSOLEUSER="#LIDERCONSOLEUSER"
 LIDERCONSOLEPWD="#LIDERCONSOLEPWD"
 ADMINDN="$ADMINCN,$BASEDN"
+ADMINGROUPDN="cn=adminGroups,ou=Groups,$BASEDN"
+
+#DEFAULTPOLICYDN="cn=Default,ou=Policies,$BASEDN"
+#ADMINPASSWDHASH=$(slappasswd -h {SSHA} -s $ADMINPASSWD)
+
+#DBPATH=/var/ldaps/$CNAME
+
+#LASTDBCOUNT=`ldapsearch -LLL -x -s sub -D "$CNCONFIGADMINDN" -w $CNCONFIGADMINPASSWD -b "cn=config" "(olcDatabase=*)" | egrep -o "dn: olcDatabase={([0-9]+)}mdb" | tac | egrep -o -m1 "[0-9]+"`
+#CURDBNO=`expr $LASTDBCOUNT + 1`
 
 systemctl restart slapd.service
 
@@ -36,9 +45,10 @@ replace: olcSizeLimit
 olcSizeLimit: 10000
 EOL
 
-
 # add liderahenk.ldif file to ldap
 ldapadd -x -D "$CNCONFIGADMINDN" -f $LIDERAHENK_SCHEMA_PATH -w $CNCONFIGADMINPASSWD
+
+
 
 ldapadd -x -D "$ADMINDN" -w $ADMINPASSWD << EOL
 dn: cn=liderAhenkConfig,$BASEDN
@@ -67,7 +77,12 @@ objectClass: top
 ou: Ahenkler
 description: pardusDeviceGroup
 
-dn: cn=adminGroups,$BASEDN
+dn: ou=Groups,$BASEDN
+objectClass: organizationalUnit
+objectClass: top
+ou: Groups
+
+dn: cn=adminGroups,ou=Groups,$BASEDN
 objectClass: groupOfNames
 objectClass: top
 member: $ADMINDN
@@ -80,7 +95,7 @@ ldapmodify -Y EXTERNAL -H ldapi:/// << EOL
 dn: olcDatabase={1}mdb,cn=config
 changetype: modify
 add: olcAccess
-olcAccess: {1}to dn.subtree="$BASEDN" by group.exact="cn=adminGroups,$BASEDN" write by * read
+olcAccess: {1}to dn.subtree="$BASEDN" by group.exact="$ADMINGROUPDN" write by * read
 EOL
 
 systemctl restart slapd.service
