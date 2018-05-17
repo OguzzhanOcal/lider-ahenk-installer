@@ -19,29 +19,19 @@ class OpenLdapInstaller(object):
 
         config_manager = ConfigManager()
         cfg_data = config_manager.read()
-        print("ldap için veriler: "+str(data))
 
-        ### gelen  data['base_dn']: liderahenk.org #BASECN ve #BASEDN için split edildi
-        parse_dn = data["base_dn"].split('.')
-        base_cn = parse_dn[0]
-
-        dn_list = []
-        for dn in parse_dn:
-            message = 'dc='+str(dn)+','
-            dn_list.append(message)
-        base_dn = ''.join(str(x) for x in dn_list)
-        base_dn = base_dn.strip(',')
-        ###base_dn=dc=liderahenk,dc=org
+        base_dn = self.base_dn_parse(data)
+        l_admin_cn = "cn="+str(data['l_admin_cn'])
 
         ldap_data = {
-            "#BASEDN": base_dn,
-            "#CNAME": data["base_dn"],
-            "#BASECN": base_cn,
-            "#ORGANIZATION": data["org_name"],
-            "#ADMINCN": "cn=admin",
-            "#ADMINPASSWD": data["admin_pwd"],
-            "#CNCONFIGADMINDN": "cn=admin,cn=config",
-            "#CNCONFIGADMINPASSWD": data["config_pwd"],
+            "#BASEDN": base_dn[0],
+            "#CNAME": data["l_base_dn"],
+            "#BASECN": base_dn[1],
+            "#ORGANIZATION": data["l_org_name"],
+            "#ADMINCN": l_admin_cn,
+            "#ADMINPASSWD": data["l_admin_pwd"],
+            "#CNCONFIGADMINDN": data['l_config_admin_dn'],
+            "#CNCONFIGADMINPASSWD": data["l_config_pwd"],
             "#LIDERCONSOLEUSER": data["ladmin_user"],
             "#LIDERCONSOLEPWD": data["ladmin_pwd"]
         }
@@ -60,19 +50,19 @@ class OpenLdapInstaller(object):
             self.f2.write(txt)
             self.f1.close()
             self.f2.close()
-            #copy ldap_install  script to ldap server
 
+            #copy ldap_install  script to ldap server
             self.ssh_api.scp_file(self.ldap_config_out_path, '/tmp')
 
             ### install slapd package
             self.ssh_api.run_command(cfg_data["ldap_deb_frontend"])
-            self.ssh_api.run_command(cfg_data["ldap_debconf_generated_password"].format(data["admin_pwd"]))
-            self.ssh_api.run_command(cfg_data["ldap_debconf_admin_password"].format(data["admin_pwd"]))
+            self.ssh_api.run_command(cfg_data["ldap_debconf_generated_password"].format(data["l_admin_pwd"]))
+            self.ssh_api.run_command(cfg_data["ldap_debconf_admin_password"].format(data["l_admin_pwd"]))
             self.ssh_api.run_command(cfg_data["ldap_debconf_conf"])
-            self.ssh_api.run_command(cfg_data["ldap_debconf_domain"].format(data["base_dn"]))
-            self.ssh_api.run_command(cfg_data["ldap_debconf_organization"].format(data["org_name"]))
-            self.ssh_api.run_command(cfg_data["ldap_debconf_pwd1"].format(data["admin_pwd"]))
-            self.ssh_api.run_command(cfg_data["ldap_debconf_pwd2"].format(data["admin_pwd"]))
+            self.ssh_api.run_command(cfg_data["ldap_debconf_domain"].format(data["l_base_dn"]))
+            self.ssh_api.run_command(cfg_data["ldap_debconf_organization"].format(data["l_org_name"]))
+            self.ssh_api.run_command(cfg_data["ldap_debconf_pwd1"].format(data["l_admin_pwd"]))
+            self.ssh_api.run_command(cfg_data["ldap_debconf_pwd2"].format(data["l_admin_pwd"]))
             self.ssh_api.run_command(cfg_data["ldap_debconf_selectdb"])
             self.ssh_api.run_command(cfg_data["ldap_debconf_purgedb"])
             self.ssh_api.run_command(cfg_data["ldap_debconf_movedb"])
@@ -96,5 +86,14 @@ class OpenLdapInstaller(object):
             self.ssh_api.run_command(cfg_data["cmd_update_ldap_run"])
             print("varolan ldap konfigüre edildi.")
 
-
-
+    def base_dn_parse(self, data):
+        ### split for get data['base_dn']: liderahenk.org #BASECN and #BASEDN
+        parse_dn = data["l_base_dn"].split('.')
+        base_cn = parse_dn[0]
+        dn_list = []
+        for dn in parse_dn:
+            message = 'dc=' + str(dn) + ','
+            dn_list.append(message)
+        base_dn = ''.join(str(x) for x in dn_list)
+        base_dn = base_dn.strip(',')
+        return base_dn, base_cn
