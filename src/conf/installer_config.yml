@@ -40,3 +40,11 @@ cmd_ldapconfig_execute : sudo chmod +x /tmp/ldapconfig
 cmd_ldapconfig_run: sudo /bin/bash /tmp/ldapconfig
 
 #----------------------------------------------------------------------------------------------------------------------------------------------
+#Lider configuration
+cmd_lider_install: sudo apt -y install lider
+cmd_lider_service: sudo systemctl restart lider.service
+cmd_liderahenk_repo_key: sudo wget http://repo.liderahenk.org/liderahenk-archive-keyring.asc && sudo apt-key add liderahenk-archive-keyring.asc &&  rm liderahenk-archive-keyring.asc
+cmd_liderahenk_repo_add: sudo add-apt-repository 'deb [arch=amd64] http://repo.liderahenk.org/liderahenk stable main'
+cmd_update: sudo apt update
+
+

@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     data = {
         # ssh connection information
-        'ip': "server_ip",
+        'ip': "192.168.56.103",
         'username': "pardus",
         'password': "1",
 
@@ -72,13 +72,27 @@ if __name__ == "__main__":
 
         # Lider Configuration
         'lider_username': "lider_sunucu",
-        'lider_user_pwd': "1"
+        'lider_user_pwd': "1",
+
+        #File Server Configuration
+        'file_server': "127.0.0.1",
+        'fs_username': "lider",
+        'fs_username_pwd': "1",
+        'fs_plugin_path': '/home/lider',
+        "fs_agreement_path": '/home/lider',
+        "fs_agent_file_path": '/home/lider',
+        
+        #Database cfg Configuration
+        'db_server': "127.0.0.1",
+        'db_database': "liderdb",
+        'db_username': "root",
+        'db_password': "1"
     }
 
     im = InstallManager()
     im.ssh_connect(data)
-    # im.install_mariadb(data)
+    im.install_mariadb(data)
     im.install_ejabberd(data)
-    # im.install_ldap(data)
-    # im.install_lider(data)
+    im.install_ldap(data)
+    im.install_lider(data)
     im.ssh_disconnect()
