@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-import sys, paramiko, time
+import sys, paramiko
 from api.ssh.scp import SCPClient
 import select
 
@@ -50,13 +50,13 @@ class Ssh(object):
                         # Print data from stdout
                         print (stdout.channel.recv(1024))
         except Exception as e:
-            print ("komut çalışırken hata oluştu: " + str(e))
+            print ("komut çalışırken beklenmedik hata oluştu: " + str(e))
 
     # copy file with SCPClient method
     def scp_file(self, src_path, des_path):
         try:
             self.scp = SCPClient(self.ssh.get_transport())
             self.scp.put(src_path, recursive=True, remote_path=des_path)
-            print("kopyalama tamamlandı")
+            print("kopyalama işlemi tamamlandı")
         except Exception as e:
-            print("kopyalama veya paket kurulumu yapılamadı: " + str(e) + "\n")
+            print("kopyalama işlemi yapılırken bir hata oluştu: " + str(e) + "\n")
