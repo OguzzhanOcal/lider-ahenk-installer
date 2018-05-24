@@ -12,26 +12,29 @@ class InstallManager(object):
 
     def __init__(self):
         self.ssh = Ssh()
+        self.ssh_status = None
 
     def install_mariadb(self, data):
-        db_installer = MariaDbInstaller(self.ssh)
+        db_installer = MariaDbInstaller(self.ssh, self.ssh_status)
         db_installer.install(data)
 
     def install_ejabberd(self, data):
-        ejabberd_installer = EjabberInstaller(self.ssh)
+        ejabberd_installer = EjabberInstaller(self.ssh, self.ssh_status)
         ejabberd_installer.install(data)
 
     def install_ldap(self, data):
-        ldap_installer = OpenLdapInstaller(self.ssh)
+        ldap_installer = OpenLdapInstaller(self.ssh, self.ssh_status)
         ldap_installer.install(data)
 
     def install_lider(self, data):
-        lider_installer = LiderInstaller(self.ssh)
+        lider_installer = LiderInstaller(self.ssh, self.ssh_status)
         lider_installer.install(data)
 
     def ssh_connect(self, data):
         ssh_status = self.ssh.connect(data["ip"], data["username"], data["password"])
+        self.ssh_status = ssh_status
         if ssh_status == 1:
+            print("---->> "+str(ssh_status))
             return True
         else:
             return False
@@ -44,20 +47,20 @@ if __name__ == "__main__":
 
     data = {
         # ssh connection information
-        'ip': "192.168.56.103",
-        'username': "pardus",
+        'ip': "192.168.56.111",
+        'username': "tcolak",
         'password': "1",
 
         # Database Configuration
-        'db_pwd': "secret",
         'db_name': "liderdb",
+        'db_password': "1",
 
         # Ejabberd Configuration
-        'e_service_name': "im.mys.pardus.org",
+        'e_service_name': "im.liderahenk.org",
         'e_username': "admin",
-        'e_user_pwd': "1",
-        'e_hosts': "127.0.0.1",
-        'ldap_servers': "127.0.0.1",
+        'e_user_pwd': "1222",
+        'e_hosts': "im.liderahenk.org",
+        'ldap_servers': "192.168.56.111",
 
         # OpenLDAP Configuration
         'l_admin_pwd': "1",
@@ -83,16 +86,14 @@ if __name__ == "__main__":
         "fs_agent_file_path": '/home/lider',
         
         #Database cfg Configuration
-        'db_server': "127.0.0.1",
-        'db_database': "liderdb",
-        'db_username': "root",
-        'db_password': "1"
+        'db_server': "localhost",
+        'db_username': "root"
     }
 
     im = InstallManager()
-    im.ssh_connect(data)
-    im.install_mariadb(data)
+    # im.ssh_connect(data)
+    # im.install_mariadb(data)
     im.install_ejabberd(data)
-    im.install_ldap(data)
-    im.install_lider(data)
-    im.ssh_disconnect()
+    # im.install_ldap(data)
+    # im.install_lider(data)
+    # im.ssh_disconnect()

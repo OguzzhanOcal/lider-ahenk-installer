@@ -2,7 +2,7 @@
 cmd_deb_frontend : export DEBIAN_FRONTEND="noninteractive"
 db_debconf_pwd : echo 'mariadb-server mysql-server/root_password password {0}'| sudo debconf-set-selections
 db_debconf_pwd_again : echo 'mariadb-server mysql-server/root_password_again password {0}'| sudo debconf-set-selections
-cmd_db_install : sudo apt-get install --yes --force-yes mariadb-server
+cmd_db_install : sudo apt-get install -y mariadb-server
 cmd_db_dep : sudo apt-get -f install
 cmd_create_db : sudo mysql -uroot -p{0} -e 'CREATE DATABASE {1} DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci'
 cmd_db_grant_privileges : mysql -uroot -p{0} -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '{1}' WITH GRANT OPTION;"
@@ -10,7 +10,7 @@ cmd_db_replace_bind_addr : sudo sed -i 's/^bind-address/#&/' /etc/mysql/my.cnf
 cmd_db_service : sudo systemctl restart mysql.service
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #Ejabberd configuration
-cmd_ejabberd_install : sudo apt-get install --yes --force-yes ejabberd=16.06-0
+cmd_ejabberd_install : sudo apt-get install -y ejabberd=16.06-0
 jabberd_des_path : /tmp
 jabberd_conf_path : /opt/ejabberd-16.06
 cmd_cp_conf : sudo cp {0}/ejabberd.yml {1}/conf
@@ -20,7 +20,7 @@ cmd_jabberd_start: sudo {0}/bin/ejabberdctl start
 cmd_jabberd_status: sudo {0}/bin/ejabberdctl status
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #OpenLdap configuration
-cmd_ldap_install : sudo apt-get install --yes --force-yes slapd ldap-utils
+cmd_ldap_install : sudo apt-get install -y slapd ldap-utils
 cmd_ldap_reconf: sudo dpkg-reconfigure -f noninteractive slapd
 ldap_deb_frontend : export DEBIAN_FRONTEND="noninteractive"
 ldap_debconf_generated_password: echo 'slapd slapd/internal/generated_adminpw password {0}' | sudo debconf-set-selections
@@ -41,10 +41,13 @@ cmd_ldapconfig_run: sudo /bin/bash /tmp/ldapconfig
 
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #Lider configuration
-cmd_lider_install: sudo apt-get install --yes --force-yes lider
+cmd_lider_install: sudo apt-get install -y lider-server
 cmd_lider_service: sudo systemctl restart lider.service
-cmd_liderahenk_repo_key: sudo wget http://repo.liderahenk.org/liderahenk-archive-keyring.asc && sudo apt-key add liderahenk-archive-keyring.asc &&  rm liderahenk-archive-keyring.asc
-cmd_liderahenk_repo_add: sudo add-apt-repository 'deb [arch=amd64] http://repo.liderahenk.org/liderahenk stable main'
-cmd_update: sudo apt update
+cmd_liderahenk_repo_key: sudo wget http://repo.liderahenk.org/liderahenk-archive-keyring.asc && sudo apt-key add liderahenk-archive-keyring.asc &&  rm -r --interactive=never liderahenk-archive-keyring.asc
+cmd_liderahenk_repo_add: sudo printf  "deb [arch=amd64] http://repo.liderahenk.org/liderahenk stable main" | sudo tee -a /etc/apt/sources.list
+cmd_update: sudo apt-get update
+cmd_cp_lider_cfg: sudo cp /tmp/tr.org.liderahenk.cfg /usr/share/lider-server/etc
+cmd_cp_db_cfg: sudo cp /tmp/tr.org.liderahenk.datasource.cfg /usr/share/lider-server/etc
+lider_des_path : /tmp
 
 

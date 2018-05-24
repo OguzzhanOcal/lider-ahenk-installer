@@ -7,8 +7,9 @@ import os
 
 class OpenLdapInstaller(object):
 
-    def __init__(self, ssh_api):
+    def __init__(self, ssh_api, ssh_status):
         self.ssh_api = ssh_api
+        self.ssh_status = ssh_status
         self.ldap_config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/ldapconfig_temp')
         self.update_ldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/update_ldap_temp')
         self.liderahenk_ldif_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/liderahenk.ldif')
@@ -51,26 +52,30 @@ class OpenLdapInstaller(object):
             self.f1.close()
             self.f2.close()
 
-            #copy ldap_install  script to ldap server
-            self.ssh_api.scp_file(self.ldap_config_out_path, '/tmp')
 
-            ### install slapd package
-            self.ssh_api.run_command(cfg_data["ldap_deb_frontend"])
-            self.ssh_api.run_command(cfg_data["ldap_debconf_generated_password"].format(data["l_admin_pwd"]))
-            self.ssh_api.run_command(cfg_data["ldap_debconf_admin_password"].format(data["l_admin_pwd"]))
-            self.ssh_api.run_command(cfg_data["ldap_debconf_conf"])
-            self.ssh_api.run_command(cfg_data["ldap_debconf_domain"].format(data["l_base_dn"]))
-            self.ssh_api.run_command(cfg_data["ldap_debconf_organization"].format(data["l_org_name"]))
-            self.ssh_api.run_command(cfg_data["ldap_debconf_pwd1"].format(data["l_admin_pwd"]))
-            self.ssh_api.run_command(cfg_data["ldap_debconf_pwd2"].format(data["l_admin_pwd"]))
-            self.ssh_api.run_command(cfg_data["ldap_debconf_selectdb"])
-            self.ssh_api.run_command(cfg_data["ldap_debconf_purgedb"])
-            self.ssh_api.run_command(cfg_data["ldap_debconf_movedb"])
-            self.ssh_api.run_command(cfg_data["cmd_ldap_install"])
-            self.ssh_api.run_command(cfg_data["cmd_ldap_reconf"])
-            self.ssh_api.run_command(cfg_data["cmd_ldapconfig_execute"])
-            self.ssh_api.run_command(cfg_data["cmd_ldapconfig_run"])
-            print ("yeni ldap kurulumu tamamlandı.....")
+            if self.ssh_status == 1:
+                #copy ldap_install  script to ldap server
+                self.ssh_api.scp_file(self.ldap_config_out_path, '/tmp')
+
+                ### install slapd package
+                self.ssh_api.run_command(cfg_data["ldap_deb_frontend"])
+                self.ssh_api.run_command(cfg_data["ldap_debconf_generated_password"].format(data["l_admin_pwd"]))
+                self.ssh_api.run_command(cfg_data["ldap_debconf_admin_password"].format(data["l_admin_pwd"]))
+                self.ssh_api.run_command(cfg_data["ldap_debconf_conf"])
+                self.ssh_api.run_command(cfg_data["ldap_debconf_domain"].format(data["l_base_dn"]))
+                self.ssh_api.run_command(cfg_data["ldap_debconf_organization"].format(data["l_org_name"]))
+                self.ssh_api.run_command(cfg_data["ldap_debconf_pwd1"].format(data["l_admin_pwd"]))
+                self.ssh_api.run_command(cfg_data["ldap_debconf_pwd2"].format(data["l_admin_pwd"]))
+                self.ssh_api.run_command(cfg_data["ldap_debconf_selectdb"])
+                self.ssh_api.run_command(cfg_data["ldap_debconf_purgedb"])
+                self.ssh_api.run_command(cfg_data["ldap_debconf_movedb"])
+                self.ssh_api.run_command(cfg_data["cmd_ldap_install"])
+                self.ssh_api.run_command(cfg_data["cmd_ldap_reconf"])
+                self.ssh_api.run_command(cfg_data["cmd_ldapconfig_execute"])
+                self.ssh_api.run_command(cfg_data["cmd_ldapconfig_run"])
+                print ("yeni ldap kurulumu tamamlandı.....")
+            else:
+                print("bağlantı sağlanamadığı için kurulum yapılamadı..")
 
         else:
             self.f1 = open(self.update_ldap_path, 'r+')

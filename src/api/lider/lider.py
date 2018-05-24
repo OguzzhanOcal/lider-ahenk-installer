@@ -8,8 +8,9 @@ import os
 
 class LiderInstaller(object):
 
-    def __init__(self, ssh_api):
+    def __init__(self, ssh_api, ssh_status):
         self.ssh_api = ssh_api
+        self.ssh_status = ssh_status
         self.config_manager = ConfigManager()
         self.lider_conf_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/tr.org.liderahenk.cfg')
         self.db_conf_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/tr.org.liderahenk.datasource.cfg')
@@ -17,17 +18,23 @@ class LiderInstaller(object):
         self.db_conf_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/tr.org.liderahenk.datasource.cfg' )
 
     def install(self, data):
-        cfg_data = self.config_manager.read()
-        self.configure_lider_cfg(data)
-        self.configure_db_cfg(data)
-        self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"])
-        self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"])
-        self.ssh_api.run_command(cfg_data["cmd_update"])
-        self.ssh_api.run_command(cfg_data["cmd_lider_install"])
-        self.ssh_api.run_command(cfg_data["cmd_lider_service"])
 
-        self.ssh_api.scp_file(self.lider_conf_out_path, '/tmp')
-        self.ssh_api.scp_file(self.db_conf_out_path, '/tmp')
+        if self.ssh_status == 1:
+            print("ssh bağlatı durumu: "+str(self.ssh_status))
+            cfg_data = self.config_manager.read()
+            self.configure_lider_cfg(data)
+            self.configure_db_cfg(data)
+            # self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"])
+            # self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"])
+            self.ssh_api.run_command(cfg_data["cmd_update"])
+            self.ssh_api.run_command(cfg_data["cmd_lider_install"])
+            self.ssh_api.scp_file(self.lider_conf_out_path, cfg_data["lider_des_path"])
+            self.ssh_api.scp_file(self.db_conf_out_path, cfg_data["lider_des_path"])
+            self.ssh_api.run_command(cfg_data["cmd_cp_lider_cfg"])
+            self.ssh_api.run_command(cfg_data["cmd_cp_db_cfg"])
+            self.ssh_api.run_command(cfg_data["cmd_lider_service"])
+        else:
+            print("bağlantı sağlanamadığı için kurulum yapılamadı..")
 
     def configure_lider_cfg(self, data):
         l_base_dn = self.base_dn_parse(data)
@@ -63,7 +70,7 @@ class LiderInstaller(object):
     def configure_db_cfg(self, data):
         db_data = {
             "#DBADDRESS": data['db_server'],
-            "#DBDATABASE": data['db_database'],
+            "#DBDATABASE": data['db_name'],
             "#DBUSERNAME": data['db_username'],
             "#DBPASSWORD": data['db_password']
         }
