@@ -5,38 +5,39 @@
 
 import yaml, os
 from api.config.config_manager import ConfigManager
-from ruamel.yaml import scalarstring
 
 class EjabberInstaller(object):
 
     def __init__(self, ssh_api, ssh_status):
         self.ssh_api = ssh_api
         self.ssh_status = ssh_status
+        self.config_manager = ConfigManager()
         self.jabberd_template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/ejabberd_temp.yml')
         self.jabberd_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/ejabberd.yml')
 
     def install(self, data):
-        S = scalarstring.DoubleQuotedScalarString
         config_manager = ConfigManager()
-        yml_data = config_manager.read_temp_yml_file(self.jabberd_template_path)
-
         # configuration ejabberd.yml
         base_dn = self.base_dn_parse(data)
         ldap_root_dn = "cn=admin,"+str(base_dn) #cn=admnin,dc=liderahenk,dc=org
-
-        conf_data = {
-            'hosts': [S(data['e_hosts'])],
-            'ldap_servers': [S(data['ldap_servers'])],
-            'ldap_rootdn': S(str(ldap_root_dn)),
-            'ldap_password': S(data['l_admin_pwd']),
-            'ldap_base': S(str(base_dn)),
-            'host_config': {S(data['e_service_name']): {'auth_method': ['internal', 'ldap', 'anonymous']}}
-        }
-        for attr in conf_data:
-            yml_data[attr] = conf_data[attr]
-
-            config_manager.write_to_yml(yml_data, self.jabberd_out_path)
         cfg_data = config_manager.read()
+        conf_data = {
+            "#HOST": data['e_hosts'],
+            "#LDAP_SERVER": data['ldap_servers'],
+            "#LDAP_ROOT_DN": ldap_root_dn,
+            "#LDAP_ROOT_PWD": data['l_admin_pwd'],
+            "#LDAP_BASE_DN": base_dn,
+            "#SERVICE_NAME": data['e_service_name']
+        }
+        self.f_ejabberd_yml = open(self.jabberd_template_path, 'r+')
+        jabber_data = self.f_ejabberd_yml.read()
+
+        txt = self.config_manager.replace_all(jabber_data, conf_data)
+        self.f_ejabberd_yml_out = open(self.jabberd_out_path, 'w+')
+        self.f_ejabberd_yml_out.write(txt)
+        self.f_ejabberd_yml.close()
+        self.f_ejabberd_yml_out.close()
+
         #run commands of ejabberd
         if self.ssh_status == 1:
 
