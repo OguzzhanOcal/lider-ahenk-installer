@@ -3,10 +3,13 @@
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QWizard
 import installerUi
 from get_data import GetData
-import sys, os, paramiko,json
+from abstract import Abstract
+import sys, os, paramiko, json
 import os.path
+from ..install_manager import InstallManager
 
 try:
     _fromUtf8 = QtCore.QStringListModel.fromUtf8
@@ -20,6 +23,8 @@ class InstallerManagement(QtWidgets.QWizard, installerUi.Ui_Installer):
         super(InstallerManagement, self).__init__(parent)
         self.setupUi(self)
         self.get_data = GetData()
+        self.abstract = Abstract()
+        self.install_manager = InstallManager()
         label = QtWidgets.QLabel(self.info)
         pixmap = QtGui.QPixmap('image/liderahenk.png')
         label.setPixmap(pixmap)
@@ -30,6 +35,7 @@ class InstallerManagement(QtWidgets.QWizard, installerUi.Ui_Installer):
         self.menubar_action = QtWidgets.QAction(self)
         self.menubar_action.setText('Hakkında')
         self.menu.addAction(self.menubar_action)
+        # QWizard.setButtonText(QWizard_WizardButton='Next', QWizard_WizardButton='ileri')
         # self.menubar_action.triggered.connect(QtWidgets.QMessageBox.about(self, "Lider Ahenk", "Lider Ahenk Kolay Kurulum Uygulaması"))
         self.set_connect()
 
@@ -39,12 +45,14 @@ class InstallerManagement(QtWidgets.QWizard, installerUi.Ui_Installer):
         self.hakkinda.setWindowTitle("Hakkında")
         self.menubar.addMenu(self.hakkinda)
         self.ssh_comboBox.addItems(["", "Uzak Makineye Kur", "Yerel Makineye Kur"])
+        self.ldap_status.addItems(["Yeni", "OpenLDAP Güncelle"])
         self.ssh_control_button.clicked.connect(self.ssh_control)
         self.save_button.clicked.connect(self.write_file)
-        # self.next_install_button.clicked.connect(self.abstract_data)
+        self.next_install_button.clicked.connect(self.install_manager.start_install())
+        self.next_install_button.clicked.connect(self.get_context)
 
     def ssh_control(self):
-        data = GetData.get_data
+        data = GetData.get_data(self)
         # bu satırda sunucunun nereye kurulacağı belirleniyor.
         ssh_combo_box = str(self.ssh_comboBox.currentText())
         if self.ssh_comboBox.currentIndex() == 1:
@@ -74,7 +82,8 @@ class InstallerManagement(QtWidgets.QWizard, installerUi.Ui_Installer):
         self.ret = self.msgBox.exec_()
 
     def write_file(self):
-        data = GetData.get_data
+        data = GetData.get_data(self)
+        print (data)
 
         if os.path.exists(self.liderahenk_data_path) and os.stat(self.liderahenk_data_path).st_size != 0:
             with open(self.liderahenk_data_path) as f:
@@ -88,11 +97,12 @@ class InstallerManagement(QtWidgets.QWizard, installerUi.Ui_Installer):
                 json.dump(data, f, ensure_ascii=False)
             print("data oluşturuldu")
 
-    # def abstract_data(self):
-    #     abstract_2 = QPlainTextEdit()
-    #     file = open(self.liderahenk_data_path)
-    #     data = file.read()
-    #     abstract_2.setPlainText(data)
+    def get_context(self):
+        data = GetData.get_data(self)
+        # print(data)
+        self.abstract.ldap_ozet(data)
+
+
 
 if __name__ == '__main__':
     import sys
