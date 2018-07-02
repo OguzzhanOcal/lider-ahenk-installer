@@ -2,10 +2,12 @@
 
 * How to install
 
-** First install dependencies;
+1) First install dependencies;
 
 ***sudo pip3 install ruamel.yaml pyyaml pyqt5 paramiko***
-** git clone project
+
+2) git clone project
+
 ***git clolne https://github.com/Pardus-LiderAhenk/lider-ahenk-installer.git***
 
 or
