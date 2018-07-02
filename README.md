@@ -14,7 +14,7 @@ or
 
 2) git clone project
 
-***git clolne https://github.com/Pardus-LiderAhenk/lider-ahenk-installer.git***
+***git clone https://github.com/Pardus-LiderAhenk/lider-ahenk-installer.git***
 
 * How to use
 
