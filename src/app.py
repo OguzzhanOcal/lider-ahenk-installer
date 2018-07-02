@@ -35,10 +35,12 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist')):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist'))
 
-        ## backround image
+        ## add backround image
         label = QtWidgets.QLabel(self.info)
         pixmap = QtGui.QPixmap('gui/image/liderahenk.png')
         label.setPixmap(pixmap)
+        ## set window icon
+        self.setWindowIcon(QtGui.QIcon('gui/image/liderahenk-32.png'))
 
         ### Menubar
         self.menubar = QtWidgets.QMenuBar(self)

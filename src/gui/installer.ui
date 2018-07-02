@@ -28,10 +28,6 @@
   <property name="windowTitle">
    <string>Lider Ahenk Kolay Kurulum Uygulaması</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>image/liderahenk-32.png</normaloff>image/liderahenk-32.png</iconset>
-  </property>
   <property name="autoFillBackground">
    <bool>true</bool>
   </property>
