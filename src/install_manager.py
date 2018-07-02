@@ -2,49 +2,68 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
+import json
+import os
+import sys
 from api.database.mariadb import MariaDbInstaller
 from api.ejabberd.ejabberd import EjabberInstaller
 from api.ldap.openldap import OpenLdapInstaller
 from api.lider.lider import LiderInstaller
+from api.logger.installer_logger import Logger
 from api.ssh.ssh import Ssh
 
 class InstallManager(object):
 
     def __init__(self):
+        super(InstallManager, self).__init__()
         self.ssh = Ssh()
         self.ssh_status = None
+        self.logger = Logger()
+        self.liderahenk_data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/liderahenk.json')
 
     def install_mariadb(self, data):
         db_installer = MariaDbInstaller(self.ssh, self.ssh_status)
+        self.logger.info("------------>>>>>>> Veritabanı sunucu kurulumuna başlanıyor")
         db_installer.install(data)
 
     def install_ejabberd(self, data):
         ejabberd_installer = EjabberInstaller(self.ssh, self.ssh_status)
+        self.logger.info("Ejabberd sunucu kurulumuna başlanıyor.")
         ejabberd_installer.install(data)
 
     def install_ldap(self, data):
         ldap_installer = OpenLdapInstaller(self.ssh, self.ssh_status)
+        self.logger.info("OpenLDAP sunucu kurulumuna başlanıyor.")
         ldap_installer.install(data)
 
     def install_lider(self, data):
         lider_installer = LiderInstaller(self.ssh, self.ssh_status)
+        self.logger.info("Lider bileşeni Kurulumana başlanıyor.")
         lider_installer.install(data)
 
     def ssh_connect(self, data):
         ssh_status = self.ssh.connect(data["ip"], data["username"], data["password"])
         self.ssh_status = ssh_status
         if ssh_status == 1:
-            print("---->> "+str(ssh_status))
             return True
         else:
             return False
 
     def ssh_disconnect(self):
         self.ssh.disconnect()
-        print("baglantı kapatıldı")
+
+    def start_install(self):
+        with open(self.liderahenk_data_path) as f:
+            data = json.load(f)
+        self.logger.info("liderahenk.json dosyasından veriler okunuyor")
+        self.ssh_connect(data)
+        self.install_mariadb(data)
+        self.install_ldap(data)
+        self.install_ejabberd(data)
+        self.install_lider(data)
+        self.ssh_disconnect()
 
 if __name__ == "__main__":
-
     data = {
         # ssh connection information
         'ip': "192.168.56.111",
@@ -77,23 +96,17 @@ if __name__ == "__main__":
         'lider_username': "lider_sunucu",
         'lider_user_pwd': "1",
 
-        #File Server Configuration
+        # File Server Configuration
         'file_server': "127.0.0.1",
         'fs_username': "lider",
         'fs_username_pwd': "1",
         'fs_plugin_path': '/home/lider',
         "fs_agreement_path": '/home/lider',
         "fs_agent_file_path": '/home/lider',
-        
-        #Database cfg Configuration
+
+        # Database cfg Configuration
         'db_server': "localhost",
         'db_username': "root"
     }
-
-    im = InstallManager()
-    # im.ssh_connect(data)
-    # im.install_mariadb(data)
-    im.install_ejabberd(data)
-    # im.install_ldap(data)
-    # im.install_lider(data)
-    # im.ssh_disconnect()
+    # im = InstallManager()
+    # im.start_install()

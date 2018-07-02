@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-import installerUi
+from PyQt5 import QtCore, QtWidgets
+from gui.installerUi import Ui_Installer
 
 try:
     _fromUtf8 = QtCore.QStringListModel.fromUtf8
@@ -11,15 +11,17 @@ except AttributeError:
     def _fromUtf8(s):
         return s
 
-class GetData(QtWidgets.QWizard, installerUi.Ui_Installer):
-    def __int__(self, parent=None):
-        super(GetData, self).__init__(parent)
+class GetData(QtWidgets.QWizard, Ui_Installer):
+    def __init__(self):
+        super(GetData, self).__init__()
         print("veriler alınıyor")
+    #get data from installer gui_old
 
-    #get data from installer gui
     def get_data(self):
 
-        if self.ldap_status.currentText() == 'Yeni':
+        # if ldap status is Yeni
+        # print(self.ldap_status.currentIndex())
+        if self.ldap_status.currentIndex() == 0:
             ldap_status = 'new'
         else:
             # if ldap_status is 'Güncelle'
@@ -27,9 +29,9 @@ class GetData(QtWidgets.QWizard, installerUi.Ui_Installer):
 
         data = {
             # Server Configuration
-            'ip': str(self.ip.text()),
-            'username': str(self.username.text()),
-            'password': str(self.password.text()),
+            'ip': self.ip.text(),
+            'username': self.username.text(),
+            'password': self.password.text(),
 
             # Database Configuration
             'db_server': self.ip.text(),
@@ -42,7 +44,7 @@ class GetData(QtWidgets.QWizard, installerUi.Ui_Installer):
             'e_username': self.e_username.text(),
             'e_user_pwd': self.e_user_pwd.text(),
             'e_hosts': self.e_host.text(),
-            'ldap_servers': self.ldap_servers.text(),
+            'ldap_servers': self.ip.text(),
 
             # OpenLDAP Configuration
             'l_base_dn': self.l_base_dn.text(),
@@ -53,7 +55,7 @@ class GetData(QtWidgets.QWizard, installerUi.Ui_Installer):
             'ladmin_user': self.lider_console_user.text(),
             'l_admin_pwd': self.l_admin_pwd.text(),
             'ladmin_pwd': self.lider_console_user_pwd.text(),
-            'ldap_status': ldap_status,
+            'ldap_status': str(ldap_status),
             # yeni ldap kur ya da varolan ldapı konfigüre et 'new' ya da 'conf' parametreleri alıyor
 
             # Lider Configuration

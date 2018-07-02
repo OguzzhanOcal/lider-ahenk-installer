@@ -21,7 +21,7 @@ class Ui_Installer(object):
         Installer.setSizePolicy(sizePolicy)
         Installer.setFocusPolicy(QtCore.Qt.TabFocus)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../../../../../.designer/backup/image/liderahenk-32.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("image/liderahenk-32.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Installer.setWindowIcon(icon)
         Installer.setAutoFillBackground(True)
         Installer.setSizeGripEnabled(True)
@@ -55,6 +55,10 @@ class Ui_Installer(object):
         self.ssh_comboBox.setSizePolicy(sizePolicy)
         self.ssh_comboBox.setMinimumSize(QtCore.QSize(321, 0))
         self.ssh_comboBox.setObjectName("ssh_comboBox")
+        self.ssh_comboBox.addItem("")
+        self.ssh_comboBox.setItemText(0, "")
+        self.ssh_comboBox.addItem("")
+        self.ssh_comboBox.addItem("")
         self.username = QtWidgets.QLineEdit(self.connect)
         self.username.setGeometry(QtCore.QRect(560, 360, 321, 31))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
@@ -280,6 +284,7 @@ class Ui_Installer(object):
         self.textBrowser_18.setObjectName("textBrowser_18")
         self.ldap_servers = QtWidgets.QLineEdit(self.xmpp)
         self.ldap_servers.setGeometry(QtCore.QRect(570, 270, 321, 31))
+        self.ldap_servers.setText("")
         self.ldap_servers.setObjectName("ldap_servers")
         self.textBrowser_19 = QtWidgets.QTextBrowser(self.xmpp)
         self.textBrowser_19.setGeometry(QtCore.QRect(230, 450, 321, 31))
@@ -324,16 +329,19 @@ class Ui_Installer(object):
         self.textBrowser_23.setObjectName("textBrowser_23")
         self.fs_username_pwd = QtWidgets.QLineEdit(self.fs)
         self.fs_username_pwd.setGeometry(QtCore.QRect(570, 340, 321, 31))
+        self.fs_username_pwd.setText("")
         self.fs_username_pwd.setEchoMode(QtWidgets.QLineEdit.PasswordEchoOnEdit)
         self.fs_username_pwd.setObjectName("fs_username_pwd")
         self.file_server = QtWidgets.QLineEdit(self.fs)
         self.file_server.setGeometry(QtCore.QRect(570, 220, 321, 31))
+        self.file_server.setText("")
         self.file_server.setObjectName("file_server")
         self.fs_agreement_path = QtWidgets.QLineEdit(self.fs)
         self.fs_agreement_path.setGeometry(QtCore.QRect(570, 460, 321, 31))
         self.fs_agreement_path.setObjectName("fs_agreement_path")
         self.fs_username = QtWidgets.QLineEdit(self.fs)
         self.fs_username.setGeometry(QtCore.QRect(570, 280, 321, 31))
+        self.fs_username.setText("")
         self.fs_username.setObjectName("fs_username")
         self.textBrowser_44 = QtWidgets.QTextBrowser(self.fs)
         self.textBrowser_44.setGeometry(QtCore.QRect(380, 90, 341, 31))
@@ -357,6 +365,7 @@ class Ui_Installer(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.fs_username_pwd_2.sizePolicy().hasHeightForWidth())
         self.fs_username_pwd_2.setSizePolicy(sizePolicy)
+        self.fs_username_pwd_2.setText("")
         self.fs_username_pwd_2.setEchoMode(QtWidgets.QLineEdit.PasswordEchoOnEdit)
         self.fs_username_pwd_2.setObjectName("fs_username_pwd_2")
         self.file_server_2 = QtWidgets.QLineEdit(self.lider)
@@ -366,6 +375,7 @@ class Ui_Installer(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.file_server_2.sizePolicy().hasHeightForWidth())
         self.file_server_2.setSizePolicy(sizePolicy)
+        self.file_server_2.setText("")
         self.file_server_2.setObjectName("file_server_2")
         self.textBrowser_40 = QtWidgets.QTextBrowser(self.lider)
         self.textBrowser_40.setGeometry(QtCore.QRect(220, 550, 321, 30))
@@ -386,19 +396,12 @@ class Ui_Installer(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.fs_username_2.sizePolicy().hasHeightForWidth())
         self.fs_username_2.setSizePolicy(sizePolicy)
+        self.fs_username_2.setText("")
         self.fs_username_2.setObjectName("fs_username_2")
         self.textBrowser_39 = QtWidgets.QTextBrowser(self.lider)
         self.textBrowser_39.setGeometry(QtCore.QRect(220, 510, 321, 30))
         self.textBrowser_39.setFrameShape(QtWidgets.QFrame.Box)
         self.textBrowser_39.setObjectName("textBrowser_39")
-        self.l_base_dn_2 = QtWidgets.QLineEdit(self.lider)
-        self.l_base_dn_2.setGeometry(QtCore.QRect(560, 110, 321, 30))
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.l_base_dn_2.sizePolicy().hasHeightForWidth())
-        self.l_base_dn_2.setSizePolicy(sizePolicy)
-        self.l_base_dn_2.setObjectName("l_base_dn_2")
         self.textBrowser_37 = QtWidgets.QTextBrowser(self.lider)
         self.textBrowser_37.setGeometry(QtCore.QRect(220, 470, 321, 30))
         self.textBrowser_37.setFrameShape(QtWidgets.QFrame.Box)
@@ -414,6 +417,7 @@ class Ui_Installer(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.ejabberd_service.sizePolicy().hasHeightForWidth())
         self.ejabberd_service.setSizePolicy(sizePolicy)
+        self.ejabberd_service.setText("")
         self.ejabberd_service.setObjectName("ejabberd_service")
         self.textBrowser_34 = QtWidgets.QTextBrowser(self.lider)
         self.textBrowser_34.setGeometry(QtCore.QRect(220, 390, 321, 30))
@@ -423,9 +427,9 @@ class Ui_Installer(object):
         self.textBrowser_33.setGeometry(QtCore.QRect(220, 190, 321, 30))
         self.textBrowser_33.setFrameShape(QtWidgets.QFrame.Box)
         self.textBrowser_33.setObjectName("textBrowser_33")
-        self.pushButton = QtWidgets.QPushButton(self.lider)
-        self.pushButton.setGeometry(QtCore.QRect(770, 700, 111, 25))
-        self.pushButton.setObjectName("pushButton")
+        self.get_lider_data_button = QtWidgets.QPushButton(self.lider)
+        self.get_lider_data_button.setGeometry(QtCore.QRect(770, 700, 111, 25))
+        self.get_lider_data_button.setObjectName("get_lider_data_button")
         self.textBrowser_38 = QtWidgets.QTextBrowser(self.lider)
         self.textBrowser_38.setGeometry(QtCore.QRect(220, 430, 321, 30))
         self.textBrowser_38.setFrameShape(QtWidgets.QFrame.Box)
@@ -445,6 +449,7 @@ class Ui_Installer(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.ldap_admin_cn.sizePolicy().hasHeightForWidth())
         self.ldap_admin_cn.setSizePolicy(sizePolicy)
+        self.ldap_admin_cn.setText("")
         self.ldap_admin_cn.setObjectName("ldap_admin_cn")
         self.fs_plugin_path_2 = QtWidgets.QLineEdit(self.lider)
         self.fs_plugin_path_2.setGeometry(QtCore.QRect(560, 550, 321, 30))
@@ -453,6 +458,7 @@ class Ui_Installer(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.fs_plugin_path_2.sizePolicy().hasHeightForWidth())
         self.fs_plugin_path_2.setSizePolicy(sizePolicy)
+        self.fs_plugin_path_2.setText("")
         self.fs_plugin_path_2.setObjectName("fs_plugin_path_2")
         self.fs_agent_files_path = QtWidgets.QLineEdit(self.lider)
         self.fs_agent_files_path.setGeometry(QtCore.QRect(560, 630, 321, 30))
@@ -461,6 +467,7 @@ class Ui_Installer(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.fs_agent_files_path.sizePolicy().hasHeightForWidth())
         self.fs_agent_files_path.setSizePolicy(sizePolicy)
+        self.fs_agent_files_path.setText("")
         self.fs_agent_files_path.setObjectName("fs_agent_files_path")
         self.textBrowser_43 = QtWidgets.QTextBrowser(self.lider)
         self.textBrowser_43.setGeometry(QtCore.QRect(380, 50, 341, 31))
@@ -473,6 +480,7 @@ class Ui_Installer(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lider_sunucu_pwd.sizePolicy().hasHeightForWidth())
         self.lider_sunucu_pwd.setSizePolicy(sizePolicy)
+        self.lider_sunucu_pwd.setText("")
         self.lider_sunucu_pwd.setEchoMode(QtWidgets.QLineEdit.PasswordEchoOnEdit)
         self.lider_sunucu_pwd.setObjectName("lider_sunucu_pwd")
         self.ldap_base = QtWidgets.QLineEdit(self.lider)
@@ -482,6 +490,7 @@ class Ui_Installer(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.ldap_base.sizePolicy().hasHeightForWidth())
         self.ldap_base.setSizePolicy(sizePolicy)
+        self.ldap_base.setText("")
         self.ldap_base.setObjectName("ldap_base")
         self.ldap_admin_pwd = QtWidgets.QLineEdit(self.lider)
         self.ldap_admin_pwd.setGeometry(QtCore.QRect(560, 190, 321, 30))
@@ -490,6 +499,7 @@ class Ui_Installer(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.ldap_admin_pwd.sizePolicy().hasHeightForWidth())
         self.ldap_admin_pwd.setSizePolicy(sizePolicy)
+        self.ldap_admin_pwd.setText("")
         self.ldap_admin_pwd.setEchoMode(QtWidgets.QLineEdit.PasswordEchoOnEdit)
         self.ldap_admin_pwd.setObjectName("ldap_admin_pwd")
         self.textBrowser_30 = QtWidgets.QTextBrowser(self.lider)
@@ -503,6 +513,7 @@ class Ui_Installer(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lider_sunucu.sizePolicy().hasHeightForWidth())
         self.lider_sunucu.setSizePolicy(sizePolicy)
+        self.lider_sunucu.setText("")
         self.lider_sunucu.setObjectName("lider_sunucu")
         self.e_host = QtWidgets.QLineEdit(self.lider)
         self.e_host.setGeometry(QtCore.QRect(560, 270, 321, 30))
@@ -511,6 +522,7 @@ class Ui_Installer(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.e_host.sizePolicy().hasHeightForWidth())
         self.e_host.setSizePolicy(sizePolicy)
+        self.e_host.setText("")
         self.e_host.setObjectName("e_host")
         self.fs_agreement_path_2 = QtWidgets.QLineEdit(self.lider)
         self.fs_agreement_path_2.setGeometry(QtCore.QRect(560, 590, 321, 30))
@@ -519,6 +531,7 @@ class Ui_Installer(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.fs_agreement_path_2.sizePolicy().hasHeightForWidth())
         self.fs_agreement_path_2.setSizePolicy(sizePolicy)
+        self.fs_agreement_path_2.setText("")
         self.fs_agreement_path_2.setObjectName("fs_agreement_path_2")
         self.textBrowser_41 = QtWidgets.QTextBrowser(self.lider)
         self.textBrowser_41.setGeometry(QtCore.QRect(220, 590, 321, 30))
@@ -528,17 +541,24 @@ class Ui_Installer(object):
         self.label.setGeometry(QtCore.QRect(340, 700, 421, 21))
         self.label.setTextFormat(QtCore.Qt.AutoText)
         self.label.setObjectName("label")
+        self.ldap_ip = QtWidgets.QTextEdit(self.lider)
+        self.ldap_ip.setGeometry(QtCore.QRect(560, 110, 321, 31))
+        self.ldap_ip.setObjectName("ldap_ip")
         Installer.addPage(self.lider)
         self.save = QtWidgets.QWizardPage()
         self.save.setObjectName("save")
         self.save_button = QtWidgets.QPushButton(self.save)
-        self.save_button.setGeometry(QtCore.QRect(900, 720, 83, 24))
+        self.save_button.setGeometry(QtCore.QRect(1030, 130, 83, 24))
         self.save_button.setStyleSheet("")
         self.save_button.setObjectName("save_button")
         self.next_install_button = QtWidgets.QPushButton(self.save)
-        self.next_install_button.setGeometry(QtCore.QRect(1030, 720, 83, 24))
+        self.next_install_button.setGeometry(QtCore.QRect(1030, 70, 83, 24))
         self.next_install_button.setStyleSheet("")
         self.next_install_button.setObjectName("next_install_button")
+        self.lider_text = QtWidgets.QTextEdit(self.save)
+        self.lider_text.setGeometry(QtCore.QRect(63, 53, 811, 721))
+        self.lider_text.setOverwriteMode(True)
+        self.lider_text.setObjectName("lider_text")
         Installer.addPage(self.save)
         self.watchlog = QtWidgets.QWizardPage()
         self.watchlog.setObjectName("watchlog")
@@ -551,6 +571,8 @@ class Ui_Installer(object):
         _translate = QtCore.QCoreApplication.translate
         Installer.setWindowTitle(_translate("Installer", "Lider Ahenk Kolay Kurulum Uygulaması"))
         self.ip.setText(_translate("Installer", "192.168.56.1"))
+        self.ssh_comboBox.setItemText(1, _translate("Installer", "Uzak Makineye Kur"))
+        self.ssh_comboBox.setItemText(2, _translate("Installer", "Yerel Makineye Kur"))
         self.username.setText(_translate("Installer", "tcolak"))
         self.textBrowser_48.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
@@ -621,8 +643,8 @@ class Ui_Installer(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">Admin Parolası:</span></p></body></html>"))
-        self.ldap_status.setItemText(0, _translate("Installer", "Yeni"))
-        self.ldap_status.setItemText(1, _translate("Installer", "Güncelle"))
+        self.ldap_status.setItemText(0, _translate("Installer", "OpenLDAP Kur"))
+        self.ldap_status.setItemText(1, _translate("Installer", "OpenLDAP Güncelle"))
         self.textBrowser_16.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -691,7 +713,6 @@ class Ui_Installer(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">Ejabberd Servis Adı</span></p></body></html>"))
-        self.ldap_servers.setText(_translate("Installer", "127.0.0.1"))
         self.textBrowser_19.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -730,10 +751,7 @@ class Ui_Installer(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">Kullanıcı Sözleşmesi Yolu</span></p></body></html>"))
-        self.fs_username_pwd.setText(_translate("Installer", "secret"))
-        self.file_server.setText(_translate("Installer", "127.0.0.1"))
         self.fs_agreement_path.setText(_translate("Installer", "/home/lider"))
-        self.fs_username.setText(_translate("Installer", "lider"))
         self.textBrowser_44.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -749,8 +767,6 @@ class Ui_Installer(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-weight:600;\">Ahenk Dosyaları Yolu</span></p></body></html>"))
-        self.fs_username_pwd_2.setText(_translate("Installer", "secret"))
-        self.file_server_2.setText(_translate("Installer", "127.0.0.1"))
         self.textBrowser_40.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -766,13 +782,11 @@ class Ui_Installer(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-weight:600;\">Ejabberd Lider Kullanıcı Parolası</span></p></body></html>"))
-        self.fs_username_2.setText(_translate("Installer", "lider"))
         self.textBrowser_39.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-weight:600;\">Dosya Sunucu Kullanıcı Parolası</span></p></body></html>"))
-        self.l_base_dn_2.setText(_translate("Installer", "127.0.0.1"))
         self.textBrowser_37.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -783,7 +797,6 @@ class Ui_Installer(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-weight:600;\">Ejabberd Sunucu Adresi</span></p></body></html>"))
-        self.ejabberd_service.setText(_translate("Installer", "im.liderahenk.org"))
         self.textBrowser_34.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -794,7 +807,7 @@ class Ui_Installer(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-weight:600;\">LDAP Admin Kullanıcısı Parolası</span></p></body></html>"))
-        self.pushButton.setText(_translate("Installer", "Verileri Getir"))
+        self.get_lider_data_button.setText(_translate("Installer", "Verileri Getir"))
         self.textBrowser_38.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -810,25 +823,16 @@ class Ui_Installer(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-weight:600;\">LDAP Base DN</span></p></body></html>"))
-        self.ldap_admin_cn.setText(_translate("Installer", "admin"))
-        self.fs_plugin_path_2.setText(_translate("Installer", "/home/lider"))
-        self.fs_agent_files_path.setText(_translate("Installer", "/home/lider"))
         self.textBrowser_43.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">Lider Sunucu Konfigürasyonu</span></p></body></html>"))
-        self.lider_sunucu_pwd.setText(_translate("Installer", "secret"))
-        self.ldap_base.setText(_translate("Installer", "dc=liderahenk,dc=org"))
-        self.ldap_admin_pwd.setText(_translate("Installer", "secret"))
         self.textBrowser_30.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-weight:600;\">LDAP Sunucu Adresi</span></p></body></html>"))
-        self.lider_sunucu.setText(_translate("Installer", "lider_sunucu"))
-        self.e_host.setText(_translate("Installer", "127.0.0.1"))
-        self.fs_agreement_path_2.setText(_translate("Installer", "/home/lider"))
         self.textBrowser_41.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"

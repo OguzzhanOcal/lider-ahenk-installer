@@ -2,19 +2,22 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-from api.config.config_manager import ConfigManager
 import os
+from api.config.config_manager import ConfigManager
+from api.logger.installer_logger import Logger
+
 
 class OpenLdapInstaller(object):
 
     def __init__(self, ssh_api, ssh_status):
         self.ssh_api = ssh_api
         self.ssh_status = ssh_status
-        self.ldap_config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/ldapconfig_temp')
-        self.update_ldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/update_ldap_temp')
-        self.liderahenk_ldif_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/liderahenk.ldif')
-        self.ldap_config_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/ldapconfig')
-        self.update_ldap_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/update_ldap')
+        self.logger = Logger()
+        self.ldap_config_path = os.path.join(path.dirname(path.abspath(__file__)), '../../conf/ldapconfig_temp')
+        self.update_ldap_path = os.path.join(path.dirname(path.abspath(__file__)), '../../conf/update_ldap_temp')
+        self.liderahenk_ldif_path = os.path.join(path.dirname(path.abspath(__file__)), '../../conf/liderahenk.ldif')
+        self.ldap_config_out_path = os.path.join(path.dirname(path.abspath(__file__)), '../../dist/ldapconfig')
+        self.update_ldap_out_path = os.path.join(path.dirname(path.abspath(__file__)), '../../dist/update_ldap')
 
     def install(self, data):
 
@@ -39,6 +42,7 @@ class OpenLdapInstaller(object):
 
         # copy liderahenk.ldif file to ldap server
         self.ssh_api.scp_file(self.liderahenk_ldif_path, '/tmp')
+        self.logger.info("liderahenk.ldif dosyası OpenLDAP sunucusuna koplayandı")
 
         if data["ldap_status"] == "new":
 
@@ -56,6 +60,7 @@ class OpenLdapInstaller(object):
             if self.ssh_status == 1:
                 #copy ldap_install  script to ldap server
                 self.ssh_api.scp_file(self.ldap_config_out_path, '/tmp')
+                self.logger.info("ldapconfig betiği OpenLDAP sunucusuna kopyalandı")
 
                 ### install slapd package
                 self.ssh_api.run_command(cfg_data["ldap_deb_frontend"])
@@ -69,13 +74,16 @@ class OpenLdapInstaller(object):
                 self.ssh_api.run_command(cfg_data["ldap_debconf_selectdb"])
                 self.ssh_api.run_command(cfg_data["ldap_debconf_purgedb"])
                 self.ssh_api.run_command(cfg_data["ldap_debconf_movedb"])
+                self.logger.info("LDAP bilgileri alındı")
                 self.ssh_api.run_command(cfg_data["cmd_ldap_install"])
+                self.logger.info("slapd ve ldap-utils paketleri kuruldu")
                 self.ssh_api.run_command(cfg_data["cmd_ldap_reconf"])
                 self.ssh_api.run_command(cfg_data["cmd_ldapconfig_execute"])
                 self.ssh_api.run_command(cfg_data["cmd_ldapconfig_run"])
-                print ("yeni ldap kurulumu tamamlandı.....")
+                self.logger.info("OpenLDAP kurulumu tamamlandı")
             else:
-                print("bağlantı sağlanamadığı için kurulum yapılamadı..")
+                self.logger.error("OpenLDAP sunucusuna bağlantı sağlanamadı için kurulum yapılamadı. Lütfen bağlantı ayarlarını kotrol ediniz!")
+                # print("bağlantı sağlanamadığı için kurulum yapılamadı..")
 
         else:
             self.f1 = open(self.update_ldap_path, 'r+')
@@ -87,9 +95,10 @@ class OpenLdapInstaller(object):
             self.f2.close()
             # copy ldap_config  script to ldap server
             self.ssh_api.scp_file(self.update_ldap_out_path, '/tmp')
+            self.logger.info("update_ldap betiği OpenLDAP sunucusuna koplayandı")
             self.ssh_api.run_command(cfg_data["cmd_update_ldap_execute"])
             self.ssh_api.run_command(cfg_data["cmd_update_ldap_run"])
-            print("varolan ldap konfigüre edildi.")
+            self.logger.info("Varolan OpenLDAP Lider Ahenk uygulamasına göre ayarlandı")
 
     def base_dn_parse(self, data):
         ### split for get data['base_dn']: liderahenk.org #BASECN and #BASEDN
