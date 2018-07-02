@@ -43,11 +43,11 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         self.setWindowIcon(QtGui.QIcon('gui/image/liderahenk-32.png'))
         ## set fixed size
         self.setFixedSize(self.size())
-        ## rename Qwizard button (next, back,cancel, finish)
+        ## set text Qwizard button (next, back,cancel, finish)
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.NextButton, 'İleri')
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.BackButton, 'Geri')
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.CancelButton, 'İptal')
-        QtWidgets.QWizard.(self, QtWidgets.QWizard.FinishButton, 'Bitti')
+        QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.FinishButton, 'Bitti')
 
         ### Menubar
         self.menubar = QtWidgets.QMenuBar(self)
