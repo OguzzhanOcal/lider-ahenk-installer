@@ -10,4 +10,4 @@ First install dependencies;
 
 * How to use
 
-Application is started with ***src/python3 app.py*** command
+Application is started with ***python3 app.py*** command under the src directory
