@@ -48,17 +48,28 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.BackButton, 'Geri')
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.CancelButton, 'İptal')
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.FinishButton, 'Bitti')
+        QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.HelpButton, 'Yardım' )
 
         ### Menubar
         self.menubar = QtWidgets.QMenuBar(self)
         self.menu = self.menubar.addMenu('Lider Ahenk')
-        self.menubar_action = QtWidgets.QAction(self)
-        self.menubar_action.setText('Hakkında')
-        self.menu.addAction(self.menubar_action)
+        self.open_file_action = QtWidgets.QAction(QtGui.QIcon('gui/image/arrow-up-16.png' ), 'Yükle', self)
+        self.open_file_action.setShortcut('Ctrl+O')
+        self.open_file_action.triggered.connect(self.open_file)
+        self.menu.addAction(self.open_file_action)
+
         ## Action button
+        self.exitButton = QtWidgets.QAction(QtGui.QIcon('gui/image/cancel-16.png' ), 'Çıkış', self)
+        self.exitButton.setShortcut('Ctrl+X')
+        self.exitButton.triggered.connect(self.close)
+        self.menu.addAction(self.exitButton)
         self.save_button.clicked.connect(self.write_file)
         self.ssh_control_button.clicked.connect(self.ssh_control)
         self.next_install_button.clicked.connect(self.install_manager.start_install)
+
+    def open_file(self):
+        print("open file dialoggggg")
+
 
     def start_install(self):
         with open(self.liderahenk_data_path) as f:
@@ -92,12 +103,12 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
             self.message_box(msg)
 
     def message_box(self, message):
-        self.msgBox.setIcon(self.msgBox.Information )
+        self.msgBox.setIcon(self.msgBox.Information)
         self.msgBox.setWindowTitle("Bilgilendirme")
         self.msgBox.setInformativeText(_fromUtf8(str(message)))
         self.msgBox.addButton(QtWidgets.QPushButton("Tamam"), QtWidgets.QMessageBox.NoRole)
         # self.msgBox.setDefaultButton(QtWidgets.QMessageBox.Close)
-        self.ret = self.msgBox.exec_()
+        self.msgBox.exec_()
 
     def write_file(self):
         data = GetData.get_data(self)

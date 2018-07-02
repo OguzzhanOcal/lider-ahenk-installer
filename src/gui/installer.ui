@@ -40,6 +40,9 @@
   <property name="wizardStyle">
    <enum>QWizard::ModernStyle</enum>
   </property>
+  <property name="options">
+   <set>QWizard::HaveHelpButton</set>
+  </property>
   <widget class="QWizardPage" name="info">
    <property name="autoFillBackground">
     <bool>false</bool>
@@ -336,7 +339,7 @@ p, li { white-space: pre-wrap; }
      <bool>true</bool>
     </property>
     <property name="echoMode">
-     <enum>QLineEdit::PasswordEchoOnEdit</enum>
+     <enum>QLineEdit::Password</enum>
     </property>
    </widget>
    <widget class="QPushButton" name="ssh_control_button">
@@ -421,7 +424,7 @@ p, li { white-space: pre-wrap; }
      <string>secret</string>
     </property>
     <property name="echoMode">
-     <enum>QLineEdit::PasswordEchoOnEdit</enum>
+     <enum>QLineEdit::Password</enum>
     </property>
    </widget>
    <widget class="QLineEdit" name="db_username">
@@ -558,7 +561,7 @@ p, li { white-space: pre-wrap; }
      <string>secret</string>
     </property>
     <property name="echoMode">
-     <enum>QLineEdit::PasswordEchoOnEdit</enum>
+     <enum>QLineEdit::Password</enum>
     </property>
    </widget>
    <widget class="QTextBrowser" name="textBrowser_9">
@@ -700,7 +703,7 @@ p, li { white-space: pre-wrap; }
      <string>secret</string>
     </property>
     <property name="echoMode">
-     <enum>QLineEdit::PasswordEchoOnEdit</enum>
+     <enum>QLineEdit::Password</enum>
     </property>
    </widget>
    <widget class="QLineEdit" name="l_config_admin_pwd">
@@ -716,7 +719,7 @@ p, li { white-space: pre-wrap; }
      <string>secret</string>
     </property>
     <property name="echoMode">
-     <enum>QLineEdit::PasswordEchoOnEdit</enum>
+     <enum>QLineEdit::Password</enum>
     </property>
    </widget>
    <widget class="QTextBrowser" name="textBrowser_8">
@@ -966,7 +969,7 @@ p, li { white-space: pre-wrap; }
      <string>secret</string>
     </property>
     <property name="echoMode">
-     <enum>QLineEdit::PasswordEchoOnEdit</enum>
+     <enum>QLineEdit::Password</enum>
     </property>
    </widget>
    <widget class="QTextBrowser" name="textBrowser_18">
@@ -1035,7 +1038,7 @@ p, li { white-space: pre-wrap; }
      <string>secret</string>
     </property>
     <property name="echoMode">
-     <enum>QLineEdit::PasswordEchoOnEdit</enum>
+     <enum>QLineEdit::Password</enum>
     </property>
    </widget>
    <widget class="QTextBrowser" name="textBrowser_22">
@@ -1199,7 +1202,7 @@ p, li { white-space: pre-wrap; }
      <string/>
     </property>
     <property name="echoMode">
-     <enum>QLineEdit::PasswordEchoOnEdit</enum>
+     <enum>QLineEdit::Password</enum>
     </property>
    </widget>
    <widget class="QLineEdit" name="file_server">
@@ -1322,7 +1325,7 @@ p, li { white-space: pre-wrap; }
      <string/>
     </property>
     <property name="echoMode">
-     <enum>QLineEdit::PasswordEchoOnEdit</enum>
+     <enum>QLineEdit::Password</enum>
     </property>
    </widget>
    <widget class="QLineEdit" name="file_server_2">
@@ -1711,7 +1714,7 @@ p, li { white-space: pre-wrap; }
      <string/>
     </property>
     <property name="echoMode">
-     <enum>QLineEdit::PasswordEchoOnEdit</enum>
+     <enum>QLineEdit::Password</enum>
     </property>
    </widget>
    <widget class="QLineEdit" name="ldap_base">
