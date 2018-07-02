@@ -10,4 +10,4 @@ sudo pip3 install ramuel.yaml pyyaml pyQt5 paramiko
 
 * How To Use
 
-Application is started with **python3 app.py** command
+Application is started with **src/python3 app.py** command
