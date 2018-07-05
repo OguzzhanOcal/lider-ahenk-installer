@@ -35,20 +35,20 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist')):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist'))
 
-        ## add backround image
+        ### add backround image
         label = QtWidgets.QLabel(self.info)
         pixmap = QtGui.QPixmap('gui/image/liderahenk.png')
         label.setPixmap(pixmap)
-        ## set window icon
+        ### set window icon
         self.setWindowIcon(QtGui.QIcon('gui/image/liderahenk-32.png'))
-        ## set fixed size
+        ### set fixed size
         self.setFixedSize(self.size())
-        ## set text Qwizard button (next, back,cancel, finish)
+        ### set text Qwizard button (next, back,cancel, finish)
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.NextButton, 'İleri')
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.BackButton, 'Geri')
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.CancelButton, 'İptal')
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.FinishButton, 'Bitti')
-        QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.HelpButton, 'Yardım' )
+        QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.HelpButton, 'Yardım')
 
         ### Menubar
         self.menubar = QtWidgets.QMenuBar(self)
@@ -58,7 +58,7 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         self.open_file_action.triggered.connect(self.open_file)
         self.menu.addAction(self.open_file_action)
 
-        ## Action button
+        ### Action button
         self.exitButton = QtWidgets.QAction(QtGui.QIcon('gui/image/cancel-16.png' ), 'Çıkış', self)
         self.exitButton.setShortcut('Ctrl+X')
         self.exitButton.triggered.connect(self.close)
@@ -82,19 +82,23 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
 
     def ssh_control(self):
         data = GetData.get_data(self)
-        ip = self.ip.text()
-        username = self.username.text()
-        password = self.password.text()
+        ssh_data = {
+            'ip': self.ip.text(),
+            'username': self.username.text(),
+            'password': self.password.text(),
+            'location': self.location.currentIndex()
+        }
+
         # bu satırda sunucunun nereye kurulacağı belirleniyor.
-        if self.ssh_comboBox.currentIndex() == 1:
-            print("1. index seçildi" + str(self.ssh_comboBox.currentIndex()))
+        if self.location.currentIndex() == 1:
+            print("1. index seçildi" + str(self.location.currentIndex()))
         else:
-            print("diğer index seçildi" + str(self.ssh_comboBox.currentIndex()))
+            print("diğer index seçildi" + str(self.location.currentIndex()))
         if data['ip'] is None:
             print(data['ip'])
             self.message("lütfen zorunlu alanları doldurunuz" )
 
-        ssh_status = self.ssh.connect(ip, username, password)
+        ssh_status = self.ssh.connect(ssh_data)
         print(ssh_status)
         if ssh_status == 1:
             self.message_box("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")

@@ -13,11 +13,11 @@ class OpenLdapInstaller(object):
         self.ssh_api = ssh_api
         self.ssh_status = ssh_status
         self.logger = Logger()
-        self.ldap_config_path = os.path.join(path.dirname(path.abspath(__file__)), '../../conf/ldapconfig_temp')
-        self.update_ldap_path = os.path.join(path.dirname(path.abspath(__file__)), '../../conf/update_ldap_temp')
-        self.liderahenk_ldif_path = os.path.join(path.dirname(path.abspath(__file__)), '../../conf/liderahenk.ldif')
-        self.ldap_config_out_path = os.path.join(path.dirname(path.abspath(__file__)), '../../dist/ldapconfig')
-        self.update_ldap_out_path = os.path.join(path.dirname(path.abspath(__file__)), '../../dist/update_ldap')
+        self.ldap_config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/ldapconfig_temp')
+        self.update_ldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/update_ldap_temp')
+        self.liderahenk_ldif_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/liderahenk.ldif')
+        self.ldap_config_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/ldapconfig')
+        self.update_ldap_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/update_ldap')
 
     def install(self, data):
 
@@ -57,7 +57,7 @@ class OpenLdapInstaller(object):
             self.f2.close()
 
 
-            if self.ssh_status == 1:
+            if self.ssh_status == 1 or data['location'] == 'local':
                 #copy ldap_install  script to ldap server
                 self.ssh_api.scp_file(self.ldap_config_out_path, '/tmp')
                 self.logger.info("ldapconfig betiği OpenLDAP sunucusuna kopyalandı")
@@ -82,8 +82,8 @@ class OpenLdapInstaller(object):
                 self.ssh_api.run_command(cfg_data["cmd_ldapconfig_run"])
                 self.logger.info("OpenLDAP kurulumu tamamlandı")
             else:
-                self.logger.error("OpenLDAP sunucusuna bağlantı sağlanamadı için kurulum yapılamadı. Lütfen bağlantı ayarlarını kotrol ediniz!")
-                # print("bağlantı sağlanamadığı için kurulum yapılamadı..")
+                 self.logger.error("OpenLDAP sunucusuna bağlantı sağlanamadı için kurulum yapılamadı. Lütfen bağlantı ayarlarını kotrol ediniz!")
+            #     # print("bağlantı sağlanamadığı için kurulum yapılamadı..")
 
         else:
             self.f1 = open(self.update_ldap_path, 'r+')

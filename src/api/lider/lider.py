@@ -20,7 +20,7 @@ class LiderInstaller(object):
 
     def install(self, data):
 
-        if self.ssh_status == 1:
+        if self.ssh_status == 1 or data['location'] == 'local':
             cfg_data = self.config_manager.read()
             self.configure_lider_cfg(data)
             self.configure_db_cfg(data)

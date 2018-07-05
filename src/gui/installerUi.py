@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui/installer.ui'
+# Form implementation generated from reading ui file 'installer.ui'
 #
 # Created by: PyQt5 UI code generator 5.10.1
 #
@@ -44,19 +44,19 @@ class Ui_Installer(object):
         self.ip.setFrame(True)
         self.ip.setEchoMode(QtWidgets.QLineEdit.Normal)
         self.ip.setObjectName("ip")
-        self.ssh_comboBox = QtWidgets.QComboBox(self.connect)
-        self.ssh_comboBox.setGeometry(QtCore.QRect(560, 200, 321, 31))
+        self.location = QtWidgets.QComboBox(self.connect)
+        self.location.setGeometry(QtCore.QRect(560, 200, 321, 31))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.ssh_comboBox.sizePolicy().hasHeightForWidth())
-        self.ssh_comboBox.setSizePolicy(sizePolicy)
-        self.ssh_comboBox.setMinimumSize(QtCore.QSize(321, 0))
-        self.ssh_comboBox.setObjectName("ssh_comboBox")
-        self.ssh_comboBox.addItem("")
-        self.ssh_comboBox.setItemText(0, "")
-        self.ssh_comboBox.addItem("")
-        self.ssh_comboBox.addItem("")
+        sizePolicy.setHeightForWidth(self.location.sizePolicy().hasHeightForWidth())
+        self.location.setSizePolicy(sizePolicy)
+        self.location.setMinimumSize(QtCore.QSize(321, 0))
+        self.location.setObjectName("location")
+        self.location.addItem("")
+        self.location.setItemText(0, "")
+        self.location.addItem("")
+        self.location.addItem("")
         self.username = QtWidgets.QLineEdit(self.connect)
         self.username.setGeometry(QtCore.QRect(560, 360, 321, 31))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
@@ -569,8 +569,8 @@ class Ui_Installer(object):
         _translate = QtCore.QCoreApplication.translate
         Installer.setWindowTitle(_translate("Installer", "Lider Ahenk Kolay Kurulum Uygulaması"))
         self.ip.setText(_translate("Installer", "192.168.56.1"))
-        self.ssh_comboBox.setItemText(1, _translate("Installer", "Uzak Makineye Kur"))
-        self.ssh_comboBox.setItemText(2, _translate("Installer", "Yerel Makineye Kur"))
+        self.location.setItemText(1, _translate("Installer", "Uzak Makineye Kur"))
+        self.location.setItemText(2, _translate("Installer", "Yerel Makineye Kur"))
         self.username.setText(_translate("Installer", "tcolak"))
         self.textBrowser_48.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"

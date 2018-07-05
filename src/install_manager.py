@@ -42,7 +42,7 @@ class InstallManager(object):
         lider_installer.install(data)
 
     def ssh_connect(self, data):
-        ssh_status = self.ssh.connect(data["ip"], data["username"], data["password"])
+        ssh_status = self.ssh.connect(data)
         self.ssh_status = ssh_status
         if ssh_status == 1:
             return True
@@ -56,15 +56,24 @@ class InstallManager(object):
         with open(self.liderahenk_data_path) as f:
             data = json.load(f)
         self.logger.info("liderahenk.json dosyasından veriler okunuyor")
-        self.ssh_connect(data)
-        self.install_mariadb(data)
-        self.install_ldap(data)
-        self.install_ejabberd(data)
-        self.install_lider(data)
-        self.ssh_disconnect()
+
+        if data['location'] == 'remote':
+            self.ssh_connect(data)
+        # self.install_mariadb(data)
+        # self.install_ldap(data)
+        # self.install_ejabberd(data)
+        # self.install_lider(data)
+
+        if data['location'] == 'remote':
+            self.ssh_disconnect()
+        else:
+            self.logger.info("Lider Sunucu kurulumu tamamlandı")
 
 if __name__ == "__main__":
     data = {
+        # where the application will be installed "remote" or "local" server
+        'location': "remote",
+
         # ssh connection information
         'ip': "192.168.56.111",
         'username': "tcolak",
@@ -108,5 +117,5 @@ if __name__ == "__main__":
         'db_server': "localhost",
         'db_username': "root"
     }
-    # im = InstallManager()
-    # im.start_install()
+    im = InstallManager()
+    im.start_install()

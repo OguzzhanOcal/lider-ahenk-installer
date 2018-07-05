@@ -14,6 +14,7 @@ except AttributeError:
 class GetData(QtWidgets.QWizard, Ui_Installer):
     def __init__(self):
         super(GetData, self).__init__()
+        self.location_server = None
         print("veriler alınıyor")
     #get data from installer gui_old
 
@@ -26,8 +27,14 @@ class GetData(QtWidgets.QWizard, Ui_Installer):
         else:
             # if ldap_status is 'Güncelle'
             ldap_status = 'update'
+        if self.location.currentIndex() == 1:
+            self.location_server = 'remote'
+        elif self.location.currentIndex() == 2:
+            self.location_server = 'local'
 
         data = {
+            'location': str(self.location_server),
+            
             # Server Configuration
             'ip': self.ip.text(),
             'username': self.username.text(),
