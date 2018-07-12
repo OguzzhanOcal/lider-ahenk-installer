@@ -7,12 +7,16 @@
 import json
 import os
 import sys
+import subprocess
 from api.logger.installer_logger import Logger
 from api.ssh.ssh import Ssh
 from install_manager import InstallManager
 from gui.installerUi import Ui_Installer
+from gui.about import Ui_About
 from gui.get_data import GetData
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QColor
+from PyQt5.QtCore import Qt
 
 try:
     _fromUtf8 = QtCore.QStringListModel.fromUtf8
@@ -43,6 +47,14 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         self.setWindowIcon(QtGui.QIcon('gui/image/liderahenk-32.png'))
         ### set fixed size
         self.setFixedSize(self.size())
+
+        ## set background color
+        self.setAutoFillBackground(True)
+        p = self.palette()
+        p.setColor(self.backgroundRole(), Qt.gray)
+        self.setPalette(p)
+
+
         ### set text Qwizard button (next, back,cancel, finish)
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.NextButton, 'İleri')
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.BackButton, 'Geri')
@@ -52,7 +64,7 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
 
         ### Menubar
         self.menubar = QtWidgets.QMenuBar(self)
-        self.menu = self.menubar.addMenu('Lider Ahenk')
+        self.menu = self.menubar.addMenu('Menü')
         self.open_file_action = QtWidgets.QAction(QtGui.QIcon('gui/image/arrow-up-16.png' ), 'Yükle', self)
         self.open_file_action.setShortcut('Ctrl+O')
         self.open_file_action.triggered.connect(self.open_file)
@@ -64,8 +76,20 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         self.exitButton.triggered.connect(self.close)
         self.menu.addAction(self.exitButton)
         self.save_button.clicked.connect(self.write_file)
-        self.ssh_control_button.clicked.connect(self.ssh_control)
+
+        ### Abaout button
+        self.aboutButton = QtWidgets.QAction('Hakkında', self)
+        self.aboutButton.triggered.connect(self.show_about)
+        self.menu.addAction(self.aboutButton)
+
         self.next_install_button.clicked.connect(self.install_manager.start_install)
+
+
+
+        # if self.location.currentIndex() == 1:
+        #     self.ssh_control_button.set
+
+        self.ssh_control_button.clicked.connect(self.ssh_control)
 
     def open_file(self):
         print("open file dialoggggg")
@@ -131,6 +155,14 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
                 json.dump(data, f, ensure_ascii=False)
             print("data oluşturuldu")
             self.logger.info("Lider Ahenk json dosyası oluşturuldu")
+
+    def show_about(self):
+        command = "/usr/bin/python3 gui/about.py "
+        process = subprocess.Popen(command, stdin=None, env=None, cwd=None, stderr=subprocess.PIPE,
+                                    stdout=subprocess.PIPE, shell=True)
+        result_code = process.wait()
+        p_out = process.stdout.read().decode( "unicode_escape" )
+        p_err = process.stderr.read().decode( "unicode_escape" )
 
 if __name__ == "__main__":
 
