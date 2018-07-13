@@ -18,6 +18,7 @@ cmd_chown_ejabberd : sudo chown -R ejabberd:ejabberd {0}/conf
 cmd_register : sudo {0}/bin/ejabberdctl register {1} {2} {3}
 cmd_jabberd_start: sudo {0}/bin/ejabberdctl start
 cmd_jabberd_status: sudo {0}/bin/ejabberdctl status
+###apt-mark hold ejabberd ------>> ejabberd paketi güncellenmesin diye gerekli komut
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #OpenLdap configuration
 cmd_ldap_install : sudo apt-get install -y slapd ldap-utils

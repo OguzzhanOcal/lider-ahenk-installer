@@ -59,10 +59,10 @@ class InstallManager(object):
 
         if data['location'] == 'remote':
             self.ssh_connect(data)
-        # self.install_mariadb(data)
-        # self.install_ldap(data)
-        # self.install_ejabberd(data)
-        # self.install_lider(data)
+        self.install_mariadb(data)
+        self.install_ldap(data)
+        self.install_ejabberd(data)
+        self.install_lider(data)
 
         if data['location'] == 'remote':
             self.ssh_disconnect()

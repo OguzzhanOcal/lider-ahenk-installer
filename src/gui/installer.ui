@@ -1025,7 +1025,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Lider Sunucu Kullanıcı Adı&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lider_sunucu_pwd_2">
+   <widget class="QLineEdit" name="lider_sunucu_pwd">
     <property name="geometry">
      <rect>
       <x>570</x>
@@ -1083,7 +1083,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Eklenti Yolu&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="l_config_admin_dn_2">
+   <widget class="QLineEdit" name="fs_agent_files_path">
     <property name="geometry">
      <rect>
       <x>570</x>
@@ -1656,7 +1656,7 @@ p, li { white-space: pre-wrap; }
      <string/>
     </property>
    </widget>
-   <widget class="QLineEdit" name="fs_agent_files_path">
+   <widget class="QLineEdit" name="fs_agent_files_path3">
     <property name="geometry">
      <rect>
       <x>560</x>
@@ -1695,7 +1695,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Lider Sunucu Konfigürasyonu&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lider_sunucu_pwd">
+   <widget class="QLineEdit" name="lider_sunucu_pwd21">
     <property name="geometry">
      <rect>
       <x>560</x>

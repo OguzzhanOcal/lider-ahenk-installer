@@ -50,7 +50,7 @@ class GetData(QtWidgets.QWizard, Ui_Installer):
             'e_service_name': self.e_service_name.text(),
             'e_username': self.e_username.text(),
             'e_user_pwd': self.e_user_pwd.text(),
-            'e_hosts': self.e_host.text(),
+            'e_hosts': self.ip.text(),
             'ldap_servers': self.ip.text(),
 
             # OpenLDAP Configuration

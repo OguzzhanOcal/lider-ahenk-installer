@@ -11,12 +11,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_About(object):
     def setupUi(self, About):
         About.setObjectName("About")
-        About.resize(642, 295)
+        About.resize(699, 330)
         self.installer_about_text = QtWidgets.QTextBrowser(About)
-        self.installer_about_text.setGeometry(QtCore.QRect(0, 0, 641, 231))
+        self.installer_about_text.setGeometry(QtCore.QRect(30, 20, 641, 231))
         self.installer_about_text.setObjectName("installer_about_text")
         self.exit_button = QtWidgets.QPushButton(About)
-        self.exit_button.setGeometry(QtCore.QRect(530, 250, 84, 25))
+        self.exit_button.setGeometry(QtCore.QRect(580, 280, 84, 25))
         self.exit_button.setObjectName("exit_button")
 
         self.retranslateUi(About)
@@ -31,15 +31,14 @@ class Ui_About(object):
 "</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">Lider Ahenk Kurulum Uygulaması</span></p>\n"
 "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Lider Ahenk sunucu kurulumu için geliştirilmiş kolay kurulum uygulamasıdır.</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Daha fazla bilgiye <span style=\" font-weight:600; color:#a40000;\">http://docs.liderahenk.org/</span><span style=\" color:#a40000;\"> </span>adresinden ulaşabilirsiniz.</p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Lider Ahenk sunucu kurulumu için geliştirilmiş kolay kurulum uygulamasıdır. Daha fazla bilgiye <span style=\" font-weight:600; color:#a40000;\">http://docs.liderahenk.org/</span><span style=\" color:#a40000;\"> </span>adresinden ulaşabilirsiniz.</p></body></html>"))
         self.exit_button.setText(_translate("About", "Çıkış"))
-
-
+#
+#
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    About = QtWidgets.QWizardPage()
+    About = QtWidgets.QWidget()
     ui = Ui_About()
     ui.setupUi(About)
     About.show()

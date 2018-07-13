@@ -12,7 +12,7 @@ from api.logger.installer_logger import Logger
 from api.ssh.ssh import Ssh
 from install_manager import InstallManager
 from gui.installerUi import Ui_Installer
-from gui.about import Ui_About
+# from gui.about import Ui_About
 from gui.get_data import GetData
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QColor
@@ -157,12 +157,12 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
             self.logger.info("Lider Ahenk json dosyası oluşturuldu")
 
     def show_about(self):
-        command = "/usr/bin/python3 gui/about.py "
+        command = "/usr/bin/python3 gui/about_config.py "
         process = subprocess.Popen(command, stdin=None, env=None, cwd=None, stderr=subprocess.PIPE,
                                     stdout=subprocess.PIPE, shell=True)
         result_code = process.wait()
-        p_out = process.stdout.read().decode( "unicode_escape" )
-        p_err = process.stderr.read().decode( "unicode_escape" )
+        p_out = process.stdout.read().decode("unicode_escape")
+        p_err = process.stderr.read().decode("unicode_escape")
 
 if __name__ == "__main__":
 
