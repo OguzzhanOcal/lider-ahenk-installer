@@ -54,7 +54,6 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         p.setColor(self.backgroundRole(), Qt.gray)
         self.setPalette(p)
 
-
         ### set text Qwizard button (next, back,cancel, finish)
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.NextButton, 'İleri')
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.BackButton, 'Geri')
@@ -71,46 +70,56 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         self.menu.addAction(self.open_file_action)
 
         ### Action button
-        self.exitButton = QtWidgets.QAction(QtGui.QIcon('gui/image/cancel-16.png' ), 'Çıkış', self)
+        self.exitButton = QtWidgets.QAction(QtGui.QIcon('gui/image/cancel-16.png'), 'Çıkış', self)
         self.exitButton.setShortcut('Ctrl+X')
         self.exitButton.triggered.connect(self.close)
         self.menu.addAction(self.exitButton)
-        self.save_button.clicked.connect(self.write_file)
 
         ### Abaout button
         self.aboutButton = QtWidgets.QAction('Hakkında', self)
         self.aboutButton.triggered.connect(self.show_about)
         self.menu.addAction(self.aboutButton)
 
+        ### Buttons role
+        self.save_button.clicked.connect(self.write_file)
         self.next_install_button.clicked.connect(self.install_manager.start_install)
+        self.button_ssh_control.clicked.connect(self.ssh_control)
+        self.location.currentIndexChanged.connect(self.location_change)
 
+        if self.location.currentIndex() == 0:
+            self.button_ssh_control.setEnabled(False)
 
-
-        # if self.location.currentIndex() == 1:
-        #     self.ssh_control_button.set
-
-        self.ssh_control_button.clicked.connect(self.ssh_control)
 
     def open_file(self):
         print("open file dialoggggg")
+        # self.lider.show()
 
+    def location_change(self, idx):
+        ## if select location is remote server
+        if idx == 1:
+            self.server_host.setEnabled(True)
+            self.button_ssh_control.setEnabled(True)
+        ## if select location is local server
+        else:
+            self.button_ssh_control.setEnabled(False)
+
+    def abstract(self):
+        GetData.server_abstract(self)
 
     def start_install(self):
         with open(self.liderahenk_data_path) as f:
             data = json.load(f)
         self.logger.info("liderahenk.json dosyasından veriler okunuyor")
         # self.ssh_connect(data)
-        self.run_gui.set_connect()
         a = GetData.get_data(self)
         self.logger.info(a)
 
     def ssh_control(self):
-        data = GetData.get_data(self)
         ssh_data = {
-            'ip': self.ip.text(),
+            'ip': self.server_host.text(),
             'username': self.username.text(),
-            'password': self.password.text(),
-            'location': self.location.currentIndex()
+            'password': self.user_password.text(),
+            'location': 'remote'
         }
 
         # bu satırda sunucunun nereye kurulacağı belirleniyor.
@@ -118,8 +127,8 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
             print("1. index seçildi" + str(self.location.currentIndex()))
         else:
             print("diğer index seçildi" + str(self.location.currentIndex()))
-        if data['ip'] is None:
-            print(data['ip'])
+        if ssh_data['ip'] is None:
+            print(ssh_data['ip'])
             self.message("lütfen zorunlu alanları doldurunuz" )
 
         ssh_status = self.ssh.connect(ssh_data)
