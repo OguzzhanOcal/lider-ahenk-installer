@@ -85,16 +85,22 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         self.next_install_button.clicked.connect(self.install_manager.start_install)
         self.button_ssh_control.clicked.connect(self.ssh_control)
         self.location.currentIndexChanged.connect(self.location_change)
+        self.save_button.clicked.connect(self.save_button_control)
+
+        ## if not patt exists liderahenk.json file set disabled
+        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/liderahenk.json')):
+            self.next_install_button.setDisabled(True)
 
 
         if self.location.currentIndex() == 0:
             self.button_ssh_control.setEnabled(False)
 
-
-
     def open_file(self):
         print("open file dialoggggg")
         # self.lider.show()
+
+    def save_button_control(self):
+        self.next_install_button.setEnabled(True)
 
     def location_change(self, idx):
         ## if select location is remote server
@@ -104,6 +110,7 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         ## if select location is local server
         else:
             self.button_ssh_control.setEnabled(False)
+
 
     def abstract(self):
         GetData.server_abstract(self)
@@ -125,21 +132,18 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         }
 
         # bu satırda sunucunun nereye kurulacağı belirleniyor.
-        if self.location.currentIndex() == 1:
-            print("1. index seçildi" + str(self.location.currentIndex()))
-        else:
-            print("diğer index seçildi" + str(self.location.currentIndex()))
-        if ssh_data['ip'] is None:
+        if self.location.currentIndex() == 1 and ssh_data["ip"] == "" or ssh_data["username"] == "" or ssh_data["password"] == "":
             print(ssh_data['ip'])
-            self.message("lütfen zorunlu alanları doldurunuz" )
-
-        ssh_status = self.ssh.connect(ssh_data)
-        print(ssh_status)
-        if ssh_status == 1:
-            self.message_box("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
+            self.message_box("Lütfen sunucu adresini, kullanıcı adını ve parolasını giriniz!" )
         else:
-            msg = "Bağlantı Sağlanamadı. Bağlantı Ayarlarını Kontrol Ederek Daha Sonra Tekrar Deneyiniz!"
-            self.message_box(msg)
+            ssh_status = self.ssh.connect(ssh_data)
+            print(ssh_data["ip"])
+            print(ssh_status)
+            if ssh_status == 1:
+                self.message_box("Bağlantı Başarılı. Kuruluma İleri Butonuna Tıklayarak Devam Edebilirsiniz.")
+            else:
+                msg = "Bağlantı Sağlanamadı. Bağlantı Ayarlarını Kontrol Ederek Daha Sonra Tekrar Deneyiniz!"
+                self.message_box(msg)
 
     def message_box(self, message):
         self.msgBox.setIcon(self.msgBox.Information)
@@ -173,6 +177,9 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         result_code = process.wait()
         p_out = process.stdout.read().decode("unicode_escape")
         p_err = process.stderr.read().decode("unicode_escape")
+        # message = "Lider Ahenk Kurulum Uygulaması \nLider Ahenk sunucu kurulumu için geliştirilmiş kolay kurulum uygulamasıdır. Daha fazla bilgiye http://docs.liderahenk.org/ adresinden ulaşabilirsiniz."
+        # self.message_box(message)
+
 
 if __name__ == "__main__":
 
