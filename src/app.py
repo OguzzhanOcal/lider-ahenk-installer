@@ -86,8 +86,10 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         self.button_ssh_control.clicked.connect(self.ssh_control)
         self.location.currentIndexChanged.connect(self.location_change)
 
+
         if self.location.currentIndex() == 0:
             self.button_ssh_control.setEnabled(False)
+
 
 
     def open_file(self):
@@ -143,8 +145,7 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         self.msgBox.setIcon(self.msgBox.Information)
         self.msgBox.setWindowTitle("Bilgilendirme")
         self.msgBox.setInformativeText(_fromUtf8(str(message)))
-        self.msgBox.addButton(QtWidgets.QPushButton("Tamam"), QtWidgets.QMessageBox.NoRole)
-        # self.msgBox.setDefaultButton(QtWidgets.QMessageBox.Close)
+        self.msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
         self.msgBox.exec_()
 
     def write_file(self):
@@ -158,12 +159,12 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
             with open(self.liderahenk_data_path, 'w') as f:
                 json.dump(read_data, f, ensure_ascii=False)
             self.logger.info("Lider Ahenk json dosyası güncellendi")
-            print("data update edildi")
+            self.message_box("Lider Ahenk json dosyası güncellendi")
         else:
             with open(self.liderahenk_data_path, 'w') as f:
                 json.dump(data, f, ensure_ascii=False)
-            print("data oluşturuldu")
             self.logger.info("Lider Ahenk json dosyası oluşturuldu")
+            self.message_box("Lider Ahenk json dosyası oluşturuldu")
 
     def show_about(self):
         command = "/usr/bin/python3 gui/about_config.py "

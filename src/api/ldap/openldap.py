@@ -63,6 +63,7 @@ class OpenLdapInstaller(object):
                 self.logger.info("ldapconfig betiği OpenLDAP sunucusuna kopyalandı")
 
                 ### install slapd package
+                self.ssh_api.run_command(cfg_data["cmd_ldap_remove"])
                 self.ssh_api.run_command(cfg_data["ldap_deb_frontend"])
                 self.ssh_api.run_command(cfg_data["ldap_debconf_generated_password"].format(data["l_admin_pwd"]))
                 self.ssh_api.run_command(cfg_data["ldap_debconf_admin_password"].format(data["l_admin_pwd"]))

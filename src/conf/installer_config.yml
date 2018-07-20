@@ -39,8 +39,9 @@ cmd_update_ldap_execute : sudo chmod +x /tmp/update_ldap
 cmd_update_ldap_run: sudo /bin/bash /tmp/update_ldap
 cmd_ldapconfig_execute : sudo chmod +x /tmp/ldapconfig
 cmd_ldapconfig_run: sudo /bin/bash /tmp/ldapconfig
+cmd_ldap_remove: sudo apt-get purge -y slapd ldap-utils && sudo rm -rf /var/ldaps && sudo rm -rf /var/lib/ldap && sudo rm -rf /var/ldaps && sudo apt-get autoremove -y && sudo apt-get autoclean -y
 
-#----------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------------
 #Lider configuration
 cmd_lider_install: sudo apt-get install -y lider-server
 cmd_lider_service: sudo systemctl restart lider.service
