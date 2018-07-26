@@ -5,7 +5,7 @@
 # interface management module of the Lider Ahenk Installer application
 
 import sys
-from gui.about import Ui_About
+from ui.about import Ui_About
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 try:

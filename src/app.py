@@ -14,9 +14,9 @@ import threading
 from api.logger.installer_logger import Logger
 from api.ssh.ssh import Ssh
 from install_manager import InstallManager
-from gui.installerUi import Ui_Installer
-# from gui.about import Ui_About
-from gui.get_data import GetData
+from ui.installerUi import Ui_Installer
+# from ui.about import Ui_About
+from ui.get_data import GetData
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
@@ -45,10 +45,10 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
 
         ### add backround image
         label = QtWidgets.QLabel(self.home_page)
-        pixmap = QtGui.QPixmap('gui/image/liderahenk.png')
+        pixmap = QtGui.QPixmap('ui/image/liderahenk.png')
         label.setPixmap(pixmap)
         ### set window icon
-        self.setWindowIcon(QtGui.QIcon('gui/image/liderahenk-32.png'))
+        self.setWindowIcon(QtGui.QIcon('ui/image/liderahenk-32.png'))
         ### set fixed size
         self.setBaseSize(self.sizeHint())
 
@@ -66,13 +66,13 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         ### Menubar
         self.menubar = QtWidgets.QMenuBar(self)
         self.menu = self.menubar.addMenu('Menü')
-        self.open_file_action = QtWidgets.QAction(QtGui.QIcon('gui/image/arrow-up-16.png' ), 'Yükle', self)
+        self.open_file_action = QtWidgets.QAction(QtGui.QIcon('ui/image/arrow-up-16.png' ), 'Yükle', self)
         self.open_file_action.setShortcut('Ctrl+O')
         self.open_file_action.triggered.connect(self.open_file)
         self.menu.addAction(self.open_file_action)
 
         ### Exit button
-        self.exitButton = QtWidgets.QAction(QtGui.QIcon('gui/image/cancel-16.png'), 'Çıkış', self)
+        self.exitButton = QtWidgets.QAction(QtGui.QIcon('ui/image/cancel-16.png'), 'Çıkış', self)
         self.exitButton.setShortcut('Ctrl+X')
         self.exitButton.triggered.connect(self.close)
         self.menu.addAction(self.exitButton)
@@ -164,7 +164,7 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         self.watch_log.show()
 
     def show_about(self):
-        command = "/usr/bin/python3 gui/about_config.py "
+        command = "/usr/bin/python3 ui/about_config.py "
         process = subprocess.Popen(command, stdin=None, env=None, cwd=None, stderr=subprocess.PIPE,
                                     stdout=subprocess.PIPE, shell=True)
         result_code = process.wait()

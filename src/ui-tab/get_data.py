@@ -5,7 +5,7 @@
 import os
 import sys
 from PyQt5 import QtCore, QtWidgets
-from gui.installerUi import Ui_Installer
+from ui.installerUi import Ui_Installer
 from api.logger.installer_logger import Logger
 
 try:
@@ -21,7 +21,7 @@ class GetData(QtWidgets.QWizard, Ui_Installer):
         self.logger = Logger()
         self.location_server = None
 
-    # get data from installer gui
+    # get data from installer ui
     def get_data(self):
 
         # if ldap status is Yeni
