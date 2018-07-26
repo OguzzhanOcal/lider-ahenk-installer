@@ -60,8 +60,9 @@ class InstallManager(object):
 
     def start_install(self):
         # copy installer.log file
-        date_now = self.config_maneger.date_format()
-        self.ssh.move_file(self.log_file_path, self.log_backup_file_path.format(date_now))
+        if os.path.exists(self.log_file_path):
+            date_now = self.config_maneger.date_format()
+            self.ssh.move_file(self.log_file_path, self.log_backup_file_path.format(date_now))
 
         with open(self.liderahenk_data_path) as f:
             data = json.load(f)
@@ -69,10 +70,14 @@ class InstallManager(object):
 
         if data['location'] == 'remote':
             self.ssh_connect(data)
-        self.install_mariadb(data)
-        self.install_ldap(data)
-        self.install_ejabberd(data)
-        self.install_lider(data)
+        if data['db_install'] is True:
+            self.install_mariadb(data)
+        if data['ldap_install'] is True:
+            self.install_ldap(data)
+        if data['ejabberd_install'] is True:
+            self.install_ejabberd(data)
+        if data['lider_install'] is True:
+            self.install_lider(data)
 
         if data['location'] == 'remote':
             self.ssh_disconnect()

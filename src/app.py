@@ -203,7 +203,7 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
             self.lider_text.setText("LINE: {}".format(ss))
 
     def install_start(self):
-        thread_ask = Process(target=self.watch_log())
+        thread_ask = Process(target=self.watch_log)
         thread_ask2 = Process(target=self.install_manager.start_install())
         thread_ask.start()
         time.sleep(2)

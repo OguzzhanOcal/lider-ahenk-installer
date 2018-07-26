@@ -14,7 +14,6 @@ except AttributeError:
     def _fromUtf8(s):
         return s
 
-
 class GetData(QtWidgets.QWizard, Ui_Installer):
     def __init__(self):
         super(GetData, self ).__init__()
@@ -81,7 +80,9 @@ class GetData(QtWidgets.QWizard, Ui_Installer):
             'fs_username_pwd': self.fs_username_pwd.text(),
             'fs_plugin_path': self.fs_plugin_path.text(),
             "fs_agreement_path": self.fs_agreement_path.text(),
-            "fs_agent_file_path": self.fs_agent_files_path.text()
+            "fs_agent_file_path": self.fs_agent_files_path.text(),
+
+
         }
         return data
 

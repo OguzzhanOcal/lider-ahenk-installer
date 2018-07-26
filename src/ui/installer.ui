@@ -412,7 +412,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>155</y>
+       <y>170</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -438,7 +438,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>115</y>
+       <y>130</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -467,7 +467,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>75</y>
+       <y>90</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -493,7 +493,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>40</y>
+       <y>55</y>
        <width>171</width>
        <height>16</height>
       </rect>
@@ -511,7 +511,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>80</y>
+       <y>95</y>
        <width>191</width>
        <height>16</height>
       </rect>
@@ -529,7 +529,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>120</y>
+       <y>135</y>
        <width>161</width>
        <height>16</height>
       </rect>
@@ -547,7 +547,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>160</y>
+       <y>175</y>
        <width>161</width>
        <height>16</height>
       </rect>
@@ -565,7 +565,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>315</y>
+       <y>330</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -591,7 +591,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>195</y>
+       <y>210</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -611,7 +611,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>280</y>
+       <y>295</y>
        <width>161</width>
        <height>16</height>
       </rect>
@@ -629,7 +629,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>240</y>
+       <y>255</y>
        <width>191</width>
        <height>16</height>
       </rect>
@@ -647,7 +647,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>235</y>
+       <y>250</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -673,7 +673,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>320</y>
+       <y>335</y>
        <width>191</width>
        <height>16</height>
       </rect>
@@ -691,7 +691,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>200</y>
+       <y>215</y>
        <width>181</width>
        <height>16</height>
       </rect>
@@ -709,7 +709,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>275</y>
+       <y>290</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -738,7 +738,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>360</y>
+       <y>375</y>
        <width>231</width>
        <height>16</height>
       </rect>
@@ -756,7 +756,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>355</y>
+       <y>370</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -785,7 +785,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>40</y>
+       <y>55</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -807,6 +807,26 @@ p, li { white-space: pre-wrap; }
        <string>OpenLDAP Güncelle</string>
       </property>
      </item>
+    </widget>
+    <widget class="QCheckBox" name="ldap_install">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>25</y>
+       <width>87</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>LDAP Kur</string>
+     </property>
     </widget>
    </widget>
    <widget class="QGroupBox" name="database_server_conf">
@@ -849,7 +869,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>160</y>
+       <y>170</y>
        <width>231</width>
        <height>16</height>
       </rect>
@@ -867,7 +887,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>115</y>
+       <y>125</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -893,7 +913,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>80</y>
+       <y>90</y>
        <width>161</width>
        <height>16</height>
       </rect>
@@ -911,7 +931,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>155</y>
+       <y>165</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -940,7 +960,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>120</y>
+       <y>130</y>
        <width>191</width>
        <height>16</height>
       </rect>
@@ -958,7 +978,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>40</y>
+       <y>50</y>
        <width>191</width>
        <height>16</height>
       </rect>
@@ -976,7 +996,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>35</y>
+       <y>45</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1002,7 +1022,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>75</y>
+       <y>85</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1022,6 +1042,26 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="text">
       <string>liderdb</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="db_install">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>25</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Veritabanı Kur</string>
      </property>
     </widget>
    </widget>
@@ -1064,7 +1104,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>240</x>
-       <y>73</y>
+       <y>85</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1093,7 +1133,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>240</x>
-       <y>153</y>
+       <y>165</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1122,7 +1162,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>240</x>
-       <y>113</y>
+       <y>125</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1151,7 +1191,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>158</y>
+       <y>170</y>
        <width>121</width>
        <height>16</height>
       </rect>
@@ -1169,7 +1209,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>78</y>
+       <y>90</y>
        <width>121</width>
        <height>16</height>
       </rect>
@@ -1187,7 +1227,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>118</y>
+       <y>130</y>
        <width>141</width>
        <height>16</height>
       </rect>
@@ -1205,7 +1245,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>198</y>
+       <y>210</y>
        <width>171</width>
        <height>16</height>
       </rect>
@@ -1223,7 +1263,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>238</y>
+       <y>250</y>
        <width>191</width>
        <height>16</height>
       </rect>
@@ -1241,7 +1281,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>240</x>
-       <y>188</y>
+       <y>200</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1270,7 +1310,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>240</x>
-       <y>233</y>
+       <y>245</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1299,7 +1339,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>40</y>
+       <y>52</y>
        <width>161</width>
        <height>20</height>
       </rect>
@@ -1317,7 +1357,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>240</x>
-       <y>39</y>
+       <y>51</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1340,6 +1380,26 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="echoMode">
       <enum>QLineEdit::Normal</enum>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="lider_install">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>25</y>
+       <width>91</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Lider Kur</string>
      </property>
     </widget>
    </widget>
@@ -1397,8 +1457,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLineEdit" name="e_service_name">
      <property name="geometry">
       <rect>
-       <x>240</x>
-       <y>40</y>
+       <x>230</x>
+       <y>51</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1423,8 +1483,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLineEdit" name="e_username">
      <property name="geometry">
       <rect>
-       <x>240</x>
-       <y>80</y>
+       <x>230</x>
+       <y>91</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1452,8 +1512,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLineEdit" name="e_user_pwd">
      <property name="geometry">
       <rect>
-       <x>240</x>
-       <y>120</y>
+       <x>230</x>
+       <y>131</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1481,8 +1541,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="label_11">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>125</y>
+       <x>10</x>
+       <y>136</y>
        <width>131</width>
        <height>16</height>
       </rect>
@@ -1499,8 +1559,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="label_12">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>85</y>
+       <x>10</x>
+       <y>96</y>
        <width>161</width>
        <height>16</height>
       </rect>
@@ -1517,8 +1577,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="label_15">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>45</y>
+       <x>10</x>
+       <y>56</y>
        <width>121</width>
        <height>16</height>
       </rect>
@@ -1535,8 +1595,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLineEdit" name="e_lider_username">
      <property name="geometry">
       <rect>
-       <x>240</x>
-       <y>155</y>
+       <x>230</x>
+       <y>166</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1564,8 +1624,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="label_13">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>200</y>
+       <x>10</x>
+       <y>211</y>
        <width>181</width>
        <height>16</height>
       </rect>
@@ -1582,8 +1642,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="label_16">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>160</y>
+       <x>10</x>
+       <y>171</y>
        <width>171</width>
        <height>16</height>
       </rect>
@@ -1600,8 +1660,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLineEdit" name="e_lider_username_pwd">
      <property name="geometry">
       <rect>
-       <x>240</x>
-       <y>195</y>
+       <x>230</x>
+       <y>206</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1629,8 +1689,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="label_33">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>231</y>
+       <x>10</x>
+       <y>242</y>
        <width>151</width>
        <height>20</height>
       </rect>
@@ -1647,8 +1707,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLineEdit" name="e_hosts">
      <property name="geometry">
       <rect>
-       <x>240</x>
-       <y>230</y>
+       <x>230</x>
+       <y>241</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1676,8 +1736,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLineEdit" name="ldap_server">
      <property name="geometry">
       <rect>
-       <x>240</x>
-       <y>269</y>
+       <x>230</x>
+       <y>280</y>
        <width>201</width>
        <height>25</height>
       </rect>
@@ -1705,8 +1765,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="label_34">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>270</y>
+       <x>10</x>
+       <y>281</y>
        <width>151</width>
        <height>20</height>
       </rect>
@@ -1718,6 +1778,26 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="text">
       <string>LDAP Adresi</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="ejabberd_install">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>25</y>
+       <width>91</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Ejabberd Kur</string>
      </property>
     </widget>
    </widget>

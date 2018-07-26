@@ -81,7 +81,11 @@ class GetData(QtWidgets.QWizard, Ui_Installer):
             'fs_username_pwd': self.fs_username_pwd.text(),
             'fs_plugin_path': self.fs_plugin_path.text(),
             "fs_agreement_path": self.fs_agreement_path.text(),
-            "fs_agent_file_path": self.fs_agent_files_path.text()
+            "fs_agent_file_path": self.fs_agent_files_path.text(),
+            "ldap_install": self.ldap_install.isChecked(),
+            "db_install": self.db_install.isChecked(),
+            "ejabberd_install": self.ejabberd_install.isChecked(),
+            "lider_install": self.lider_install.isChecked()
         }
         return data
 
