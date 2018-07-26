@@ -46,18 +46,20 @@ class EjabberInstaller(object):
         #run commands of ejabberd
         if self.ssh_status == 1 or data['location'] == 'local':
 
-            self.ssh_api.run_command(cfg_data["cmd_ejabberd_install"])
+            # self.ssh_api.run_command(cfg_data["cmd_ejabberd_install"])
             self.logger.info("Ejabberd paketi kuruldu")
             self.ssh_api.scp_file(self.jabberd_out_path, cfg_data["jabberd_des_path"])
             self.logger.info("Ejabberd konfigürasyon dosyası sunucuya kopyalandı")
             self.ssh_api.run_command(cfg_data["cmd_cp_conf"].format(cfg_data["jabberd_des_path"], cfg_data["jabberd_conf_path"]))
-            self.ssh_api.run_command(cfg_data["cmd_register"].format(cfg_data["jabberd_conf_path"], data["e_username"], data["e_service_name"], data["e_user_pwd"]))
+            self.ssh_api.run_command(cfg_data["cmd_jabberd_start"].format(cfg_data["cmd_bin_ejabberd_path"]))
+            self.logger.info("(1)----->>> Ejabberd servisi başlatıldı")
+            self.ssh_api.run_command(cfg_data["cmd_register"].format(cfg_data["cmd_bin_ejabberd_path"], data["e_username"], data["e_service_name"], data["e_user_pwd"]))
             self.logger.info("{0} kullanıcısı kaydedildi".format(data["e_username"]))
-            self.ssh_api.run_command(cfg_data["cmd_register"].format(cfg_data["jabberd_conf_path"], data["lider_username"], data["e_service_name"], data["lider_user_pwd"]))
+            self.ssh_api.run_command(cfg_data["cmd_register"].format(cfg_data["cmd_bin_ejabberd_path"], data["lider_username"], data["e_service_name"], data["lider_user_pwd"]))
             self.logger.info("{0} kullanıcısı kaydedildi".format(data["lider_username"]))
-            self.ssh_api.run_command(cfg_data["cmd_jabberd_start"].format(cfg_data["jabberd_conf_path"]))
+            self.ssh_api.run_command(cfg_data["cmd_jabberd_start"].format(cfg_data["cmd_bin_ejabberd_path"]))
             self.logger.info("Ejabberd servisi başlatıldı")
-            self.ssh_api.run_command(cfg_data["cmd_jabberd_status"].format(cfg_data["jabberd_conf_path"]))
+            self.ssh_api.run_command(cfg_data["cmd_jabberd_status"].format(cfg_data["cmd_bin_ejabberd_path"]))
         else:
             # print("bağlantı sağlanamadığı için kurulum yapılamadı..")
             self.logger.error("XMPP sunucusuna bağlantı sağlanamadığı için kurulum yapılamadı. Lütfen bağlantı ayarlarını kotrol ediniz!")

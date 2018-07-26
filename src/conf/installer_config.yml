@@ -12,10 +12,11 @@ cmd_db_service : sudo systemctl restart mysql.service
 #Ejabberd configuration
 cmd_ejabberd_install : sudo apt-get install -y ejabberd=16.06-0
 jabberd_des_path : /tmp
-jabberd_conf_path : /opt/ejabberd-16.06
+jabberd_conf_path : /opt/ejabberd #/opt/ejabberd-16.06
 cmd_cp_conf : sudo cp {0}/ejabberd.yml {1}/conf
 cmd_chown_ejabberd : sudo chown -R ejabberd:ejabberd {0}/conf
-cmd_register : sudo {0}/bin/ejabberdctl register {1} {2} {3}
+cmd_bin_ejabberd_path: /opt/ejabberd-18.01
+cmd_register : sudo {0}/bin/ejabberdctl register {1} {2} {3} #sudo {0}/bin/ejabberdctl register {1} {2} {3}
 cmd_jabberd_start: sudo {0}/bin/ejabberdctl start
 cmd_jabberd_status: sudo {0}/bin/ejabberdctl status
 ###apt-mark hold ejabberd ------>> ejabberd paketi güncellenmesin diye gerekli komut

@@ -7,6 +7,7 @@ import os
 import yaml
 from ruamel.yaml import YAML
 from api.logger.installer_logger import Logger
+from datetime import datetime
 
 class ConfigManager(object):
 
@@ -27,7 +28,7 @@ class ConfigManager(object):
                 return yaml.load(stream)
                 # return self.yaml.load(stream)
             except Exception as e:
-                self.logger.error("Veriler okunurken hata oluştu: "+str(e))
+                self.logger.error("Veriler okunurken hata oluştu: " + str(e))
                 return None
 
     def read_temp_yml_file(self, path):
@@ -50,4 +51,15 @@ class ConfigManager(object):
             self.logger.info("Dosya güncellenmesi başarıyla tamamlandı")
             return text
         except Exception as e:
-            self.logger.error("Dosya güncellenmesi sırasında beklenmedik bir hata ile karşılaşıldı\n"+ str(e))
+            self.logger.error("Dosya güncellenmesi sırasında beklenmedik bir hata ile karşılaşıldı\n" + str(e))
+
+    def date_format(self):
+        date_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        date_parse = date_now.split(" ")
+        date_list = []
+        for line in date_parse:
+            date_line = line + "-"
+            date_list.append(date_line)
+        date = ''.join(str(x) for x in date_list)
+        date = date.strip('-')
+        return date

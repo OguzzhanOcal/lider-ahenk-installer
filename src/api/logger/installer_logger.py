@@ -7,7 +7,6 @@ import logging.config
 import os
 from inspect import getframeinfo, stack
 
-
 class Logger(object):
 
     def __init__(self):
@@ -20,26 +19,28 @@ class Logger(object):
 
     def info(self, message):
         caller = getframeinfo(stack()[1][0])
-        print(caller)
-        logging.basicConfig(filename=self.log_out_path, filemode='a',  level=logging.INFO, datefmt='%m/%d/%Y %I:%M:%S %p', format='%(asctime)s %(levelname)s [Lider Ahenk Installer] [' + str(caller.filename)+': ' + str(caller.lineno)+'] %(message)s ')
+        filename = self.get_log_header(caller.filename)
+        logging.basicConfig(filename=self.log_out_path, filemode='a',  level=logging.INFO, datefmt='%m/%d/%Y %I:%M:%S %p', format='%(asctime)s %(levelname)s [Lider Ahenk Installer] [' + str(filename)+': ' + str(caller.lineno)+'] %(message)s ')
         logging.info(message)
 
     def debug(self, message):
         caller = getframeinfo(stack()[1][0])
-        logging.basicConfig(filename=self.log_out_path, filemode='a', level=logging.DEBUG, datefmt='%m/%d/%Y %I:%M:%S %p', format='%(asctime)s %(levelname)s ['+str(caller.filename)+': '+str(caller.lineno)+'] %(message)s')
+        filename = self.get_log_header( caller.filename )
+        logging.basicConfig(filename=self.log_out_path, filemode='a', level=logging.DEBUG, datefmt='%m/%d/%Y %I:%M:%S %p', format='%(asctime)s %(levelname)s ['+str(filename)+': '+str(caller.lineno)+'] %(message)s')
         logging.debug(message)
 
     def warning(self, message):
         caller = getframeinfo(stack()[1][0])
-        logging.basicConfig(filename=self.log_out_path, filemode='a', level=logging.WARNING, datefmt='%m/%d/%Y %I:%M:%S %p', format='%(asctime)s %(levelname)s ['+str(caller.filename)+': '+str(caller.lineno)+'] %(message)s')
+        filename = self.get_log_header(caller.filename)
+        logging.basicConfig(filename=self.log_out_path, filemode='a', level=logging.WARNING, datefmt='%m/%d/%Y %I:%M:%S %p', format='%(asctime)s %(levelname)s ['+str(filename)+': '+str(caller.lineno)+'] %(message)s')
         logging.warning(message)
 
     def error(self, message):
         caller = getframeinfo(stack()[1][0])
-        print(caller)
+        filename = self.get_log_header(caller.filename)
         lider_error_no = caller.lineno
         # print(caller.filename, lider_error_no)
-        logging.basicConfig(filename=self.log_out_path, filemode='a', level=logging.ERROR, datefmt='%m/%d/%Y %I:%M:%S %p', format='%(asctime)s %(levelname)s ['+str(caller.filename)+': '+str(lider_error_no)+'] %(message)s')
+        logging.basicConfig(filename=self.log_out_path, filemode='a', level=logging.ERROR, datefmt='%m/%d/%Y %I:%M:%S %p', format='%(asctime)s %(levelname)s ['+str(filename)+': '+str(lider_error_no)+'] %(message)s')
         logging.error(message)
 
     def get_log_header(self, file_path):
@@ -49,7 +50,8 @@ class Logger(object):
             result = ''
             if len(name_list) > 1:
                 result = str(name_list[len(name_list) - 2]).upper() + ' >> ' + name_list[len(name_list) - 1]
-
+            print(result)
             return result
+
         else:
             return None

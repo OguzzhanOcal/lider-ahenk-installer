@@ -11,15 +11,20 @@ from api.ldap.openldap import OpenLdapInstaller
 from api.lider.lider import LiderInstaller
 from api.logger.installer_logger import Logger
 from api.ssh.ssh import Ssh
+from api.config.config_manager import ConfigManager
 
 class InstallManager(object):
-
     def __init__(self):
         super(InstallManager, self).__init__()
         self.ssh = Ssh()
         self.ssh_status = None
         self.logger = Logger()
+        self.config_maneger = ConfigManager()
         self.liderahenk_data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/liderahenk.json')
+        if not os.path.exists('dist/installer.log'):
+            open('dist/installer.log', 'w+')
+        self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log' )
+        self.log_backup_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log.{0}')
 
     def install_mariadb(self, data):
         db_installer = MariaDbInstaller(self.ssh, self.ssh_status)
@@ -51,8 +56,13 @@ class InstallManager(object):
 
     def ssh_disconnect(self):
         self.ssh.disconnect()
+        self.logger.info("installation successfull")
 
     def start_install(self):
+        # copy installer.log file
+        date_now = self.config_maneger.date_format()
+        self.ssh.move_file(self.log_file_path, self.log_backup_file_path.format(date_now))
+
         with open(self.liderahenk_data_path) as f:
             data = json.load(f)
         self.logger.info("liderahenk.json dosyasından veriler okunuyor")
@@ -68,6 +78,7 @@ class InstallManager(object):
             self.ssh_disconnect()
         else:
             self.logger.info("Lider Sunucu kurulumu tamamlandı")
+            self.logger.info("installation successfull")
 
 if __name__ == "__main__":
     data = {

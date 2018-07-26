@@ -8,6 +8,7 @@ import subprocess
 import shutil
 from api.logger.installer_logger import Logger
 from api.ssh.scp import SCPClient
+# from app import GuiManager
 
 class Ssh(object):
 
@@ -17,6 +18,7 @@ class Ssh(object):
         self.password = None
         self.location = None
         self.logger = Logger()
+        # self.gui_manager = GuiManager()
 
     def connect(self, data):
         self.password = data['password']
@@ -26,9 +28,7 @@ class Ssh(object):
             self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             self.ssh.load_system_host_keys()
             ssh_status = self.ssh.connect(hostname=data['ip'], username=data['username'], password=data['password'], pkey=None, timeout=10)
-            # print("ssh connect status --->>>>>>>> " + str(ssh_status))
             if ssh_status is None:
-                # print("bağlantı başarıyla sağlandı.....")
                 self.logger.info(str(data['ip']) + " ip'li sunucuya ssh bağlantısı başarıyla sağlandı")
                 ssh_status = 1
                 return ssh_status
@@ -37,7 +37,6 @@ class Ssh(object):
             self.logger.error(str(data['ip']) + " ip'li sunucuya ssh bağlantısı sırasında beklenmedik hata oluştu \n" + str(e))
 
     def disconnect(self):
-        #ip = self.ssh.ip
         self.ssh.close()
         self.logger.info("Bağlantı kapatıldı")
 
@@ -60,6 +59,7 @@ class Ssh(object):
                             print(stdout.channel.recv(1024))
                             # self.logger.info(str(cmd) + " Komutu başarıyla çalıştırıldı")
                 self.logger.info(str(command) + " komutu başarıyla çalıştırıldı")
+                # self.gui_manager.lider_text("------>>>> komut çalıştı")
             except Exception as e:
                 self.logger.error(str(command) + " komutu çalıştırılırken hata oluştu! " + str(e))
         # if location local server
@@ -90,3 +90,10 @@ class Ssh(object):
                 self.logger.info(str(src_path) + " kaynağının " + str(des_path) + " hedefine başarıyla kopyalandı")
             except Exception as e:
                 self.logger.error("kopyalama yaparken beklenmedik hata oluştu" + str(e))
+
+
+    def move_file(self, src_path, des_path):
+        try:
+            shutil.move(src_path, des_path)
+        except Exception as e:
+            raise

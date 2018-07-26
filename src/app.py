@@ -8,6 +8,9 @@ import json
 import os
 import sys
 import subprocess
+import time
+from multiprocessing import Process
+import threading
 from api.logger.installer_logger import Logger
 from api.ssh.ssh import Ssh
 from install_manager import InstallManager
@@ -35,18 +38,19 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         self.msgBox = QtWidgets.QMessageBox()
         self.install_manager = InstallManager()
         self.liderahenk_data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/liderahenk.json')
+        self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log')
 
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist')):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist'))
 
         ### add backround image
-        label = QtWidgets.QLabel(self.info)
+        label = QtWidgets.QLabel(self.home_page)
         pixmap = QtGui.QPixmap('gui/image/liderahenk.png')
         label.setPixmap(pixmap)
         ### set window icon
         self.setWindowIcon(QtGui.QIcon('gui/image/liderahenk-32.png'))
         ### set fixed size
-        self.setFixedSize(self.size())
+        self.setBaseSize(self.sizeHint())
 
         ## set background color
         self.setAutoFillBackground(True)
@@ -57,9 +61,7 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         ### set text Qwizard button (next, back,cancel, finish)
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.NextButton, 'İleri')
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.BackButton, 'Geri')
-        QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.CancelButton, 'İptal')
         QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.FinishButton, 'Bitti')
-        QtWidgets.QWizard.setButtonText(self, QtWidgets.QWizard.HelpButton, 'Yardım')
 
         ### Menubar
         self.menubar = QtWidgets.QMenuBar(self)
@@ -69,7 +71,7 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         self.open_file_action.triggered.connect(self.open_file)
         self.menu.addAction(self.open_file_action)
 
-        ### Action button
+        ### Exit button
         self.exitButton = QtWidgets.QAction(QtGui.QIcon('gui/image/cancel-16.png'), 'Çıkış', self)
         self.exitButton.setShortcut('Ctrl+X')
         self.exitButton.triggered.connect(self.close)
@@ -80,9 +82,9 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         self.aboutButton.triggered.connect(self.show_about)
         self.menu.addAction(self.aboutButton)
 
-        ### Buttons role
+        ### Button roles
         self.save_button.clicked.connect(self.write_file)
-        self.next_install_button.clicked.connect(self.install_manager.start_install)
+        self.next_install_button.clicked.connect(self.install_start)
         self.button_ssh_control.clicked.connect(self.ssh_control)
         self.location.currentIndexChanged.connect(self.location_change)
         self.save_button.clicked.connect(self.save_button_control)
@@ -90,7 +92,6 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         ## if not patt exists liderahenk.json file set disabled
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/liderahenk.json')):
             self.next_install_button.setDisabled(True)
-
 
         if self.location.currentIndex() == 0:
             self.button_ssh_control.setEnabled(False)
@@ -111,17 +112,8 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         else:
             self.button_ssh_control.setEnabled(False)
 
-
     def abstract(self):
         GetData.server_abstract(self)
-
-    def start_install(self):
-        with open(self.liderahenk_data_path) as f:
-            data = json.load(f)
-        self.logger.info("liderahenk.json dosyasından veriler okunuyor")
-        # self.ssh_connect(data)
-        a = GetData.get_data(self)
-        self.logger.info(a)
 
     def ssh_control(self):
         ssh_data = {
@@ -154,7 +146,6 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
 
     def write_file(self):
         data = GetData.get_data(self)
-        print(data)
 
         if os.path.exists(self.liderahenk_data_path) and os.stat(self.liderahenk_data_path).st_size != 0:
             with open(self.liderahenk_data_path) as f:
@@ -169,6 +160,8 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
                 json.dump(data, f, ensure_ascii=False)
             self.logger.info("Lider Ahenk json dosyası oluşturuldu")
             self.message_box("Lider Ahenk json dosyası oluşturuldu")
+        self.lider_conf.close()
+        self.watch_log.show()
 
     def show_about(self):
         command = "/usr/bin/python3 gui/about_config.py "
@@ -180,6 +173,41 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         # message = "Lider Ahenk Kurulum Uygulaması \nLider Ahenk sunucu kurulumu için geliştirilmiş kolay kurulum uygulamasıdır. Daha fazla bilgiye http://docs.liderahenk.org/ adresinden ulaşabilirsiniz."
         # self.message_box(message)
 
+    def call_logger(self):
+        try:
+            current = open(self.log_file_path, "r" )
+            curino = os.fstat(current.fileno() ).st_ino
+            while True:
+                while True:
+                    line = current.readline()
+                    if not line:
+                        break
+                    yield line
+                try:
+                    if os.stat(name).st_ino != curino:
+                        new = open(name, "r")
+                        current.close()
+                        current = new
+                        curino = os.fstat(current.fileno()).st_ino
+                        continue
+                except IOError:
+                    pass
+                time.sleep(1)
+        except Exception as e:
+            print(e)
+
+    def watch_log(self):
+        ss = ""
+        for l in self.call_logger():
+            ss += l
+            self.lider_text.setText("LINE: {}".format(ss))
+
+    def install_start(self):
+        thread_ask = Process(target=self.watch_log())
+        thread_ask2 = Process(target=self.install_manager.start_install())
+        thread_ask.start()
+        time.sleep(2)
+        thread_ask2.start()
 
 if __name__ == "__main__":
 
