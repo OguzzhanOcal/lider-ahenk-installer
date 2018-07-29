@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'installer.ui'
 #
-# Created by: PyQt5 UI code generator 5.10.1
+# Created by: PyQt5 UI code generator 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -35,6 +35,11 @@ class Ui_Installer(object):
         self.connect.setObjectName("connect")
         self.connect_server_conf = QtWidgets.QGroupBox(self.connect)
         self.connect_server_conf.setGeometry(QtCore.QRect(280, 90, 581, 441))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.connect_server_conf.sizePolicy().hasHeightForWidth())
+        self.connect_server_conf.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setFamily("Bitstream Vera Sans")
         font.setPointSize(12)
@@ -775,6 +780,9 @@ class Ui_Installer(object):
         self.next_install_button.setGeometry(QtCore.QRect(930, 60, 83, 24))
         self.next_install_button.setStyleSheet("")
         self.next_install_button.setObjectName("next_install_button")
+        self.ldapcolor = QtWidgets.QTextBrowser(self.watch_log)
+        self.ldapcolor.setGeometry(QtCore.QRect(1080, 120, 41, 41))
+        self.ldapcolor.setObjectName("ldapcolor")
         Installer.addPage(self.watch_log)
 
         self.retranslateUi(Installer)
@@ -797,8 +805,8 @@ class Ui_Installer(object):
         self.textBrowser_43.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">Lider Sunucu Konfigürasyonu</span></p></body></html>"))
+"</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Sans\'; font-size:12pt; font-weight:600;\">Lider Sunucu Konfigürasyonu</span></p></body></html>"))
         self.ldap_server_conf.setTitle(_translate("Installer", "LDAP Sunucu Ayarları"))
         self.l_base_dn.setText(_translate("Installer", "liderahenk.org"))
         self.l_admin_pwd.setText(_translate("Installer", "secret"))

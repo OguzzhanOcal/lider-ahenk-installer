@@ -50,12 +50,12 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         ### set window icon
         self.setWindowIcon(QtGui.QIcon('ui/image/liderahenk-32.png'))
         ### set fixed size
-        self.setBaseSize(self.sizeHint())
+        self.setFixedSize(self.size())
 
         ## set background color
         self.setAutoFillBackground(True)
         p = self.palette()
-        p.setColor(self.backgroundRole(), Qt.gray)
+        p.setColor(self.backgroundRole(), Qt.darkCyan)
         self.setPalette(p)
 
         ### set text Qwizard button (next, back,cancel, finish)
