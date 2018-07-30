@@ -50,7 +50,6 @@ class Logger(object):
             result = ''
             if len(name_list) > 1:
                 result = str(name_list[len(name_list) - 2]).upper() + ' >> ' + name_list[len(name_list) - 1]
-            print(result)
             return result
 
         else:

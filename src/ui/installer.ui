@@ -54,7 +54,7 @@
     <string notr="true"/>
    </property>
   </widget>
-  <widget class="QWizardPage" name="connect">
+  <widget class="QWizardPage" name="connect_page">
    <widget class="QGroupBox" name="connect_server_conf">
     <property name="geometry">
      <rect>
@@ -358,7 +358,7 @@
     </widget>
    </widget>
   </widget>
-  <widget class="QWizardPage" name="lider_conf">
+  <widget class="QWizardPage" name="lider_conf_page">
    <widget class="QTextBrowser" name="textBrowser_43">
     <property name="geometry">
      <rect>
@@ -375,8 +375,8 @@
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans'; font-size:12pt; font-weight:600;&quot;&gt;Lider Sunucu Konfigürasyonu&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Lider Sunucu Konfigürasyonu&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QGroupBox" name="ldap_server_conf">
@@ -1808,7 +1808,7 @@ p, li { white-space: pre-wrap; }
     </widget>
    </widget>
   </widget>
-  <widget class="QWizardPage" name="watch_log">
+  <widget class="QWizardPage" name="watch_log_page">
    <widget class="QTextEdit" name="lider_text">
     <property name="geometry">
      <rect>
@@ -1836,16 +1836,6 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text">
      <string>Kur</string>
-    </property>
-   </widget>
-   <widget class="QTextBrowser" name="ldapcolor">
-    <property name="geometry">
-     <rect>
-      <x>1080</x>
-      <y>120</y>
-      <width>41</width>
-      <height>41</height>
-     </rect>
     </property>
    </widget>
   </widget>

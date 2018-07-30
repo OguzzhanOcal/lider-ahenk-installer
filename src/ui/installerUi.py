@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'installer.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.2
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -31,9 +31,9 @@ class Ui_Installer(object):
         self.home_page.setStyleSheet("")
         self.home_page.setObjectName("home_page")
         Installer.addPage(self.home_page)
-        self.connect = QtWidgets.QWizardPage()
-        self.connect.setObjectName("connect")
-        self.connect_server_conf = QtWidgets.QGroupBox(self.connect)
+        self.connect_page = QtWidgets.QWizardPage()
+        self.connect_page.setObjectName("connect_page")
+        self.connect_server_conf = QtWidgets.QGroupBox(self.connect_page)
         self.connect_server_conf.setGeometry(QtCore.QRect(280, 90, 581, 441))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -159,14 +159,14 @@ class Ui_Installer(object):
         font.setWeight(75)
         self.label_14.setFont(font)
         self.label_14.setObjectName("label_14")
-        Installer.addPage(self.connect)
-        self.lider_conf = QtWidgets.QWizardPage()
-        self.lider_conf.setObjectName("lider_conf")
-        self.textBrowser_43 = QtWidgets.QTextBrowser(self.lider_conf)
+        Installer.addPage(self.connect_page)
+        self.lider_conf_page = QtWidgets.QWizardPage()
+        self.lider_conf_page.setObjectName("lider_conf_page")
+        self.textBrowser_43 = QtWidgets.QTextBrowser(self.lider_conf_page)
         self.textBrowser_43.setGeometry(QtCore.QRect(380, 10, 321, 31))
         self.textBrowser_43.setFrameShape(QtWidgets.QFrame.Box)
         self.textBrowser_43.setObjectName("textBrowser_43")
-        self.ldap_server_conf = QtWidgets.QGroupBox(self.lider_conf)
+        self.ldap_server_conf = QtWidgets.QGroupBox(self.lider_conf_page)
         self.ldap_server_conf.setGeometry(QtCore.QRect(50, 70, 490, 411))
         font = QtGui.QFont()
         font.setFamily("Bitstream Vera Sans")
@@ -356,7 +356,7 @@ class Ui_Installer(object):
         font.setWeight(50)
         self.ldap_install.setFont(font)
         self.ldap_install.setObjectName("ldap_install")
-        self.database_server_conf = QtWidgets.QGroupBox(self.lider_conf)
+        self.database_server_conf = QtWidgets.QGroupBox(self.lider_conf_page)
         self.database_server_conf.setGeometry(QtCore.QRect(50, 510, 490, 201))
         font = QtGui.QFont()
         font.setFamily("Bitstream Vera Sans")
@@ -458,7 +458,7 @@ class Ui_Installer(object):
         font.setWeight(50)
         self.db_install.setFont(font)
         self.db_install.setObjectName("db_install")
-        self.file_server_conf = QtWidgets.QGroupBox(self.lider_conf)
+        self.file_server_conf = QtWidgets.QGroupBox(self.lider_conf_page)
         self.file_server_conf.setGeometry(QtCore.QRect(600, 410, 490, 301))
         font = QtGui.QFont()
         font.setFamily("Bitstream Vera Sans")
@@ -602,11 +602,11 @@ class Ui_Installer(object):
         font.setWeight(50)
         self.lider_install.setFont(font)
         self.lider_install.setObjectName("lider_install")
-        self.save_button = QtWidgets.QPushButton(self.lider_conf)
+        self.save_button = QtWidgets.QPushButton(self.lider_conf_page)
         self.save_button.setGeometry(QtCore.QRect(1010, 740, 83, 24))
         self.save_button.setStyleSheet("")
         self.save_button.setObjectName("save_button")
-        self.ejabberd_server_conf = QtWidgets.QGroupBox(self.lider_conf)
+        self.ejabberd_server_conf = QtWidgets.QGroupBox(self.lider_conf_page)
         self.ejabberd_server_conf.setGeometry(QtCore.QRect(600, 70, 490, 311))
         font = QtGui.QFont()
         font.setFamily("Bitstream Vera Sans")
@@ -769,21 +769,18 @@ class Ui_Installer(object):
         font.setWeight(50)
         self.ejabberd_install.setFont(font)
         self.ejabberd_install.setObjectName("ejabberd_install")
-        Installer.addPage(self.lider_conf)
-        self.watch_log = QtWidgets.QWizardPage()
-        self.watch_log.setObjectName("watch_log")
-        self.lider_text = QtWidgets.QTextEdit(self.watch_log)
+        Installer.addPage(self.lider_conf_page)
+        self.watch_log_page = QtWidgets.QWizardPage()
+        self.watch_log_page.setObjectName("watch_log_page")
+        self.lider_text = QtWidgets.QTextEdit(self.watch_log_page)
         self.lider_text.setGeometry(QtCore.QRect(63, 53, 811, 721))
         self.lider_text.setOverwriteMode(True)
         self.lider_text.setObjectName("lider_text")
-        self.next_install_button = QtWidgets.QPushButton(self.watch_log)
+        self.next_install_button = QtWidgets.QPushButton(self.watch_log_page)
         self.next_install_button.setGeometry(QtCore.QRect(930, 60, 83, 24))
         self.next_install_button.setStyleSheet("")
         self.next_install_button.setObjectName("next_install_button")
-        self.ldapcolor = QtWidgets.QTextBrowser(self.watch_log)
-        self.ldapcolor.setGeometry(QtCore.QRect(1080, 120, 41, 41))
-        self.ldapcolor.setObjectName("ldapcolor")
-        Installer.addPage(self.watch_log)
+        Installer.addPage(self.watch_log_page)
 
         self.retranslateUi(Installer)
         QtCore.QMetaObject.connectSlotsByName(Installer)
@@ -805,8 +802,8 @@ class Ui_Installer(object):
         self.textBrowser_43.setHtml(_translate("Installer", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Sans\'; font-size:12pt; font-weight:600;\">Lider Sunucu Konfigürasyonu</span></p></body></html>"))
+"</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">Lider Sunucu Konfigürasyonu</span></p></body></html>"))
         self.ldap_server_conf.setTitle(_translate("Installer", "LDAP Sunucu Ayarları"))
         self.l_base_dn.setText(_translate("Installer", "liderahenk.org"))
         self.l_admin_pwd.setText(_translate("Installer", "secret"))

@@ -46,7 +46,7 @@ class EjabberInstaller(object):
         #run commands of ejabberd
         if self.ssh_status == 1 or data['location'] == 'local':
 
-            # self.ssh_api.run_command(cfg_data["cmd_ejabberd_install"])
+            self.ssh_api.run_command(cfg_data["cmd_ejabberd_install"])
             self.logger.info("Ejabberd paketi kuruldu")
             self.ssh_api.scp_file(self.jabberd_out_path, cfg_data["jabberd_des_path"])
             self.logger.info("Ejabberd konfigürasyon dosyası sunucuya kopyalandı")

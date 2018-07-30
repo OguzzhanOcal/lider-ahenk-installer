@@ -15,6 +15,7 @@ from api.logger.installer_logger import Logger
 from api.ssh.ssh import Ssh
 from install_manager import InstallManager
 from ui.installerUi import Ui_Installer
+from api.config.config_manager import ConfigManager
 # from ui.about import Ui_About
 from ui.get_data import GetData
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -37,8 +38,10 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         self.get_data = GetData()
         self.msgBox = QtWidgets.QMessageBox()
         self.install_manager = InstallManager()
+        self.config_maneger = ConfigManager()
         self.liderahenk_data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/liderahenk.json')
         self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log')
+        self.log_backup_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log.{0}')
 
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist')):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist'))
@@ -145,6 +148,18 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
         self.msgBox.exec_()
 
     def write_file(self):
+        #
+        # if os.path.exists(self.log_file_path ):
+        #     date_now = self.config_maneger.date_format()
+        #     self.ssh.move_file(self.log_file_path, self.log_backup_file_path.format(date_now))
+        #     print("--->> dosya taşındı.")
+        #
+        #     open('dist/installer.log', 'w')
+
+        # if not os.path.exists('dist/installer.log' ):
+        #     open('dist/installer.log', 'w+')
+        #     print("--->>>>>--->>> dosya oluştu")
+
         data = GetData.get_data(self)
 
         if os.path.exists(self.liderahenk_data_path) and os.stat(self.liderahenk_data_path).st_size != 0:
@@ -160,8 +175,8 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
                 json.dump(data, f, ensure_ascii=False)
             self.logger.info("Lider Ahenk json dosyası oluşturuldu")
             self.message_box("Lider Ahenk json dosyası oluşturuldu")
-        self.lider_conf.close()
-        self.watch_log.show()
+        self.lider_conf_page.close()
+        self.watch_log_page.show()
 
     def show_about(self):
         command = "/usr/bin/python3 ui/about_config.py "
@@ -203,11 +218,15 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
             self.lider_text.setText("LINE: {}".format(ss))
 
     def install_start(self):
-        thread_ask = Process(target=self.watch_log)
-        thread_ask2 = Process(target=self.install_manager.start_install())
-        thread_ask.start()
-        time.sleep(2)
-        thread_ask2.start()
+        try:
+            thread_ask = Process(target=self.watch_log())
+            thread_ask2 = Process(target=self.install_manager.start_install())
+            thread_ask.daemon = True
+            thread_ask.start()
+            time.sleep(2)
+            thread_ask2.start()
+        except Exception as e:
+            print(e)
 
 if __name__ == "__main__":
 

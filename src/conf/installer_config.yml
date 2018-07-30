@@ -10,7 +10,7 @@ cmd_db_replace_bind_addr : sudo sed -i 's/^bind-address/#&/' /etc/mysql/my.cnf
 cmd_db_service : sudo systemctl restart mysql.service
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #Ejabberd configuration
-cmd_ejabberd_install : sudo apt-get install -y ejabberd=16.06-0
+cmd_ejabberd_install : sudo apt-get install -y ejabberd=18.01-0
 jabberd_des_path : /tmp
 jabberd_conf_path : /opt/ejabberd #/opt/ejabberd-16.06
 cmd_cp_conf : sudo cp {0}/ejabberd.yml {1}/conf
