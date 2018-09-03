@@ -10,7 +10,6 @@ import sys
 import subprocess
 import time
 from multiprocessing import Process
-import threading
 from api.logger.installer_logger import Logger
 from api.ssh.ssh import Ssh
 from install_manager import InstallManager

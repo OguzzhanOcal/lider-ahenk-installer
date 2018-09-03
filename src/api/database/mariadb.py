@@ -34,7 +34,7 @@ class MariaDbInstaller(object):
             self.ssh_api.run_command(cfg_data["cmd_create_db"].format(data["db_password"], data["db_name"]))
             self.logger.info("liderdb veritabanı oluşturuldu")
             self.logger.info("Veritabanı grant yetkisi verildi")
-            self.ssh_api.run_command(cfg_data["cmd_db_grant_privileges"])
+            self.ssh_api.run_command(cfg_data["cmd_db_grant_privileges"].format(data["db_password"]))
             # self.ssh_api.run_command(cfg_data["cmd_db_replace_bind_addr"])
             self.ssh_api.run_command(cfg_data["cmd_db_service"])
             self.logger.info("Veritabanı servisi başlatıldı.")
