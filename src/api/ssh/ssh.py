@@ -64,15 +64,22 @@ class Ssh(object):
                 self.logger.error(str(command) + " komutu çalıştırılırken hata oluştu! " + str(e))
         # if location local server
         else:
-            process = subprocess.Popen(command, stdin=None, env=None, cwd=None, stderr=subprocess.PIPE,
-                                        stdout=subprocess.PIPE, shell=True)
-            result_code = process.wait()
-            p_out = process.stdout.read().decode("unicode_escape")
-            p_err = process.stderr.read().decode("unicode_escape")
-            if result_code == 0:
-                self.logger.info(str(command) + " komutu başarıyla çalıştırıldı")
-            else:
-                self.logger.error(str(command) + " komutu çalıştırılırken hata oluştu! " + str(p_err))
+            try:
+                echo = subprocess.Popen(['echo', self.password], stdout=subprocess.PIPE,)
+
+                sudo = subprocess.Popen(['sudo', '-S', 'su'], stdin=echo.stdout, stdout=subprocess.PIPE)
+
+                process = subprocess.Popen(command, stdin=None, env=None, cwd=None, stderr=subprocess.PIPE,
+                                           stdout=subprocess.PIPE, shell=True)
+                result_code = process.wait()
+                p_out = process.stdout.read().decode("unicode_escape")
+                p_err = process.stderr.read().decode("unicode_escape")
+                if result_code == 0:
+                    self.logger.info(str(command) + " komutu başarıyla çalıştırıldı")
+                else:
+                    self.logger.error(str(command) + " komutu çalıştırılırken hata oluştu! " + str(p_err))
+            except Exception as e:
+                self.logger.error(str(command) + " komutu çalıştırılırken hata oluştu! " + str(e))
 
     # copy file to remote server with SCPClient method
     def scp_file(self, src_path, des_path):
