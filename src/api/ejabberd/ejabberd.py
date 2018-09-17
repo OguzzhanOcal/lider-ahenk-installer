@@ -6,6 +6,7 @@
 import os
 from api.config.config_manager import ConfigManager
 from api.logger.installer_logger import Logger
+import time
 
 
 class EjabberInstaller(object):
@@ -53,13 +54,19 @@ class EjabberInstaller(object):
             self.ssh_api.run_command(cfg_data["cmd_cp_conf"].format(cfg_data["jabberd_des_path"], cfg_data["jabberd_conf_path"]))
             self.ssh_api.run_command(cfg_data["cmd_jabberd_start"].format(cfg_data["cmd_bin_ejabberd_path"]))
             self.logger.info("(1)----->>> Ejabberd servisi başlatıldı")
+            time.sleep(10)
             self.ssh_api.run_command(cfg_data["cmd_register"].format(cfg_data["cmd_bin_ejabberd_path"], data["e_username"], data["e_service_name"], data["e_user_pwd"]))
             self.logger.info("{0} kullanıcısı kaydedildi".format(data["e_username"]))
             self.ssh_api.run_command(cfg_data["cmd_register"].format(cfg_data["cmd_bin_ejabberd_path"], data["lider_username"], data["e_service_name"], data["lider_user_pwd"]))
             self.logger.info("{0} kullanıcısı kaydedildi".format(data["lider_username"]))
-            self.ssh_api.run_command(cfg_data["cmd_jabberd_start"].format(cfg_data["cmd_bin_ejabberd_path"]))
+            self.ssh_api.run_command(cfg_data["cmd_srg_create"].format(cfg_data["cmd_bin_ejabberd_path"], data["e_service_name"]))
+            self.logger.info("shared roster grubu oluşturuldu.")
+            self.ssh_api.run_command(cfg_data["cmd_srg_user_add"].format(cfg_data["cmd_bin_ejabberd_path"], data["e_service_name"]))
+            self.logger.info(("Kullanıcılar shared roster grubuna eklendi"))
+            self.ssh_api.run_command(cfg_data["cmd_jabberd_restart"].format(cfg_data["cmd_bin_ejabberd_path"]))
             self.logger.info("Ejabberd servisi başlatıldı")
             self.ssh_api.run_command(cfg_data["cmd_jabberd_status"].format(cfg_data["cmd_bin_ejabberd_path"]))
+            self.ssh_api.run_command(cfg_data["cmd_hold_ejabberd"])
         else:
             # print("bağlantı sağlanamadığı için kurulum yapılamadı..")
             self.logger.error("XMPP sunucusuna bağlantı sağlanamadığı için kurulum yapılamadı. Lütfen bağlantı ayarlarını kotrol ediniz!")
