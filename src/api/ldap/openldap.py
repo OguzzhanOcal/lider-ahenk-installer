@@ -16,6 +16,7 @@ class OpenLdapInstaller(object):
         self.ldap_config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/ldapconfig_temp')
         self.update_ldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/update_ldap_temp')
         self.liderahenk_ldif_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/liderahenk.ldif')
+        self.sudo_ldif_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/sudo.ldif')
         self.ldap_config_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/ldapconfig')
         self.update_ldap_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/update_ldap')
 
@@ -61,6 +62,7 @@ class OpenLdapInstaller(object):
                 #copy ldap_install  script to ldap server
                 self.ssh_api.scp_file(self.ldap_config_out_path, '/tmp')
                 self.logger.info("ldapconfig betiği OpenLDAP sunucusuna kopyalandı")
+                self.ssh_api.scp_file(self.sudo_ldif_path, '/tmp')
 
                 ### install slapd package
                 self.ssh_api.run_command(cfg_data["cmd_ldap_remove"])

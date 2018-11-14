@@ -127,12 +127,9 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
 
         # bu satırda sunucunun nereye kurulacağı belirleniyor.
         if self.location.currentIndex() == 1 and ssh_data["ip"] == "" or ssh_data["username"] == "" or ssh_data["password"] == "":
-            print(ssh_data['ip'])
             self.message_box("Lütfen sunucu adresini, kullanıcı adını ve parolasını giriniz!" )
         else:
             ssh_status = self.ssh.connect(ssh_data)
-            print(ssh_data["ip"])
-            print(ssh_status)
             if ssh_status == 1:
                 self.message_box("Bağlantı Başarılı. Kuruluma İleri Butonuna Tıklayarak Devam Edebilirsiniz.")
             else:

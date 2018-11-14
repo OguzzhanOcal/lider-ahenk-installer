@@ -10,6 +10,7 @@ ADMINPASSWD="#ADMINPASSWD"
 CNCONFIGADMINDN="#CNCONFIGADMINDN"
 CNCONFIGADMINPASSWD="#CNCONFIGADMINPASSWD"
 LIDERAHENK_SCHEMA_PATH="/tmp/liderahenk.ldif"
+SUDO_SCHEMA_PATH="/tmp/sudo.ldif"
 
 LIDERCONSOLEUSER="#LIDERCONSOLEUSER"
 LIDERCONSOLEPWD="#LIDERCONSOLEPWD"
@@ -100,6 +101,8 @@ EOL
 # add liderahenk.ldif file to ldap
 ldapadd -x -D "$CNCONFIGADMINDN" -f $LIDERAHENK_SCHEMA_PATH -w $CNCONFIGADMINPASSWD
 
+ldapadd -x -D "$CNCONFIGADMINDN" -f $SUDO_SCHEMA_PATH -w $CNCONFIGADMINPASSWD
+
 ldapadd -x -D "$ADMINDN" -w $ADMINPASSWD << EOL
 dn: cn=liderAhenkConfig,$BASEDN
 changetype: add
@@ -138,6 +141,20 @@ objectClass: top
 member: $ADMINDN
 cn: adminGroups
 description: User group with ldap write permission
+
+dn: ou=Roles,$BASEDN
+objectClass: organizationalUnit
+objectClass: top
+ou: Roles
+description: Roles groups
+
+dn: cn=sample_role,ou=Roles,$BASEDN
+objectClass: sudoRole
+objectClass: top
+cn: sample_role
+sudoUser: ldap_user
+sudoHost: ALL
+sudoCommand: ALL
 
 dn: ou=Policies,$BASEDN
 objectClass: organizationalUnit

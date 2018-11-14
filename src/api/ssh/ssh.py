@@ -29,11 +29,10 @@ class Ssh(object):
             self.ssh.load_system_host_keys()
             ssh_status = self.ssh.connect(hostname=data['ip'], username=data['username'], password=data['password'], pkey=None, timeout=10)
             if ssh_status is None:
-                self.logger.info(str(data['ip']) + " ip'li sunucuya ssh bağlantısı başarıyla sağlandı")
+                self.logger.info(data['ip'] + " ip'li sunucuya ssh bağlantısı başarıyla sağlandı")
                 ssh_status = 1
                 return ssh_status
         except Exception as e:
-            pass
             self.logger.error(str(data['ip']) + " ip'li sunucuya ssh bağlantısı sırasında beklenmedik hata oluştu \n" + str(e))
 
     def disconnect(self):
