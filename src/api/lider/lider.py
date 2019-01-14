@@ -24,6 +24,7 @@ class LiderInstaller(object):
             cfg_data = self.config_manager.read()
             self.configure_lider_cfg(data)
             self.configure_db_cfg(data)
+            self.ssh_api.run_command(cfg_data["cmd_soft_properties"])
             self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"])
             self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"])
             self.ssh_api.run_command(cfg_data["cmd_update"])

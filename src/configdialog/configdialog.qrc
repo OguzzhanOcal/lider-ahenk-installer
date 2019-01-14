@@ -1,0 +1,10 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+   <file>images/config.png</file>
+   <file>images/query.png</file>
+   <file>images/update.png</file>
+   <file>images/liderahenk-32.png</file>
+   <file>images/ejabberd.png</file>
+   <file>images/database.png</file>
+</qresource>
+</RCC>

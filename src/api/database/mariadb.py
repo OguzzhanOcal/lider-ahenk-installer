@@ -18,6 +18,7 @@ class MariaDbInstaller(object):
         cfg_data = config_manager.read()
         # print(cfg_data)
         if self.ssh_status == 1 or data['location'] == 'local':
+            self.ssh_api.run_command(cfg_data["cmd_soft_properties"])
             self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"])
             self.logger.info("Lider Ahenk repo key dosyası indirildi")
             self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"])

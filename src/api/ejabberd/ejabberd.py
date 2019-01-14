@@ -46,7 +46,13 @@ class EjabberInstaller(object):
 
         #run commands of ejabberd
         if self.ssh_status == 1 or data['location'] == 'local':
-
+            self.ssh_api.run_command(cfg_data["cmd_soft_properties"])
+            self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"])
+            self.logger.info("Lider Ahenk repo key dosyası indirildi")
+            self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"])
+            self.logger.info("Lider Ahenk repo adresi eklendi")
+            self.ssh_api.run_command(cfg_data["cmd_update"])
+            self.logger.info("Paket listesi güncellendi(apt update)")
             self.ssh_api.run_command(cfg_data["cmd_ejabberd_install"])
             self.logger.info("Ejabberd paketi kuruldu")
             self.ssh_api.scp_file(self.jabberd_out_path, cfg_data["jabberd_des_path"])
@@ -54,7 +60,9 @@ class EjabberInstaller(object):
             self.ssh_api.run_command(cfg_data["cmd_cp_conf"].format(cfg_data["jabberd_des_path"], cfg_data["jabberd_conf_path"]))
             self.ssh_api.run_command(cfg_data["cmd_jabberd_start"].format(cfg_data["cmd_bin_ejabberd_path"]))
             self.logger.info("(1)----->>> Ejabberd servisi başlatıldı")
+            print("---------->>>> Start : %s" % time.ctime())
             time.sleep(10)
+            print("-------->>>>> End : %s" % time.ctime())
             self.ssh_api.run_command(cfg_data["cmd_register"].format(cfg_data["cmd_bin_ejabberd_path"], data["e_username"], data["e_service_name"], data["e_user_pwd"]))
             self.logger.info("{0} kullanıcısı kaydedildi".format(data["e_username"]))
             self.ssh_api.run_command(cfg_data["cmd_register"].format(cfg_data["cmd_bin_ejabberd_path"], data["lider_username"], data["e_service_name"], data["lider_user_pwd"]))

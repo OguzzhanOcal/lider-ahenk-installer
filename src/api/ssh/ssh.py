@@ -43,7 +43,7 @@ class Ssh(object):
         if self.location == 'remote':
             # run command with sudo user
             try:
-                # print(cmd)
+                # print(command)
                 stdin, stdout, stderr = self.ssh.exec_command(command, get_pty=True)
                 stdin.write(self.password + '\n')
                 stdin.flush()

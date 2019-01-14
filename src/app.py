@@ -100,6 +100,9 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
 
     def open_file(self):
         print("open file dialoggggg")
+        file_name = QtWidgets.QFileDialog(self, self.log_file_path)
+        print(file_name)
+
         # self.lider.show()
 
     def save_button_control(self):
@@ -186,7 +189,7 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
 
     def call_logger(self):
         try:
-            current = open(self.log_file_path, "r" )
+            current = open(self.log_file_path, "r")
             curino = os.fstat(current.fileno() ).st_ino
             while True:
                 while True:
@@ -195,8 +198,8 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
                         break
                     yield line
                 try:
-                    if os.stat(name).st_ino != curino:
-                        new = open(name, "r")
+                    if os.stat(self.log_file_path).st_ino != curino:
+                        new = open(self.log_file_path, "r")
                         current.close()
                         current = new
                         curino = os.fstat(current.fileno()).st_ino
@@ -215,10 +218,10 @@ class GuiManager(QtWidgets.QWizard, Ui_Installer):
 
     def install_start(self):
         try:
-            thread_ask = Process(target=self.watch_log())
+            # thread_ask = Process(target=self.watch_log())
             thread_ask2 = Process(target=self.install_manager.start_install())
-            thread_ask.daemon = True
-            thread_ask.start()
+            # thread_ask.daemon = True
+            # thread_ask.start()
             time.sleep(2)
             thread_ask2.start()
         except Exception as e:
