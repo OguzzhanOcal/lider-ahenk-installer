@@ -26,15 +26,20 @@ class DatabasePage(QWidget):
         self.username = QLineEdit()
         self.passwordLabel = QLabel("Kullanıcı Parolası")
         self.password = QLineEdit()
+        self.password.setEchoMode(QLineEdit.Password)
         self.checkControlButton = QPushButton("Bağlantı Kontrol")
 
         ## database parameters
         self.dbNameLabel = QLabel("Veritabanı Adı:")
         self.db_name = QLineEdit()
+        self.db_name.setPlaceholderText("liderdb")
         self.dbUsernameLabel = QLabel("Veritabanı Kullanıcı Adı:")
         self.db_username = QLineEdit()
+        self.db_username.setPlaceholderText("root")
         self.dbPwdLabel = QLabel("Veritabanı Kullanıcı Parolası:")
         self.db_password = QLineEdit()
+        self.db_password.setEchoMode(QLineEdit.Password)
+        self.db_password.setPlaceholderText("****")
         self.startQueryButton = QPushButton("Kuruluma Başla")
 
         ## Database Layout

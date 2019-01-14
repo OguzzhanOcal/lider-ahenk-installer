@@ -22,6 +22,7 @@ class EjabberdPage(QWidget):
         self.username = QLineEdit()
         self.passwordLabel = QLabel("Kullanıcı Parolası")
         self.password = QLineEdit()
+        self.password.setEchoMode(QLineEdit.Password)
         self.checkControlButton = QPushButton("Bağlantı Kontrol")
 
         ## Ejabberd parameters
