@@ -1,18 +1,20 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+# Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
+
 from PyQt5.QtCore import QDate, QSize, Qt
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
         QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
         QListView, QListWidget, QListWidgetItem, QPushButton, QSpinBox,
-        QStackedWidget, QVBoxLayout, QWidget)
+        QStackedWidget, QVBoxLayout, QWidget, QRadioButton)
 
-class EjabberdPage(QWidget):
+class DatabasePage(QWidget):
     def __init__(self, parent=None):
-        super(EjabberdPage, self).__init__(parent)
+        super(DatabasePage, self).__init__(parent)
 
         ## server connect parameters
-        self.serverLabel = QLabel("Server:")
+        self.serverLabel = QLabel("Sunucu:")
         self.serverCombo = QComboBox()
         self.serverCombo.addItem("Uzak Makineye Kur")
         self.serverCombo.addItem("Yerel Makineye Kur")
@@ -25,10 +27,32 @@ class EjabberdPage(QWidget):
         self.password.setEchoMode(QLineEdit.Password)
         self.checkControlButton = QPushButton("Bağlantı Kontrol")
 
-        ## Ejabberd parameters
+        ## database parameters
+        self.dbNameLabel = QLabel("Veritabanı Adı:")
+        self.db_name = QLineEdit()
+        self.db_name.setPlaceholderText("liderdb")
+        self.dbUsernameLabel = QLabel("Veritabanı Kullanıcı Adı:")
+        self.db_username = QLineEdit()
+        self.db_username.setPlaceholderText("root")
+        self.dbPwdLabel = QLabel("Veritabanı Kullanıcı Parolası:")
+        self.db_password = QLineEdit()
+        self.db_password.setEchoMode(QLineEdit.Password)
+        self.db_password.setPlaceholderText("****")
+        self.startQueryButton = QPushButton("Kuruluma Başla")
+
+        ## Database Layout
+        dbGroup = QGroupBox("Veritabanı Konfigürasyon Bilgileri")
+        self.dbLayout = QGridLayout()
+        self.dbLayout.addWidget(self.dbNameLabel, 0, 0)
+        self.dbLayout.addWidget(self.db_name, 0, 1)
+        self.dbLayout.addWidget(self.dbUsernameLabel, 1, 0)
+        self.dbLayout.addWidget(self.db_username, 1, 1)
+        self.dbLayout.addWidget(self.dbPwdLabel, 2, 0)
+        self.dbLayout.addWidget(self.db_password, 2, 1)
+        dbGroup.setLayout(self.dbLayout)
 
         ## Connect Layout
-        connectGroup = QGroupBox("XMPP Sunucusu Bağlantı Bilgileri")
+        connectGroup = QGroupBox("Veritabanı Sunucusu Bağlantı Bilgileri")
         connectLayout = QGridLayout()
         connectLayout.addWidget(self.serverLabel, 0, 0)
         connectLayout.addWidget(self.serverCombo, 0, 1)
@@ -40,13 +64,15 @@ class EjabberdPage(QWidget):
         connectLayout.addWidget(self.password, 3, 1)
         connectLayout.addWidget(self.checkControlButton, 4, 1)
         connectGroup.setLayout(connectLayout)
-        configGroup = QGroupBox("XMPP Sunucu Konfigürasyon Bilgileri")
+
         mainLayout = QVBoxLayout()
+        # mainLayout.addWidget(self.releasesCheckBox)
         mainLayout.addWidget(connectGroup)
-        mainLayout.addWidget(configGroup)
+        mainLayout.addWidget(dbGroup)
         mainLayout.addSpacing(12)
-        # mainLayout.addWidget(self.checkControlButton)
+        mainLayout.addWidget(self.startQueryButton)
         mainLayout.addStretch(1)
+
         self.setLayout(mainLayout)
 
         self.serverCombo.currentIndexChanged.connect(self.check_control_button)
@@ -59,3 +85,8 @@ class EjabberdPage(QWidget):
         ## if select location is local server
         else:
             self.checkControlButton.setEnabled(False)
+
+
+
+
+

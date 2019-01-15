@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+# Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
+
 from PyQt5.QtCore import QDate, QSize, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
@@ -12,7 +14,7 @@ class EjabberdPage(QWidget):
         super(EjabberdPage, self).__init__(parent)
 
         ## server connect parameters
-        self.serverLabel = QLabel("Server:")
+        self.serverLabel = QLabel("Sunucu:")
         self.serverCombo = QComboBox()
         self.serverCombo.addItem("Uzak Makineye Kur")
         self.serverCombo.addItem("Yerel Makineye Kur")
@@ -26,6 +28,26 @@ class EjabberdPage(QWidget):
         self.checkControlButton = QPushButton("Bağlantı Kontrol")
 
         ## Ejabberd parameters
+        self.ejabberdServiceLabel = QLabel("XMPP Servis Adı:")
+        self.e_service_name = QLineEdit()
+        self.e_service_name.setPlaceholderText("im.liderahenk.org")
+        self.ejabberdAdminLabel = QLabel("XMPP Admin Kullanıcı Adı:")
+        self.e_username = QLineEdit()
+        self.e_username.setPlaceholderText("admin")
+        self.ejabberdAdminPwdLabel = QLabel("XMPP Admin Kullanıcı Parolası:")
+        self.e_user_pwd = QLineEdit()
+        self.e_user_pwd.setEchoMode(QLineEdit.Password)
+        self.e_user_pwd.setPlaceholderText("****")
+        self.ejabberdLiderUserLabel = QLabel("XMPP Lider Kullanıcı Adı:")
+        self.lider_username = QLineEdit()
+        self.lider_username.setPlaceholderText("lider_sunucu")
+        self.ejabberdLiderPwdLAbel = QLabel("XMPP Lider Kullanıcı Parolası:")
+        self.lider_user_pwd = QLineEdit()
+        self.lider_user_pwd.setPlaceholderText("****")
+        self.lider_user_pwd.setEchoMode(QLineEdit.Password)
+        self.ldapServerLabel = QLabel("LDAP Sunucu Adresi:")
+        self.ldap_servers = QLineEdit()
+        self.ldap_servers.setPlaceholderText("192.168.*.*")
 
         ## Connect Layout
         connectGroup = QGroupBox("XMPP Sunucusu Bağlantı Bilgileri")
@@ -40,10 +62,28 @@ class EjabberdPage(QWidget):
         connectLayout.addWidget(self.password, 3, 1)
         connectLayout.addWidget(self.checkControlButton, 4, 1)
         connectGroup.setLayout(connectLayout)
-        configGroup = QGroupBox("XMPP Sunucu Konfigürasyon Bilgileri")
+
+        ## XMPP configuration Layout
+        ejabberdGroup = QGroupBox("XMPP Sunucu Konfigürasyon Bilgileri")
+        self.ejabberdLayout = QGridLayout()
+        self.ejabberdLayout.addWidget(self.ejabberdServiceLabel, 0, 0)
+        self.ejabberdLayout.addWidget(self.e_service_name, 0, 1)
+        self.ejabberdLayout.addWidget(self.ejabberdAdminLabel, 1, 0)
+        self.ejabberdLayout.addWidget(self.e_username, 1, 1)
+        self.ejabberdLayout.addWidget(self.ejabberdAdminPwdLabel, 2, 0)
+        self.ejabberdLayout.addWidget(self.e_user_pwd, 2, 1)
+        self.ejabberdLayout.addWidget(self.ejabberdLiderUserLabel, 3, 0)
+        self.ejabberdLayout.addWidget(self.lider_username, 3, 1)
+        self.ejabberdLayout.addWidget(self.ejabberdLiderPwdLAbel, 4, 0)
+        self.ejabberdLayout.addWidget(self.lider_user_pwd, 4, 1)
+        self.ejabberdLayout.addWidget(self.ldapServerLabel, 5, 0)
+        self.ejabberdLayout.addWidget(self.ldap_servers, 5, 1)
+
+        ejabberdGroup.setLayout(self.ejabberdLayout)
+
         mainLayout = QVBoxLayout()
         mainLayout.addWidget(connectGroup)
-        mainLayout.addWidget(configGroup)
+        mainLayout.addWidget(ejabberdGroup)
         mainLayout.addSpacing(12)
         # mainLayout.addWidget(self.checkControlButton)
         mainLayout.addStretch(1)
