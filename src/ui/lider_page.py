@@ -8,31 +8,27 @@ from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
         QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
         QListView, QListWidget, QListWidgetItem, QPushButton, QSpinBox,
         QStackedWidget, QVBoxLayout, QWidget, QRadioButton)
-from ui.ldap_page import OpenLDAPPage
+from ui.ldap_page import OpenLdapPage
 from ui.ejabberd_page import EjabberdPage
 from ui.db_page import DatabasePage
+from ui.connect_page import ConnectPage
+import os
+import json
 
 class LiderPage(QWidget):
     def __init__(self, parent=None):
         super(LiderPage, self).__init__(parent)
 
-        self.ldap_layout = OpenLDAPPage()
+        self.liderldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/lider_ldap.json')
+        self.liderejabberd_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../dist/lider_ejabberd.json')
+        self.liderdb_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/liderdb.json')
+        self.lider_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/lider.json')
+
+        self.ldap_layout = OpenLdapPage()
         self.ejabberd_layout = EjabberdPage()
         self.db_layout = DatabasePage()
+        self.connect_layout = ConnectPage()
 
-        ## server connect parameters
-        self.serverLabel = QLabel("Sunucu:")
-        self.serverCombo = QComboBox()
-        self.serverCombo.addItem("Uzak Makineye Kur")
-        self.serverCombo.addItem("Yerel Makineye Kur")
-        self.serverIpLabel = QLabel("Sunucu Bilgisi:")
-        self.server_ip = QLineEdit()
-        self.usernameLabel = QLabel("Kullanıcı Adı:")
-        self.username = QLineEdit()
-        self.passwordLabel = QLabel("Kullanıcı Parolası")
-        self.password = QLineEdit()
-        self.password.setEchoMode(QLineEdit.Password)
-        self.checkControlButton = QPushButton("Bağlantı Kontrol")
 
         ## lider parameters
         self.dbNameLabel = QLabel("Veritabanı Adı:")
@@ -45,9 +41,10 @@ class LiderPage(QWidget):
         self.db_password = QLineEdit()
         self.db_password.setEchoMode(QLineEdit.Password)
         self.db_password.setPlaceholderText("****")
-        self.startQueryButton = QPushButton("Kuruluma Başla")
+        self.startUpdateButton = QPushButton("Kuruluma Başla")
 
-        ## Database Layout
+        self.startUpdateButton.clicked.connect(self.abstract_data)
+
         liderLdapGroup = QGroupBox("LDAP Konfigürasyon Bilgileri")
         liderXmppGroup = QGroupBox("XMPP Konfigürasyon Bilgileri")
         liderDbGroup = QGroupBox("Veritabanı Konfigürasyon Bilgileri")
@@ -58,40 +55,91 @@ class LiderPage(QWidget):
 
         ## Connect Layout
         connectGroup = QGroupBox("Lİder Sunucusu Bağlantı Bilgileri")
-        connectLayout = QGridLayout()
-        connectLayout.addWidget(self.serverLabel, 0, 0)
-        connectLayout.addWidget(self.serverCombo, 0, 1)
-        connectLayout.addWidget(self.serverIpLabel, 1, 0)
-        connectLayout.addWidget(self.server_ip, 1, 1)
-        connectLayout.addWidget(self.usernameLabel, 2, 0)
-        connectLayout.addWidget(self.username, 2, 1)
-        connectLayout.addWidget(self.passwordLabel, 3, 0)
-        connectLayout.addWidget(self.password, 3, 1)
-        connectLayout.addWidget(self.checkControlButton, 4, 1)
-        connectGroup.setLayout(connectLayout)
+        connectGroup.setLayout(self.connect_layout.connectLayout)
 
         mainLayout = QVBoxLayout()
+        # mainLayout = QGridLayout()
         # mainLayout.addWidget(self.releasesCheckBox)
         mainLayout.addWidget(connectGroup)
         mainLayout.addWidget(liderLdapGroup)
         mainLayout.addWidget(liderXmppGroup)
         mainLayout.addWidget(liderDbGroup)
         # mainLayout.addSpacing(12)
-        mainLayout.addWidget(self.startQueryButton)
-        mainLayout.addStretch(1)
+        mainLayout.addWidget(self.startUpdateButton)
+        # mainLayout.addStretch(1)
 
         self.setLayout(mainLayout)
 
-        self.serverCombo.currentIndexChanged.connect(self.check_control_button)
+    def abstract_data(self):
 
-    def check_control_button(self, idx):
-        print(idx)
-        ## if select location is remote server
-        if idx == 0:
-            self.checkControlButton.setEnabled(True)
-        ## if select location is local server
+        ## get data from ldap json file
+        with open(self.liderldap_path) as f:
+            ldap_data = json.load(f)
+        # self.logger.info("liderahenk.json dosyasından veriler okunuyor")
+
+        self.ldap_layout.ldap_base_dn.setText(ldap_data["l_base_dn"])
+        self.ldap_layout.ldap_admin_pwd.setText(ldap_data["l_admin_pwd"])
+        self.ldap_layout.l_config_pwd.setText(ldap_data["l_config_pwd"])
+        self.ldap_layout.ladmin_user.setText(ldap_data["ladmin_user"])
+        self.ldap_layout.ladmin_pwd.setText(ldap_data["ladmin_pwd"])
+
+        ## get data from ejabberd json file
+        with open(self.liderejabberd_path) as f:
+            ejabberd_data = json.load(f)
+
+        self.ejabberd_layout.e_service_name.setText(ejabberd_data["e_service_name"])
+        self.ejabberd_layout.e_user_pwd.setText(ejabberd_data["e_user_pwd"])
+        self.ejabberd_layout.lider_user_pwd.setText(ejabberd_data["lider_user_pwd"])
+        self.ejabberd_layout.ldap_server.setText(ejabberd_data["ldap_servers"])
+        self.ejabberd_layout.ldap_base_dn.setText(ejabberd_data['l_base_dn'])
+        self.ejabberd_layout.ldap_admin_pwd.setText(ejabberd_data['l_admin_pwd'])
+
+        ## get data from database json file
+        with open(self.liderdb_path) as f:
+            db_data = json.load(f)
+
+        self.db_layout.db_name.setText(db_data["db_name"])
+        self.db_layout.db_username.setText(db_data["db_username"])
+        self.db_layout.db_password.setText(db_data["db_password"])
+
+        if self.connect_layout.serverCombo.currentIndex() == 0:
+            location_server = 'remote'
         else:
-            self.checkControlButton.setEnabled(False)
+            location_server = 'local'
+
+        data = {
+            'location': location_server,
+
+            # Server Configuration
+            'ip': self.connect_layout.server_ip.text(),
+            'username': self.connect_layout.username.text(),
+            'password': self.connect_layout.password.text(),
+            # Database Configuration
+            'db_server': self.connect_layout.server_ip.text(),
+            'db_name': self.db_layout.db_name.text(),
+            'db_username': self.db_layout.db_username.text(),
+            'db_password': self.db_layout.db_password.text(),
+
+        }
+        print(data)
+
+        if os.path.exists(self.lider_path) and os.stat(self.lider_path).st_size != 0:
+            with open(self.lider_path) as f:
+                read_data = json.load(f)
+            read_data.update(data)
+            with open(self.lider_path, 'w') as f:
+                json.dump(read_data, f, ensure_ascii=False)
+            print('Lider Ahenk json dosyası güncellendi')
+            # self.logger.info("Lider Ahenk json dosyası güncellendi")
+            # self.message_box("Lider Ahenk json dosyası güncellendi")
+        else:
+            with open(self.lider_path, 'w') as f:
+                json.dump(data, f, ensure_ascii=False)
+                print("Lider Ahenk json dosyası oluşturuldu")
+            # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
+            # self.message_box("Lider Ahenk json dosyası oluşturuldu")
+
+
 
 
 

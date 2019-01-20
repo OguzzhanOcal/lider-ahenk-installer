@@ -2,20 +2,19 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-from PyQt5.QtCore import QDate, QSize, Qt
+from PyQt5.QtCore import QDate, QSize, Qt, QStringListModel
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
         QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
         QListView, QListWidget, QListWidgetItem, QPushButton, QSpinBox,
-        QStackedWidget, QVBoxLayout, QWidget)
+        QStackedWidget, QVBoxLayout, QWidget, QMessageBox)
 
 import ui.configdialog_rc
 
 from ui.ejabberd_page import EjabberdPage
 from ui.db_page import DatabasePage
-from ui.ldap_page import OpenLDAPPage
+from ui.ldap_page import OpenLdapPage
 from ui.lider_page import LiderPage
-
 
 class ConfigDialog(QDialog):
     def __init__(self, parent=None):
@@ -35,12 +34,13 @@ class ConfigDialog(QDialog):
         self.pagesWidget.setMinimumWidth(512)
 
         self.pagesWidget.addWidget(DatabasePage())
-        self.pagesWidget.addWidget(OpenLDAPPage())
+        self.pagesWidget.addWidget(OpenLdapPage())
         self.pagesWidget.addWidget(EjabberdPage())
         self.pagesWidget.addWidget(LiderPage())
 
-        closeButton = QPushButton("Close")
+        closeButton = QPushButton("Kapat")
 
+        self.msgBox = QMessageBox()
         self.createIcons()
         self.contentsWidget.setCurrentRow(0)
 

@@ -8,25 +8,26 @@ from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
         QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
         QListView, QListWidget, QListWidgetItem, QPushButton, QSpinBox,
         QStackedWidget, QVBoxLayout, QWidget)
+import json
+import os
+from install_manager import InstallManager
+
+from ui.connect_page import ConnectPage
 
 class EjabberdPage(QWidget):
     def __init__(self, parent=None):
         super(EjabberdPage, self).__init__(parent)
 
-        ## server connect parameters
-        self.serverLabel = QLabel("Sunucu:")
-        self.serverCombo = QComboBox()
-        self.serverCombo.addItem("Uzak Makineye Kur")
-        self.serverCombo.addItem("Yerel Makineye Kur")
-        self.serverIpLabel = QLabel("Sunucu Bilgisi:")
-        self.server_ip = QLineEdit()
-        self.usernameLabel = QLabel("Kullanıcı Adı:")
-        self.username = QLineEdit()
-        self.passwordLabel = QLabel("Kullanıcı Parolası")
-        self.password = QLineEdit()
-        self.password.setEchoMode(QLineEdit.Password)
-        self.checkControlButton = QPushButton("Bağlantı Kontrol")
+        self.im = InstallManager()
+        self.liderejabberd_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/lider_ejabberd.json')
+        # self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log')
+        # self.log_backup_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log.{0}')
 
+        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist')):
+            os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist'))
+
+        self.connect_layout = ConnectPage()
+        self.startUpdateButton = QPushButton("Kurulumu Başla")
         ## Ejabberd parameters
         self.ejabberdServiceLabel = QLabel("XMPP Servis Adı:")
         self.e_service_name = QLineEdit()
@@ -46,38 +47,39 @@ class EjabberdPage(QWidget):
         self.lider_user_pwd.setPlaceholderText("****")
         self.lider_user_pwd.setEchoMode(QLineEdit.Password)
         self.ldapServerLabel = QLabel("LDAP Sunucu Adresi:")
-        self.ldap_servers = QLineEdit()
-        self.ldap_servers.setPlaceholderText("192.168.*.*")
+        self.ldap_server = QLineEdit()
+        self.ldap_server.setPlaceholderText("192.168.*.*")
+        self.ldapBaseDnLabel = QLabel("LDAP Base DN:")
+        self.ldap_base_dn = QLineEdit()
+        self.ldap_base_dn.setPlaceholderText("liderahenk.org")
+        self.ldapAdminPwdLabel = QLabel("Ldap Admin Parolası:")
+        self.ldap_admin_pwd = QLineEdit()
+        self.ldap_admin_pwd.setPlaceholderText("****")
+        self.ldap_admin_pwd.setEchoMode(QLineEdit.Password)
 
         ## Connect Layout
         connectGroup = QGroupBox("XMPP Sunucusu Bağlantı Bilgileri")
-        connectLayout = QGridLayout()
-        connectLayout.addWidget(self.serverLabel, 0, 0)
-        connectLayout.addWidget(self.serverCombo, 0, 1)
-        connectLayout.addWidget(self.serverIpLabel, 1, 0)
-        connectLayout.addWidget(self.server_ip, 1, 1)
-        connectLayout.addWidget(self.usernameLabel, 2, 0)
-        connectLayout.addWidget(self.username, 2, 1)
-        connectLayout.addWidget(self.passwordLabel, 3, 0)
-        connectLayout.addWidget(self.password, 3, 1)
-        connectLayout.addWidget(self.checkControlButton, 4, 1)
-        connectGroup.setLayout(connectLayout)
+        connectGroup.setLayout(self.connect_layout.connectLayout)
 
         ## XMPP configuration Layout
         ejabberdGroup = QGroupBox("XMPP Sunucu Konfigürasyon Bilgileri")
         self.ejabberdLayout = QGridLayout()
         self.ejabberdLayout.addWidget(self.ejabberdServiceLabel, 0, 0)
         self.ejabberdLayout.addWidget(self.e_service_name, 0, 1)
-        self.ejabberdLayout.addWidget(self.ejabberdAdminLabel, 1, 0)
-        self.ejabberdLayout.addWidget(self.e_username, 1, 1)
+        # self.ejabberdLayout.addWidget(self.ejabberdAdminLabel, 1, 0)
+        # self.ejabberdLayout.addWidget(self.e_username, 1, 1)
         self.ejabberdLayout.addWidget(self.ejabberdAdminPwdLabel, 2, 0)
         self.ejabberdLayout.addWidget(self.e_user_pwd, 2, 1)
-        self.ejabberdLayout.addWidget(self.ejabberdLiderUserLabel, 3, 0)
-        self.ejabberdLayout.addWidget(self.lider_username, 3, 1)
+        # self.ejabberdLayout.addWidget(self.ejabberdLiderUserLabel, 3, 0)
+        # self.ejabberdLayout.addWidget(self.lider_username, 3, 1)
         self.ejabberdLayout.addWidget(self.ejabberdLiderPwdLAbel, 4, 0)
         self.ejabberdLayout.addWidget(self.lider_user_pwd, 4, 1)
         self.ejabberdLayout.addWidget(self.ldapServerLabel, 5, 0)
-        self.ejabberdLayout.addWidget(self.ldap_servers, 5, 1)
+        self.ejabberdLayout.addWidget(self.ldap_server, 5, 1)
+        self.ejabberdLayout.addWidget(self.ldapBaseDnLabel, 6, 0)
+        self.ejabberdLayout.addWidget(self.ldap_base_dn, 6, 1)
+        self.ejabberdLayout.addWidget(self.ldapAdminPwdLabel, 7, 0)
+        self.ejabberdLayout.addWidget(self.ldap_admin_pwd, 7, 1)
 
         ejabberdGroup.setLayout(self.ejabberdLayout)
 
@@ -85,17 +87,57 @@ class EjabberdPage(QWidget):
         mainLayout.addWidget(connectGroup)
         mainLayout.addWidget(ejabberdGroup)
         mainLayout.addSpacing(12)
-        # mainLayout.addWidget(self.checkControlButton)
+        mainLayout.addWidget(self.startUpdateButton)
         mainLayout.addStretch(1)
         self.setLayout(mainLayout)
+        self.startUpdateButton.clicked.connect(self.save_ejabberd_data)
 
-        self.serverCombo.currentIndexChanged.connect(self.check_control_button)
+    def save_ejabberd_data(self):
 
-    def check_control_button(self, idx):
-        print(idx)
-        ## if select location is remote server
-        if idx == 0:
-            self.checkControlButton.setEnabled(True)
-        ## if select location is local server
+        if self.connect_layout.serverCombo.currentIndex() == 0:
+            location_server = 'remote'
         else:
-            self.checkControlButton.setEnabled(False)
+            location_server = 'local'
+
+        data = {
+
+            'location': location_server,
+            # Server Configuration
+            'ip': self.connect_layout.server_ip.text(),
+            'username': self.connect_layout.username.text(),
+            'password': self.connect_layout.password.text(),
+            # Ejabberd Configuration
+            'e_service_name': self.e_service_name.text(),
+            'e_username': 'admin',
+            'e_user_pwd': self.e_user_pwd.text(),
+            'e_hosts': self.connect_layout.server_ip.text(),
+            'ldap_servers': self.ldap_server.text(),
+            'l_base_dn': self.ldap_base_dn.text(),
+
+            # Lider Configuration
+            'lider_username': 'lider_sunucu',
+            'lider_user_pwd': self.lider_user_pwd.text(),
+            'l_admin_pwd': self.ldap_admin_pwd.text()
+
+        }
+        print(data)
+        if os.path.exists(self.liderejabberd_path) and os.stat(self.liderejabberd_path).st_size != 0:
+            with open(self.liderejabberd_path) as f:
+                read_data = json.load(f)
+            read_data.update(data)
+            with open(self.liderejabberd_path, 'w') as f:
+                json.dump(read_data, f, ensure_ascii=False)
+            print("Lider Ahenk json dosyası güncellendi")
+            # self.logger.info("Lider Ahenk json dosyası güncellendi")
+            # self.message_box("Lider Ahenk json dosyası güncellendi")
+        else:
+            with open(self.liderejabberd_path, 'w') as f:
+                json.dump(data, f, ensure_ascii=False)
+                print("Lider Ahenk json dosyası oluşturuldu")
+            # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
+            # self.message_box("Lider Ahenk json dosyası oluşturuldu")
+
+        self.im.ssh_connect(data)
+        self.im.install_ejabberd(data)
+        self.im.ssh_disconnect()
+

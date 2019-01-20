@@ -9,23 +9,25 @@ from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
         QListView, QListWidget, QListWidgetItem, QPushButton, QSpinBox,
         QStackedWidget, QVBoxLayout, QWidget)
 
-class OpenLDAPPage(QWidget):
-    def __init__(self, parent=None):
-        super(OpenLDAPPage, self).__init__(parent)
+from ui.connect_page import ConnectPage
+import json
+import os
+from install_manager import InstallManager
 
-        ## server connect parameters
-        self.serverLabel = QLabel("Sunucu:")
-        self.serverCombo = QComboBox()
-        self.serverCombo.addItem("Uzak Makineye Kur")
-        self.serverCombo.addItem("Yerel Makineye Kur")
-        self.serverIpLabel = QLabel("Sunucu Bilgisi:")
-        self.server_ip = QLineEdit()
-        self.usernameLabel = QLabel("Kullanıcı Adı:")
-        self.username = QLineEdit()
-        self.passwordLabel = QLabel("Kullanıcı Parolası")
-        self.password = QLineEdit()
-        self.password.setEchoMode(QLineEdit.Password)
-        self.checkControlButton = QPushButton("Bağlantı Kontrol")
+class OpenLdapPage(QWidget):
+
+    def __init__(self, parent=None):
+        super(OpenLdapPage, self).__init__(parent)
+        self.liderldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/lider_ldap.json')
+        # self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log')
+        # self.log_backup_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log.{0}')
+
+        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist')):
+            os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist'))
+
+        self.connect_layout = ConnectPage()
+        self.im = InstallManager()
+        self.data = None
 
         #OpenLDAP parameters
         self.ldapStatusLabel = QLabel("LDAP İçin İşlem Seçiniz:")
@@ -53,21 +55,11 @@ class OpenLDAPPage(QWidget):
         self.ladmin_pwd.setPlaceholderText("****")
         self.ladmin_pwd.setEchoMode(QLineEdit.Password)
 
-        startUpdateButton = QPushButton("Kurulumu Başla")
+        self.startUpdateButton = QPushButton("Kurulumu Başla")
 
         ## Connect Layout
         connectGroup = QGroupBox("OpenLDAP Sunucusu Bağlantı Bilgileri")
-        connectLayout = QGridLayout()
-        connectLayout.addWidget(self.serverLabel, 0, 0)
-        connectLayout.addWidget(self.serverCombo, 0, 1)
-        connectLayout.addWidget(self.serverIpLabel, 1, 0)
-        connectLayout.addWidget(self.server_ip, 1, 1)
-        connectLayout.addWidget(self.usernameLabel, 2, 0)
-        connectLayout.addWidget(self.username, 2, 1)
-        connectLayout.addWidget(self.passwordLabel, 3, 0)
-        connectLayout.addWidget(self.password, 3, 1)
-        connectLayout.addWidget(self.checkControlButton, 4, 1)
-        connectGroup.setLayout(connectLayout)
+        connectGroup.setLayout(self.connect_layout.connectLayout)
 
         ## LDAP configuration Layout
         ldapGroup = QGroupBox("OpenLDAP Konfigürasyon Bilgileri")
@@ -95,18 +87,66 @@ class OpenLDAPPage(QWidget):
         mainLayout.addWidget(ldapGroup)
         # mainLayout.addWidget(packageGroup)
         mainLayout.addSpacing(12)
-        mainLayout.addWidget(startUpdateButton)
+        mainLayout.addWidget(self.startUpdateButton)
         mainLayout.addStretch(1)
 
         self.setLayout(mainLayout)
+        self.startUpdateButton.clicked.connect(self.save_ldap_data)
 
-        self.serverCombo.currentIndexChanged.connect(self.check_control_button)
 
-    def check_control_button(self, idx):
-        print(idx)
-        ## if select location is remote server
-        if idx == 0:
-            self.checkControlButton.setEnabled(True)
-        ## if select location is local server
+    def save_ldap_data(self):
+
+        if self.connect_layout.serverCombo.currentIndex() == 0:
+            location_server = 'remote'
         else:
-            self.checkControlButton.setEnabled(False)
+            location_server = 'local'
+
+        if self.ldapStatusCombo.currentIndex() == 0:
+            ldap_status = 'new'
+        else:
+            # if ldap_status is 'Güncelle'
+            ldap_status = 'update'
+
+        l_org_name = self.ldap_base_dn.text().split('.')
+        l_org_name = l_org_name[0]
+
+        data = {
+        'location': location_server,
+        # Server Configuration
+        'ip': self.connect_layout.server_ip.text(),
+        'username': self.connect_layout.username.text(),
+        'password': self.connect_layout.password.text(),
+
+        # OpenLDAP Configuration
+        'l_base_dn': self.ldap_base_dn.text(),
+        'l_config_pwd': self.l_config_pwd.text(),
+        'l_org_name': l_org_name,
+        'l_config_admin_dn': "cn=admin,cn=config",
+        'l_admin_cn': 'admin',
+        'ladmin_user': self.ladmin_user.text(),
+        'l_admin_pwd': self.ldap_admin_pwd.text(),
+        'ladmin_pwd': self.ladmin_pwd.text(),
+        'ldap_status': ldap_status,
+        # yeni ldap kur ya da varolan ldapı konfigüre et 'new' ya da 'update' parametreleri alıyor
+
+        }
+
+        if os.path.exists(self.liderldap_path) and os.stat(self.liderldap_path).st_size != 0:
+            with open(self.liderldap_path) as f:
+                read_data = json.load(f)
+            read_data.update(data)
+            with open(self.liderldap_path, 'w') as f:
+                json.dump(read_data, f, ensure_ascii=False)
+            print("Lider Ahenk json dosyası güncellendi")
+            # self.logger.info("Lider Ahenk json dosyası güncellendi")
+            # self.message_box("Lider Ahenk json dosyası güncellendi")
+        else:
+            with open(self.liderldap_path, 'w') as f:
+                json.dump(data, f, ensure_ascii=False)
+                print("Lider Ahenk json dosyası oluşturuldu")
+            # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
+            # self.message_box("Lider Ahenk json dosyası oluşturuldu")
+
+        self.im.ssh_connect(data)
+        self.im.install_ldap(data)
+        self.im.ssh_disconnect()

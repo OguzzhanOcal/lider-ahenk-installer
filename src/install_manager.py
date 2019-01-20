@@ -21,6 +21,7 @@ class InstallManager(object):
         self.logger = Logger()
         self.config_maneger = ConfigManager()
         self.liderahenk_data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/liderahenk.json')
+        self.liderldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/lider_ldap.json')
 
     def install_mariadb(self, data):
         db_installer = MariaDbInstaller(self.ssh, self.ssh_status)
@@ -33,6 +34,7 @@ class InstallManager(object):
         ejabberd_installer.install(data)
 
     def install_ldap(self, data):
+
         ldap_installer = OpenLdapInstaller(self.ssh, self.ssh_status)
         self.logger.info("OpenLDAP sunucu kurulumuna başlanıyor.")
         ldap_installer.install(data)

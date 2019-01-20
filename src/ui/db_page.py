@@ -8,24 +8,24 @@ from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
         QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
         QListView, QListWidget, QListWidgetItem, QPushButton, QSpinBox,
         QStackedWidget, QVBoxLayout, QWidget, QRadioButton)
+import json
+import os
+from ui.connect_page import ConnectPage
+from install_manager import InstallManager
+
 
 class DatabasePage(QWidget):
     def __init__(self, parent=None):
         super(DatabasePage, self).__init__(parent)
+        self.liderdb_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/liderdb.json')
+        # self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log')
+        # self.log_backup_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log.{0}')
 
-        ## server connect parameters
-        self.serverLabel = QLabel("Sunucu:")
-        self.serverCombo = QComboBox()
-        self.serverCombo.addItem("Uzak Makineye Kur")
-        self.serverCombo.addItem("Yerel Makineye Kur")
-        self.serverIpLabel = QLabel("Sunucu Bilgisi:")
-        self.server_ip = QLineEdit()
-        self.usernameLabel = QLabel("Kullanıcı Adı:")
-        self.username = QLineEdit()
-        self.passwordLabel = QLabel("Kullanıcı Parolası")
-        self.password = QLineEdit()
-        self.password.setEchoMode(QLineEdit.Password)
-        self.checkControlButton = QPushButton("Bağlantı Kontrol")
+        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist')):
+            os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist'))
+
+        self.connect_layout = ConnectPage()
+        self.im = InstallManager()
 
         ## database parameters
         self.dbNameLabel = QLabel("Veritabanı Adı:")
@@ -38,7 +38,7 @@ class DatabasePage(QWidget):
         self.db_password = QLineEdit()
         self.db_password.setEchoMode(QLineEdit.Password)
         self.db_password.setPlaceholderText("****")
-        self.startQueryButton = QPushButton("Kuruluma Başla")
+        self.startUpdateButton = QPushButton("Kurulumu Başla")
 
         ## Database Layout
         dbGroup = QGroupBox("Veritabanı Konfigürasyon Bilgileri")
@@ -51,40 +51,62 @@ class DatabasePage(QWidget):
         self.dbLayout.addWidget(self.db_password, 2, 1)
         dbGroup.setLayout(self.dbLayout)
 
-        ## Connect Layout
         connectGroup = QGroupBox("Veritabanı Sunucusu Bağlantı Bilgileri")
-        connectLayout = QGridLayout()
-        connectLayout.addWidget(self.serverLabel, 0, 0)
-        connectLayout.addWidget(self.serverCombo, 0, 1)
-        connectLayout.addWidget(self.serverIpLabel, 1, 0)
-        connectLayout.addWidget(self.server_ip, 1, 1)
-        connectLayout.addWidget(self.usernameLabel, 2, 0)
-        connectLayout.addWidget(self.username, 2, 1)
-        connectLayout.addWidget(self.passwordLabel, 3, 0)
-        connectLayout.addWidget(self.password, 3, 1)
-        connectLayout.addWidget(self.checkControlButton, 4, 1)
-        connectGroup.setLayout(connectLayout)
+        connectGroup.setLayout(self.connect_layout.connectLayout)
 
         mainLayout = QVBoxLayout()
         # mainLayout.addWidget(self.releasesCheckBox)
         mainLayout.addWidget(connectGroup)
         mainLayout.addWidget(dbGroup)
         mainLayout.addSpacing(12)
-        mainLayout.addWidget(self.startQueryButton)
+        mainLayout.addWidget(self.startUpdateButton)
         mainLayout.addStretch(1)
-
         self.setLayout(mainLayout)
+        self.startUpdateButton.clicked.connect(self.save_db_data)
 
-        self.serverCombo.currentIndexChanged.connect(self.check_control_button)
+    def save_db_data(self):
 
-    def check_control_button(self, idx):
-        print(idx)
-        ## if select location is remote server
-        if idx == 0:
-            self.checkControlButton.setEnabled(True)
-        ## if select location is local server
+        if self.connect_layout.serverCombo.currentIndex() == 0:
+            location_server = 'remote'
         else:
-            self.checkControlButton.setEnabled(False)
+            location_server = 'local'
+
+        data = {
+            'location': location_server,
+
+            # Server Configuration
+            'ip': self.connect_layout.server_ip.text(),
+            'username': self.connect_layout.username.text(),
+            'password': self.connect_layout.password.text(),
+            # Database Configuration
+            'db_server': self.connect_layout.server_ip.text(),
+            'db_name': self.db_name.text(),
+            'db_username': self.db_username.text(),
+            'db_password': self.db_password.text(),
+
+        }
+        print(data)
+
+        if os.path.exists(self.liderdb_path) and os.stat(self.liderdb_path).st_size != 0:
+            with open(self.liderdb_path) as f:
+                read_data = json.load(f)
+            read_data.update(data)
+            with open(self.liderdb_path, 'w') as f:
+                json.dump(read_data, f, ensure_ascii=False)
+            print('Lider Ahenk json dosyası güncellendi')
+            # self.logger.info("Lider Ahenk json dosyası güncellendi")
+            # self.message_box("Lider Ahenk json dosyası güncellendi")
+        else:
+            with open(self.liderdb_path, 'w') as f:
+                json.dump(data, f, ensure_ascii=False)
+                print("Lider Ahenk json dosyası oluşturuldu")
+            # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
+            # self.message_box("Lider Ahenk json dosyası oluşturuldu")
+
+        self.im.ssh_connect(data)
+        self.im.install_mariadb(data)
+        self.im.ssh_disconnect()
+
 
 
 
