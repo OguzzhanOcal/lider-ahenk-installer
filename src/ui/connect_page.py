@@ -36,10 +36,13 @@ class ConnectPage(QWidget):
         self.serverCombo.addItem("Yerel Makineye Kur")
         self.serverIpLabel = QLabel("Sunucu Bilgisi:")
         self.server_ip = QLineEdit()
+        self.server_ip.setPlaceholderText("192.168.*.*")
         self.usernameLabel = QLabel("Kullanıcı Adı:")
         self.username = QLineEdit()
+        self.username.setPlaceholderText("lider")
         self.passwordLabel = QLabel("Kullanıcı Parolası")
         self.password = QLineEdit()
+        self.password.setPlaceholderText("***")
         self.password.setEchoMode(QLineEdit.Password)
         self.checkControlButton = QPushButton("Bağlantı Kontrol")
 

@@ -147,6 +147,6 @@ class OpenLdapPage(QWidget):
             # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
             # self.message_box("Lider Ahenk json dosyası oluşturuldu")
 
-        self.im.ssh_connect(data)
-        self.im.install_ldap(data)
-        self.im.ssh_disconnect()
+        # self.im.ssh_connect(data)
+        # self.im.install_ldap(data)
+        # self.im.ssh_disconnect()

@@ -29,41 +29,59 @@ class LiderPage(QWidget):
         self.db_layout = DatabasePage()
         self.connect_layout = ConnectPage()
 
+        ## db parameters
+        self.dbServerLabel = QLabel("Veritabanı Sunucu Adresi:")
+        self.db_server = QLineEdit()
+        self.db_server.setPlaceholderText("192.168.*.*")
 
-        ## lider parameters
-        self.dbNameLabel = QLabel("Veritabanı Adı:")
-        self.db_name = QLineEdit()
-        self.db_name.setPlaceholderText("liderdb")
-        self.dbUsernameLabel = QLabel("Veritabanı Kullanıcı Adı:")
-        self.db_username = QLineEdit()
-        self.db_username.setPlaceholderText("root")
-        self.dbPwdLabel = QLabel("Veritabanı Kullanıcı Parolası:")
-        self.db_password = QLineEdit()
-        self.db_password.setEchoMode(QLineEdit.Password)
-        self.db_password.setPlaceholderText("****")
+        # OpenLDAP parameters
+        self.ldapServerLayout = QLabel("LDAP Sunucu Adresi:")
+        self.ldap_server = QLineEdit()
+        self.ldap_server.setPlaceholderText("192.168.*.*")
+
+        # Ejabberd parameters
+        self.ejabberdServerLabel = QLabel("XMPP Sunucu Adresi:")
+        self.ejabberd_server = QLineEdit()
+        self.ejabberd_server.setPlaceholderText("192.168.*.*")
+
+
         self.startUpdateButton = QPushButton("Kuruluma Başla")
-
         self.startUpdateButton.clicked.connect(self.abstract_data)
 
-        liderLdapGroup = QGroupBox("LDAP Konfigürasyon Bilgileri")
-        liderXmppGroup = QGroupBox("XMPP Konfigürasyon Bilgileri")
-        liderDbGroup = QGroupBox("Veritabanı Konfigürasyon Bilgileri")
+        self.liderLdapGroup = QGroupBox("LDAP Konfigürasyon Bilgileri")
+        self.liderXmppGroup = QGroupBox("XMPP Konfigürasyon Bilgileri")
+        self.liderDbGroup = QGroupBox("Veritabanı Konfigürasyon Bilgileri")
 
-        liderLdapGroup.setLayout(self.ldap_layout.ldapLayout)
-        liderXmppGroup.setLayout(self.ejabberd_layout.ejabberdLayout)
-        liderDbGroup.setLayout(self.db_layout.dbLayout)
+        # add server ip to database layout
+        self.db_layout.dbLayout.addWidget(self.dbServerLabel,3,0)
+        self.db_layout.dbLayout.addWidget(self.db_server,3,1)
+        self.liderDbGroup.setLayout(self.db_layout.dbLayout)
+
+        # add server ip to ldap layout
+        self.ldap_layout.ldapLayout.addWidget(self.ejabberd_layout.ldapServerLabel)
+        self.ldap_layout.ldapLayout.addWidget(self.ejabberd_layout.ldap_server)
+        self.liderLdapGroup.setLayout(self.ldap_layout.ldapLayout)
+
+        # add server ip to ejabberd layout
+        self.ejabberd_layout.ejabberdLayout.addWidget(self.ejabberdServerLabel,8,0)
+        self.ejabberd_layout.ejabberdLayout.addWidget(self.ejabberd_server,8,1)
+
+
+        self.liderXmppGroup.setLayout(self.ejabberd_layout.ejabberdLayout)
+        # liderDbGroup.setLayout(self.db_layout.dbLayout)
 
         ## Connect Layout
-        connectGroup = QGroupBox("Lİder Sunucusu Bağlantı Bilgileri")
-        connectGroup.setLayout(self.connect_layout.connectLayout)
+        self.connectGroup = QGroupBox("Lİder Sunucusu Bağlantı Bilgileri")
+        self.connectGroup.setLayout(self.connect_layout.connectLayout)
 
-        mainLayout = QVBoxLayout()
-        # mainLayout = QGridLayout()
+
+        # mainLayout = QVBoxLayout()
+        mainLayout = QGridLayout()
         # mainLayout.addWidget(self.releasesCheckBox)
-        mainLayout.addWidget(connectGroup)
-        mainLayout.addWidget(liderLdapGroup)
-        mainLayout.addWidget(liderXmppGroup)
-        mainLayout.addWidget(liderDbGroup)
+        mainLayout.addWidget(self.connectGroup,0,0)
+        mainLayout.addWidget(self.liderLdapGroup,0,1)
+        mainLayout.addWidget(self.liderXmppGroup,1,0)
+        mainLayout.addWidget(self.liderDbGroup,1,1)
         # mainLayout.addSpacing(12)
         mainLayout.addWidget(self.startUpdateButton)
         # mainLayout.addStretch(1)
@@ -93,11 +111,13 @@ class LiderPage(QWidget):
         self.ejabberd_layout.ldap_server.setText(ejabberd_data["ldap_servers"])
         self.ejabberd_layout.ldap_base_dn.setText(ejabberd_data['l_base_dn'])
         self.ejabberd_layout.ldap_admin_pwd.setText(ejabberd_data['l_admin_pwd'])
+        self.ejabberd_server.setText(ejabberd_data['ip'])
 
         ## get data from database json file
         with open(self.liderdb_path) as f:
             db_data = json.load(f)
 
+        self.db_server.setText(db_data["ip"])
         self.db_layout.db_name.setText(db_data["db_name"])
         self.db_layout.db_username.setText(db_data["db_username"])
         self.db_layout.db_password.setText(db_data["db_password"])
@@ -107,6 +127,9 @@ class LiderPage(QWidget):
         else:
             location_server = 'local'
 
+        l_org_name = self.ldap_layout.ldap_base_dn.text().split('.')
+        l_org_name = l_org_name[0]
+
         data = {
             'location': location_server,
 
@@ -115,10 +138,27 @@ class LiderPage(QWidget):
             'username': self.connect_layout.username.text(),
             'password': self.connect_layout.password.text(),
             # Database Configuration
-            'db_server': self.connect_layout.server_ip.text(),
+            'db_server': self.db_server.text(),
             'db_name': self.db_layout.db_name.text(),
             'db_username': self.db_layout.db_username.text(),
             'db_password': self.db_layout.db_password.text(),
+
+            # Ejabberd Configuration
+            'e_service_name': self.ejabberd_layout.e_service_name.text(),
+            'e_username': self.ejabberd_layout.e_username.text(),
+            'e_user_pwd': self.ejabberd_layout.e_user_pwd.text(),
+            'e_hosts': self.ejabberd_server.text(),
+
+            # OpenLDAP Configuration
+            'l_base_dn': self.ldap_layout.ldap_base_dn.text(),
+            'l_config_pwd': self.ldap_layout.l_config_pwd.text(),
+            'l_org_name': l_org_name,
+            'l_config_admin_dn': "cn=admin,cn=config",
+            'l_admin_cn': "admin",
+            'ladmin_user': self.ldap_layout.ladmin_user.text(),
+            'l_admin_pwd': self.ldap_layout.ldap_admin_pwd.text(),
+            'ladmin_pwd': self.ldap_layout.ladmin_pwd.text(),
+            'ldap_server': self.ldap_server.text()
 
         }
         print(data)
