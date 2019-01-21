@@ -12,6 +12,9 @@ import json
 import os
 from ui.connect_page import ConnectPage
 from install_manager import InstallManager
+from ui.message_box import MessageBox
+import time
+
 
 
 class DatabasePage(QWidget):
@@ -26,6 +29,7 @@ class DatabasePage(QWidget):
 
         self.connect_layout = ConnectPage()
         self.im = InstallManager()
+        self.msg_box = MessageBox()
 
         ## database parameters
         self.dbNameLabel = QLabel("Veritabanı Adı:")
@@ -38,7 +42,7 @@ class DatabasePage(QWidget):
         self.db_password = QLineEdit()
         self.db_password.setEchoMode(QLineEdit.Password)
         self.db_password.setPlaceholderText("****")
-        self.startUpdateButton = QPushButton("Kurulumu Başla")
+        self.startUpdateButton = QPushButton("Kaydet Ve Kur")
 
         ## Database Layout
         dbGroup = QGroupBox("Veritabanı Konfigürasyon Bilgileri")
@@ -79,35 +83,40 @@ class DatabasePage(QWidget):
             'username': self.connect_layout.username.text(),
             'password': self.connect_layout.password.text(),
             # Database Configuration
-            'db_server': self.connect_layout.server_ip.text(),
             'db_name': self.db_name.text(),
             'db_username': self.db_username.text(),
             'db_password': self.db_password.text(),
-
         }
         print(data)
 
-        if os.path.exists(self.liderdb_path) and os.stat(self.liderdb_path).st_size != 0:
-            with open(self.liderdb_path) as f:
-                read_data = json.load(f)
-            read_data.update(data)
-            with open(self.liderdb_path, 'w') as f:
-                json.dump(read_data, f, ensure_ascii=False)
-            print('Lider Ahenk json dosyası güncellendi')
-            # self.logger.info("Lider Ahenk json dosyası güncellendi")
-            # self.message_box("Lider Ahenk json dosyası güncellendi")
+        if data['db_name'] == "" or data['db_username'] == "" or data['db_password'] == "":
+            self.msg_box.message_box("Lütfen zorunlu alanları doldurunuz.\n"
+                                     "(Veritabanı adı, kullanıcı adı ve kullanıcı parolası)")
         else:
-            with open(self.liderdb_path, 'w') as f:
-                json.dump(data, f, ensure_ascii=False)
-                print("Lider Ahenk json dosyası oluşturuldu")
-            # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
-            # self.message_box("Lider Ahenk json dosyası oluşturuldu")
+            if os.path.exists(self.liderdb_path) and os.stat(self.liderdb_path).st_size != 0:
+                with open(self.liderdb_path) as f:
+                    read_data = json.load(f)
+                read_data.update(data)
+                with open(self.liderdb_path, 'w') as f:
+                    json.dump(read_data, f, ensure_ascii=False)
+                print('Lider Ahenk json dosyası güncellendi')
+                # self.logger.info("Lider Ahenk json dosyası güncellendi")
+                # self.message_box("Lider Ahenk json dosyası güncellendi")
+            else:
+                with open(self.liderdb_path, 'w') as f:
+                    json.dump(data, f, ensure_ascii=False)
+                    print("Lider Ahenk json dosyası oluşturuldu")
+                # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
+                # self.message_box("Lider Ahenk json dosyası oluşturuldu")
 
-        # self.im.ssh_connect(data)
-        # self.im.install_mariadb(data)
-        # self.im.ssh_disconnect()
+
+            self.msg_box.message_box("Veritabanı bilgileri {0} dosyasına kaydedildi\n"
+                                     "Veritabanı kurulumana başlanacak.".format(self.liderdb_path))
 
 
+            # self.im.ssh_connect(data)
+            # self.im.install_mariadb(data)
+            # self.im.ssh_disconnect()
 
 
 

@@ -55,7 +55,7 @@ class OpenLdapPage(QWidget):
         self.ladmin_pwd.setPlaceholderText("****")
         self.ladmin_pwd.setEchoMode(QLineEdit.Password)
 
-        self.startUpdateButton = QPushButton("Kurulumu Başla")
+        self.startUpdateButton = QPushButton("Kaydet Ve Kur")
 
         ## Connect Layout
         connectGroup = QGroupBox("OpenLDAP Sunucusu Bağlantı Bilgileri")

@@ -57,7 +57,7 @@ class ConnectPage(QWidget):
         self.connectLayout.addWidget(self.username, 2, 1)
         self.connectLayout.addWidget(self.passwordLabel, 3, 0)
         self.connectLayout.addWidget(self.password, 3, 1)
-        self.connectLayout.addWidget(self.checkControlButton, 4, 1)
+        self.connectLayout.addWidget(self.checkControlButton, 5, 0)
         self.connectGroup.setLayout(self.connectLayout)
 
         # mainLayout = QVBoxLayout()
@@ -73,11 +73,8 @@ class ConnectPage(QWidget):
     def check_control_button(self, idx):
         ## if select location is remote server
         if idx == 0:
-            # self.checkControlButton.setEnabled(True)
             self.server_ip.setText("")
-        ## if select location is local server
         else:
-            # self.checkControlButton.setEnabled(False)
             self.server_ip.setText("127.0.0.1")
 
     def ssh_control(self):

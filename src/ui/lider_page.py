@@ -12,6 +12,8 @@ from ui.ldap_page import OpenLdapPage
 from ui.ejabberd_page import EjabberdPage
 from ui.db_page import DatabasePage
 from ui.connect_page import ConnectPage
+from install_manager import InstallManager
+from ui.message_box import MessageBox
 import os
 import json
 
@@ -24,10 +26,15 @@ class LiderPage(QWidget):
         self.liderdb_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/liderdb.json')
         self.lider_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/lider.json')
 
+        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist')):
+            os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist'))
+
         self.ldap_layout = OpenLdapPage()
         self.ejabberd_layout = EjabberdPage()
         self.db_layout = DatabasePage()
         self.connect_layout = ConnectPage()
+        self.im = InstallManager()
+        self.msb_box = MessageBox()
 
         ## db parameters
         self.dbServerLabel = QLabel("Veritabanı Sunucu Adresi:")
@@ -35,7 +42,7 @@ class LiderPage(QWidget):
         self.db_server.setPlaceholderText("192.168.*.*")
 
         # OpenLDAP parameters
-        self.ldapServerLayout = QLabel("LDAP Sunucu Adresi:")
+        self.ldapServerLabel = QLabel("LDAP Sunucu Adresi:")
         self.ldap_server = QLineEdit()
         self.ldap_server.setPlaceholderText("192.168.*.*")
 
@@ -44,34 +51,46 @@ class LiderPage(QWidget):
         self.ejabberd_server = QLineEdit()
         self.ejabberd_server.setPlaceholderText("192.168.*.*")
 
+        self.fileServerLabel = QLabel("Dosya Sunucu Adresi:")
+        self.file_server = QLineEdit()
+        self.file_server.setPlaceholderText("192.168.*.*")
+        self.file_server.setDisabled(True)
 
-        self.startUpdateButton = QPushButton("Kuruluma Başla")
-        self.startUpdateButton.clicked.connect(self.abstract_data)
+
+        self.getDataButton = QPushButton("Verileri Getir")
+        self.getDataButton.clicked.connect(self.get_data)
+
+        self.installButton = QPushButton("Kaydet ve Kur")
+        self.installButton.clicked.connect(self.save_lider_data)
 
         self.liderLdapGroup = QGroupBox("LDAP Konfigürasyon Bilgileri")
         self.liderXmppGroup = QGroupBox("XMPP Konfigürasyon Bilgileri")
         self.liderDbGroup = QGroupBox("Veritabanı Konfigürasyon Bilgileri")
 
         # add server ip to database layout
-        self.db_layout.dbLayout.addWidget(self.dbServerLabel,3,0)
-        self.db_layout.dbLayout.addWidget(self.db_server,3,1)
+        self.db_layout.dbLayout.addWidget(self.dbServerLabel, 3, 0)
+        self.db_layout.dbLayout.addWidget(self.db_server, 3, 1)
         self.liderDbGroup.setLayout(self.db_layout.dbLayout)
 
         # add server ip to ldap layout
-        self.ldap_layout.ldapLayout.addWidget(self.ejabberd_layout.ldapServerLabel)
-        self.ldap_layout.ldapLayout.addWidget(self.ejabberd_layout.ldap_server)
+        self.ldap_layout.ldapLayout.addWidget(self.ldapServerLabel)
+        self.ldap_layout.ldapLayout.addWidget(self.ldap_server)
+        self.ldap_layout.ldapLayout.removeWidget(self.ldap_layout.ldapStatusCombo)
+        self.ldap_layout.ldapLayout.removeWidget(self.ldap_layout.ldapStatusLabel)
         self.liderLdapGroup.setLayout(self.ldap_layout.ldapLayout)
 
         # add server ip to ejabberd layout
-        self.ejabberd_layout.ejabberdLayout.addWidget(self.ejabberdServerLabel,8,0)
-        self.ejabberd_layout.ejabberdLayout.addWidget(self.ejabberd_server,8,1)
-
-
+        self.ejabberd_layout.ejabberdLayout.removeWidget(self.ejabberd_layout.ldapServerLabel)
+        self.ejabberd_layout.ejabberdLayout.removeWidget(self.ejabberd_layout.ldap_server)
+        self.ejabberd_layout.ejabberdLayout.addWidget(self.ejabberdServerLabel, 8, 0)
+        self.ejabberd_layout.ejabberdLayout.addWidget(self.ejabberd_server, 8, 1)
         self.liderXmppGroup.setLayout(self.ejabberd_layout.ejabberdLayout)
-        # liderDbGroup.setLayout(self.db_layout.dbLayout)
 
         ## Connect Layout
+        self.connect_layout.serverCombo.currentIndexChanged.connect(self.check_control_button)
         self.connectGroup = QGroupBox("Lİder Sunucusu Bağlantı Bilgileri")
+        self.connect_layout.connectLayout.addWidget(self.fileServerLabel, 4, 0)
+        self.connect_layout.connectLayout.addWidget(self.file_server, 4, 1)
         self.connectGroup.setLayout(self.connect_layout.connectLayout)
 
 
@@ -83,49 +102,70 @@ class LiderPage(QWidget):
         mainLayout.addWidget(self.liderXmppGroup,1,0)
         mainLayout.addWidget(self.liderDbGroup,1,1)
         # mainLayout.addSpacing(12)
-        mainLayout.addWidget(self.startUpdateButton)
+        mainLayout.addWidget(self.getDataButton)
+        mainLayout.addWidget(self.installButton)
         # mainLayout.addStretch(1)
 
         self.setLayout(mainLayout)
 
-    def abstract_data(self):
+    def check_control_button(self, idx):
+        ## if select location is remote server
+        if idx == 0:
+            # self.checkControlButton.setEnabled(True)
+            self.file_server.setDisabled(True)
+        else:
+            self.file_server.setDisabled(False)
 
-        ## get data from ldap json file
-        with open(self.liderldap_path) as f:
-            ldap_data = json.load(f)
-        # self.logger.info("liderahenk.json dosyasından veriler okunuyor")
+    def get_data(self):
 
-        self.ldap_layout.ldap_base_dn.setText(ldap_data["l_base_dn"])
-        self.ldap_layout.ldap_admin_pwd.setText(ldap_data["l_admin_pwd"])
-        self.ldap_layout.l_config_pwd.setText(ldap_data["l_config_pwd"])
-        self.ldap_layout.ladmin_user.setText(ldap_data["ladmin_user"])
-        self.ldap_layout.ladmin_pwd.setText(ldap_data["ladmin_pwd"])
+        if os.path.exists(self.liderdb_path or self.liderldap_path or self.liderejabberd_path):
 
-        ## get data from ejabberd json file
-        with open(self.liderejabberd_path) as f:
-            ejabberd_data = json.load(f)
 
-        self.ejabberd_layout.e_service_name.setText(ejabberd_data["e_service_name"])
-        self.ejabberd_layout.e_user_pwd.setText(ejabberd_data["e_user_pwd"])
-        self.ejabberd_layout.lider_user_pwd.setText(ejabberd_data["lider_user_pwd"])
-        self.ejabberd_layout.ldap_server.setText(ejabberd_data["ldap_servers"])
-        self.ejabberd_layout.ldap_base_dn.setText(ejabberd_data['l_base_dn'])
-        self.ejabberd_layout.ldap_admin_pwd.setText(ejabberd_data['l_admin_pwd'])
-        self.ejabberd_server.setText(ejabberd_data['ip'])
+            ## get data from ldap json file
+            with open(self.liderldap_path) as f:
+                ldap_data = json.load(f)
+            # self.logger.info("liderahenk.json dosyasından veriler okunuyor")
 
-        ## get data from database json file
-        with open(self.liderdb_path) as f:
-            db_data = json.load(f)
+            self.ldap_layout.ldap_base_dn.setText(ldap_data["l_base_dn"])
+            self.ldap_layout.ldap_admin_pwd.setText(ldap_data["l_admin_pwd"])
+            self.ldap_layout.l_config_pwd.setText(ldap_data["l_config_pwd"])
+            self.ldap_layout.ladmin_user.setText(ldap_data["ladmin_user"])
+            self.ldap_layout.ladmin_pwd.setText(ldap_data["ladmin_pwd"])
 
-        self.db_server.setText(db_data["ip"])
-        self.db_layout.db_name.setText(db_data["db_name"])
-        self.db_layout.db_username.setText(db_data["db_username"])
-        self.db_layout.db_password.setText(db_data["db_password"])
+            ## get data from ejabberd json file
+            with open(self.liderejabberd_path) as f:
+                ejabberd_data = json.load(f)
+
+            self.ejabberd_layout.e_service_name.setText(ejabberd_data["e_service_name"])
+            self.ejabberd_layout.e_user_pwd.setText(ejabberd_data["e_user_pwd"])
+            self.ejabberd_layout.lider_user_pwd.setText(ejabberd_data["lider_user_pwd"])
+            self.ldap_server.setText(ejabberd_data["ldap_servers"])
+            self.ejabberd_layout.ldap_base_dn.setText(ejabberd_data['l_base_dn'])
+            self.ejabberd_layout.ldap_admin_pwd.setText(ejabberd_data['l_admin_pwd'])
+            self.ejabberd_server.setText(ejabberd_data['ip'])
+
+            ## get data from database json file
+            with open(self.liderdb_path) as f:
+                db_data = json.load(f)
+
+            self.db_server.setText(db_data["ip"])
+            self.db_layout.db_name.setText(db_data["db_name"])
+            self.db_layout.db_username.setText(db_data["db_username"])
+            self.db_layout.db_password.setText(db_data["db_password"])
+
+        else:
+            self.msb_box.message_box("Kayıtlı Veritabanı, OpenLDAP veya XMPP bilgileri bulunumadı.\n\n"
+                                     "Lider konfigürasyonu için Lider sayfasındaki alanları doldurarak kuruluma devam edebilirsiniz.")
+
+
+    def save_lider_data(self):
 
         if self.connect_layout.serverCombo.currentIndex() == 0:
             location_server = 'remote'
+            file_server = self.connect_layout.server_ip.text()
         else:
             location_server = 'local'
+            file_server = self.file_server.text()
 
         l_org_name = self.ldap_layout.ldap_base_dn.text().split('.')
         l_org_name = l_org_name[0]
@@ -148,6 +188,8 @@ class LiderPage(QWidget):
             'e_username': self.ejabberd_layout.e_username.text(),
             'e_user_pwd': self.ejabberd_layout.e_user_pwd.text(),
             'e_hosts': self.ejabberd_server.text(),
+            'lider_username': 'lider_sunucu',
+            'lider_user_pwd': self.ejabberd_layout.lider_user_pwd.text(),
 
             # OpenLDAP Configuration
             'l_base_dn': self.ldap_layout.ldap_base_dn.text(),
@@ -158,7 +200,15 @@ class LiderPage(QWidget):
             'ladmin_user': self.ldap_layout.ladmin_user.text(),
             'l_admin_pwd': self.ldap_layout.ldap_admin_pwd.text(),
             'ladmin_pwd': self.ldap_layout.ladmin_pwd.text(),
-            'ldap_server': self.ldap_server.text()
+            'ldap_servers': self.ldap_server.text(),
+
+            # File Server Configuration
+            'file_server': file_server,
+            'fs_username': self.connect_layout.username.text(),
+            'fs_username_pwd': self.connect_layout.password.text(),
+            'fs_plugin_path': '/usr/share/lider-server',
+            "fs_agreement_path": '/usr/share/lider-server',
+            "fs_agent_file_path": '/usr/share/lider-server',
 
         }
         print(data)
@@ -179,6 +229,10 @@ class LiderPage(QWidget):
             # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
             # self.message_box("Lider Ahenk json dosyası oluşturuldu")
 
+
+        self.im.ssh_connect(data)
+        self.im.install_lider(data)
+        self.im.ssh_disconnect()
 
 
 

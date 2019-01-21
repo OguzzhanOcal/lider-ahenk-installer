@@ -27,7 +27,7 @@ class EjabberdPage(QWidget):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist'))
 
         self.connect_layout = ConnectPage()
-        self.startUpdateButton = QPushButton("Kurulumu Başla")
+        self.startUpdateButton = QPushButton("Kaydet Ve Kur")
         ## Ejabberd parameters
         self.ejabberdServiceLabel = QLabel("XMPP Servis Adı:")
         self.e_service_name = QLineEdit()
