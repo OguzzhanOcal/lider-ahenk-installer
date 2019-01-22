@@ -13,6 +13,7 @@ from ui.connect_page import ConnectPage
 import json
 import os
 from install_manager import InstallManager
+from ui.message_box import MessageBox
 
 class OpenLdapPage(QWidget):
 
@@ -27,7 +28,7 @@ class OpenLdapPage(QWidget):
 
         self.connect_layout = ConnectPage()
         self.im = InstallManager()
-        self.data = None
+        self.msg_box = MessageBox()
 
         #OpenLDAP parameters
         self.ldapStatusLabel = QLabel("LDAP İçin İşlem Seçiniz:")
@@ -96,6 +97,8 @@ class OpenLdapPage(QWidget):
 
     def save_ldap_data(self):
 
+
+
         if self.connect_layout.serverCombo.currentIndex() == 0:
             location_server = 'remote'
         else:
@@ -131,22 +134,36 @@ class OpenLdapPage(QWidget):
 
         }
 
-        if os.path.exists(self.liderldap_path) and os.stat(self.liderldap_path).st_size != 0:
-            with open(self.liderldap_path) as f:
-                read_data = json.load(f)
-            read_data.update(data)
-            with open(self.liderldap_path, 'w') as f:
-                json.dump(read_data, f, ensure_ascii=False)
-            print("Lider Ahenk json dosyası güncellendi")
-            # self.logger.info("Lider Ahenk json dosyası güncellendi")
-            # self.message_box("Lider Ahenk json dosyası güncellendi")
-        else:
-            with open(self.liderldap_path, 'w') as f:
-                json.dump(data, f, ensure_ascii=False)
-                print("Lider Ahenk json dosyası oluşturuldu")
-            # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
-            # self.message_box("Lider Ahenk json dosyası oluşturuldu")
+        if data['l_base_dn'] == "" or data['l_config_pwd'] == "" or data['ladmin_user'] == "" or data['l_admin_pwd'] == "" or data['ladmin_pwd'] == ""\
+                or data['ip'] =="" or data['username'] == "" or data['password'] =="":
+            self.msg_box.message_box("Lütfen aşağıdaki alanları doldurunuz.\n"
+                                     "- LDAP sunucu bağlantı bilgileri\n"
+                                     "- LDAP base dn\n"
+                                     "- LDAP admin parolası\n"
+                                     "- LDAP config kullanıcı parolası\n"
+                                     "- Lider arayüz kullanıcı parolası")
 
-        # self.im.ssh_connect(data)
-        # self.im.install_ldap(data)
-        # self.im.ssh_disconnect()
+        else:
+
+            if os.path.exists(self.liderldap_path) and os.stat(self.liderldap_path).st_size != 0:
+                with open(self.liderldap_path) as f:
+                    read_data = json.load(f)
+                read_data.update(data)
+                with open(self.liderldap_path, 'w') as f:
+                    json.dump(read_data, f, ensure_ascii=False)
+                print("Lider Ahenk json dosyası güncellendi")
+                # self.logger.info("Lider Ahenk json dosyası güncellendi")
+                self.msg_box.message_box("LDAP bilgileri güncellendi\n"
+                                         "LDAP kurulumuna başlanacak.")
+            else:
+                with open(self.liderldap_path, 'w') as f:
+                    json.dump(data, f, ensure_ascii=False)
+                    print("Lider Ahenk json dosyası oluşturuldu")
+                # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
+                # self.message_box("Lider Ahenk json dosyası oluşturuldu")
+                self.msg_box.message_box("LDAP bilgileri kaydedildi\n"
+                                         "LDAP kurulumana başlanacak.")
+
+            # self.im.ssh_connect(data)
+            # self.im.install_ldap(data)
+            # self.im.ssh_disconnect()

@@ -42,7 +42,7 @@ class ConnectPage(QWidget):
         self.username.setPlaceholderText("lider")
         self.passwordLabel = QLabel("Kullanıcı Parolası")
         self.password = QLineEdit()
-        self.password.setPlaceholderText("***")
+        self.password.setPlaceholderText("****")
         self.password.setEchoMode(QLineEdit.Password)
         self.checkControlButton = QPushButton("Bağlantı Kontrol")
 

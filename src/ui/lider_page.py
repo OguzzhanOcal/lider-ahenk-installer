@@ -34,7 +34,7 @@ class LiderPage(QWidget):
         self.db_layout = DatabasePage()
         self.connect_layout = ConnectPage()
         self.im = InstallManager()
-        self.msb_box = MessageBox()
+        self.msg_box = MessageBox()
 
         ## db parameters
         self.dbServerLabel = QLabel("Veritabanı Sunucu Adresi:")
@@ -213,26 +213,39 @@ class LiderPage(QWidget):
         }
         print(data)
 
-        if os.path.exists(self.lider_path) and os.stat(self.lider_path).st_size != 0:
-            with open(self.lider_path) as f:
-                read_data = json.load(f)
-            read_data.update(data)
-            with open(self.lider_path, 'w') as f:
-                json.dump(read_data, f, ensure_ascii=False)
-            print('Lider Ahenk json dosyası güncellendi')
-            # self.logger.info("Lider Ahenk json dosyası güncellendi")
-            # self.message_box("Lider Ahenk json dosyası güncellendi")
+        if data['l_base_dn'] == "" or data['l_config_pwd'] == "" or data['ladmin_user'] == "" or data['l_admin_pwd'] == "" or data['ladmin_pwd'] == ""\
+                or data['db_name'] == "" or data['db_username'] == "" or data['db_password'] == ""\
+                or data['e_service_name'] == "" or data['e_user_pwd'] == "" or data['ldap_servers'] == "" or data['l_base_dn'] == "" or data['lider_user_pwd'] == "" or data['l_admin_pwd'] ==""\
+                or data['ip'] =="" or data['username'] == "" or data['password'] =="":
+            self.msg_box.message_box("Lütfen aşağıdaki alanları doldurunuz.\n"
+                                     "- Lider sunucu bağlantı bilgileri\n"
+                                     "- LDAP bilgileri\n"
+                                     "- Veritabanı bilgileri\n"
+                                     "- XMPP bilgileri")
         else:
-            with open(self.lider_path, 'w') as f:
-                json.dump(data, f, ensure_ascii=False)
-                print("Lider Ahenk json dosyası oluşturuldu")
-            # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
-            # self.message_box("Lider Ahenk json dosyası oluşturuldu")
+
+            if os.path.exists(self.lider_path) and os.stat(self.lider_path).st_size != 0:
+                with open(self.lider_path) as f:
+                    read_data = json.load(f)
+                read_data.update(data)
+                with open(self.lider_path, 'w') as f:
+                    json.dump(read_data, f, ensure_ascii=False)
+                print('Lider Ahenk json dosyası güncellendi')
+                # self.logger.info("Lider Ahenk json dosyası güncellendi")
+                self.msg_box.message_box("Lider bilgileri güncellendi\n"
+                                         "Lider kurulumana başlanacak.")
+            else:
+                with open(self.lider_path, 'w') as f:
+                    json.dump(data, f, ensure_ascii=False)
+                    print("Lider Ahenk json dosyası oluşturuldu")
+                # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
+                self.msg_box.message_box("Lider bilgileri kaydedildi\n"
+                                         "Lider kurulumuna başlanacak.")
 
 
-        self.im.ssh_connect(data)
-        self.im.install_lider(data)
-        self.im.ssh_disconnect()
+            self.im.ssh_connect(data)
+            self.im.install_lider(data)
+            self.im.ssh_disconnect()
 
 
 

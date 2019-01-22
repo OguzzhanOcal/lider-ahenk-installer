@@ -89,9 +89,12 @@ class DatabasePage(QWidget):
         }
         print(data)
 
-        if data['db_name'] == "" or data['db_username'] == "" or data['db_password'] == "":
-            self.msg_box.message_box("Lütfen zorunlu alanları doldurunuz.\n"
-                                     "(Veritabanı adı, kullanıcı adı ve kullanıcı parolası)")
+        if data['db_name'] == "" or data['db_username'] == "" or data['db_password'] == ""\
+                or data['ip'] =="" or data['username'] == "" or data['password'] =="":
+            self.msg_box.message_box("Lütfen aşağıdaki alanları doldurunuz.\n"
+                                     "- Veritabanı sunucu bağlantı bilgileri\n"
+                                     "- Veritabanı adı\n"
+                                     "- Veritabanı kullanıcı adı ve parolası")
         else:
             if os.path.exists(self.liderdb_path) and os.stat(self.liderdb_path).st_size != 0:
                 with open(self.liderdb_path) as f:
@@ -101,17 +104,15 @@ class DatabasePage(QWidget):
                     json.dump(read_data, f, ensure_ascii=False)
                 print('Lider Ahenk json dosyası güncellendi')
                 # self.logger.info("Lider Ahenk json dosyası güncellendi")
-                # self.message_box("Lider Ahenk json dosyası güncellendi")
+                self.msg_box.message_box("Veritabanı bilgileri güncellendi\n"
+                                         "Veritabanı kurulumana başlanacak.")
             else:
                 with open(self.liderdb_path, 'w') as f:
                     json.dump(data, f, ensure_ascii=False)
                     print("Lider Ahenk json dosyası oluşturuldu")
                 # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
-                # self.message_box("Lider Ahenk json dosyası oluşturuldu")
-
-
-            self.msg_box.message_box("Veritabanı bilgileri {0} dosyasına kaydedildi\n"
-                                     "Veritabanı kurulumana başlanacak.".format(self.liderdb_path))
+                self.msg_box.message_box("Veritabanı bilgileri kaydedildi\n"
+                                     "Veritabanı kurulumuna başlanacak.")
 
 
             # self.im.ssh_connect(data)

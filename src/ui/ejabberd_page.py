@@ -6,12 +6,11 @@ from PyQt5.QtCore import QDate, QSize, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
         QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
-        QListView, QListWidget, QListWidgetItem, QPushButton, QSpinBox,
-        QStackedWidget, QVBoxLayout, QWidget)
+        QListView, QListWidget, QListWidgetItem, QPushButton, QSpinBox, QStackedWidget, QVBoxLayout, QWidget)
 import json
 import os
 from install_manager import InstallManager
-
+from ui.message_box import MessageBox
 from ui.connect_page import ConnectPage
 
 class EjabberdPage(QWidget):
@@ -19,6 +18,7 @@ class EjabberdPage(QWidget):
         super(EjabberdPage, self).__init__(parent)
 
         self.im = InstallManager()
+        self.msg_box = MessageBox()
         self.liderejabberd_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/lider_ejabberd.json')
         # self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log')
         # self.log_backup_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log.{0}')
@@ -92,6 +92,7 @@ class EjabberdPage(QWidget):
         self.setLayout(mainLayout)
         self.startUpdateButton.clicked.connect(self.save_ejabberd_data)
 
+
     def save_ejabberd_data(self):
 
         if self.connect_layout.serverCombo.currentIndex() == 0:
@@ -121,23 +122,36 @@ class EjabberdPage(QWidget):
 
         }
         print(data)
-        if os.path.exists(self.liderejabberd_path) and os.stat(self.liderejabberd_path).st_size != 0:
-            with open(self.liderejabberd_path) as f:
-                read_data = json.load(f)
-            read_data.update(data)
-            with open(self.liderejabberd_path, 'w') as f:
-                json.dump(read_data, f, ensure_ascii=False)
-            print("Lider Ahenk json dosyası güncellendi")
-            # self.logger.info("Lider Ahenk json dosyası güncellendi")
-            # self.message_box("Lider Ahenk json dosyası güncellendi")
+        if data['e_service_name'] == "" or data['e_user_pwd'] == "" or data['ldap_servers'] == "" or data['l_base_dn'] == "" or data['lider_user_pwd'] == "" or data['l_admin_pwd'] == ""\
+                or data['ip'] =="" or data['username'] == "" or data['password'] =="":
+            self.msg_box.message_box("Lütfen aşağıdaki alanları doldurunuz.\n"
+                                     "- XMPP sunucu bağlantı bilgileri\n"
+                                     "- XMPP servis adı\n"
+                                     "- XMPP admin parolası\n"
+                                     "- lider_sunucu parolası\n"
+                                     "- LDAP bilgileri")
+
         else:
-            with open(self.liderejabberd_path, 'w') as f:
-                json.dump(data, f, ensure_ascii=False)
-                print("Lider Ahenk json dosyası oluşturuldu")
-            # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
-            # self.message_box("Lider Ahenk json dosyası oluşturuldu")
-        #
-        # self.im.ssh_connect(data)
-        # self.im.install_ejabberd(data)
-        # self.im.ssh_disconnect()
+
+            if os.path.exists(self.liderejabberd_path) and os.stat(self.liderejabberd_path).st_size != 0:
+                with open(self.liderejabberd_path) as f:
+                    read_data = json.load(f)
+                read_data.update(data)
+                with open(self.liderejabberd_path, 'w') as f:
+                    json.dump(read_data, f, ensure_ascii=False)
+                print("Lider Ahenk json dosyası güncellendi")
+                # self.logger.info("Lider Ahenk json dosyası güncellendi")
+                self.msg_box.message_box("XMPP bilgileri güncellendi\n"
+                                         "XMPP kurulumuna başlanacak.")
+            else:
+                with open(self.liderejabberd_path, 'w') as f:
+                    json.dump(data, f, ensure_ascii=False)
+                    print("Lider Ahenk json dosyası oluşturuldu")
+                # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
+                self.msg_box.message_box("XMPP bilgileri kaydedildi\n"
+                                         "XMPP kurulumuna başlanacak.")
+            #
+            # self.im.ssh_connect(data)
+            # self.im.install_ejabberd(data)
+            # self.im.ssh_disconnect()
 
