@@ -87,15 +87,15 @@ class ConnectPage(QWidget):
         }
 
         if self.serverCombo.currentIndex() == 1 and data["ip"] == "" or data["username"] == "" or data["password"] == "":
-            self.msgBox.message_box("Lütfen sunucu adresini, kullanıcı adını ve parolasını giriniz!")
+            self.msgBox.warning("Lütfen sunucu adresini, kullanıcı adını ve parolasını giriniz!")
 
         else:
             ssh_status = self.im.ssh_connect(data)
             if ssh_status is True:
-                self.msgBox.message_box("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
+                self.msgBox.information("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
             else:
                 msg = "Bağlantı Sağlanamadı. Bağlantı Ayarlarını Kontrol Ederek Daha Sonra Tekrar Deneyiniz!\n"
-                self.msgBox.message_box(msg)
+                self.msgBox.information(msg)
 
 
 

@@ -22,7 +22,7 @@ class MessageBox(QWidget):
         self.width = 320
         self.height = 500
 
-    def message_box(self, message):
+    def information(self, message):
         self.msgBox.setMinimumSize(self.width, self.height)
         self.msgBox.setIcon(self.msgBox.Information)
         self.msgBox.setWindowTitle(self.title)
@@ -30,6 +30,20 @@ class MessageBox(QWidget):
         self.msgBox.setInformativeText(_fromUtf8(str(message)))
         self.msgBox.setDefaultButton(QMessageBox.Ok)
         self.msgBox.exec_()
+
+    def about(self, message):
+        QMessageBox.about(self, "Lider Ahenk Kurulum Uygulaması", message)
+
+    def warning(self, message):
+
+        self.msgBox.setMinimumSize(self.width, self.height)
+        self.msgBox.setIcon(self.msgBox.Warning)
+        self.msgBox.setWindowTitle("UYARI")
+
+        self.msgBox.setInformativeText(_fromUtf8(str(message)))
+        self.msgBox.setDefaultButton(QMessageBox.Ok)
+        self.msgBox.exec_()
+
 
 
 if __name__ == '__main__':

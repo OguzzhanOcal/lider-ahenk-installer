@@ -121,7 +121,7 @@ class EjabberdPage(QWidget):
         print(data)
         if data['e_service_name'] == "" or data['e_user_pwd'] == "" or data['ldap_servers'] == "" or data['l_base_dn'] == "" or data['lider_user_pwd'] == "" or data['l_admin_pwd'] == ""\
                 or data['ip'] =="" or data['username'] == "" or data['password'] =="":
-            self.msg_box.message_box("Lütfen aşağıdaki alanları doldurunuz.\n"
+            self.msg_box.warning("Lütfen aşağıdaki alanları doldurunuz.\n"
                                      "- XMPP sunucu bağlantı bilgileri\n"
                                      "- XMPP servis adı\n"
                                      "- XMPP admin parolası\n"
@@ -138,14 +138,14 @@ class EjabberdPage(QWidget):
                     json.dump(read_data, f, ensure_ascii=False)
                 print("Lider Ahenk json dosyası güncellendi")
                 # self.logger.info("Lider Ahenk json dosyası güncellendi")
-                self.msg_box.message_box("XMPP bilgileri güncellendi\n"
+                self.msg_box.information("XMPP bilgileri güncellendi\n"
                                          "XMPP kurulumuna başlanacak.")
             else:
                 with open(self.liderejabberd_path, 'w') as f:
                     json.dump(data, f, ensure_ascii=False)
                     print("Lider Ahenk json dosyası oluşturuldu")
                 # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
-                self.msg_box.message_box("XMPP bilgileri kaydedildi\n"
+                self.msg_box.information("XMPP bilgileri kaydedildi\n"
                                          "XMPP kurulumuna başlanacak.")
 
             self.im.ssh_connect(data)

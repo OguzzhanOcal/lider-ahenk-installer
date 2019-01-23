@@ -132,7 +132,7 @@ class OpenLdapPage(QWidget):
 
         if data['l_base_dn'] == "" or data['l_config_pwd'] == "" or data['ladmin_user'] == "" or data['l_admin_pwd'] == "" or data['ladmin_pwd'] == ""\
                 or data['ip'] =="" or data['username'] == "" or data['password'] =="":
-            self.msg_box.message_box("Lütfen aşağıdaki alanları doldurunuz.\n"
+            self.msg_box.warning("Lütfen aşağıdaki alanları doldurunuz.\n"
                                      "- LDAP sunucu bağlantı bilgileri\n"
                                      "- LDAP base dn\n"
                                      "- LDAP admin parolası\n"
@@ -149,7 +149,7 @@ class OpenLdapPage(QWidget):
                     json.dump(read_data, f, ensure_ascii=False)
                 print("Lider Ahenk json dosyası güncellendi")
                 # self.logger.info("Lider Ahenk json dosyası güncellendi")
-                self.msg_box.message_box("LDAP bilgileri güncellendi\n"
+                self.msg_box.information("LDAP bilgileri güncellendi\n"
                                          "LDAP kurulumuna başlanacak.")
             else:
                 with open(self.liderldap_path, 'w') as f:
@@ -157,7 +157,7 @@ class OpenLdapPage(QWidget):
                     print("Lider Ahenk json dosyası oluşturuldu")
                 # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
                 # self.message_box("Lider Ahenk json dosyası oluşturuldu")
-                self.msg_box.message_box("LDAP bilgileri kaydedildi\n"
+                self.msg_box.information("LDAP bilgileri kaydedildi\n"
                                          "LDAP kurulumana başlanacak.")
 
             self.im.ssh_connect(data)

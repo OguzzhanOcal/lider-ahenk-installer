@@ -85,7 +85,7 @@ class DatabasePage(QWidget):
 
         if data['db_name'] == "" or data['db_username'] == "" or data['db_password'] == ""\
                 or data['ip'] =="" or data['username'] == "" or data['password'] =="":
-            self.msg_box.message_box("Lütfen aşağıdaki alanları doldurunuz.\n"
+            self.msg_box.warning("Lütfen aşağıdaki alanları doldurunuz.\n"
                                      "- Veritabanı sunucu bağlantı bilgileri\n"
                                      "- Veritabanı adı\n"
                                      "- Veritabanı kullanıcı adı ve parolası")
@@ -98,14 +98,14 @@ class DatabasePage(QWidget):
                     json.dump(read_data, f, ensure_ascii=False)
                 print('Lider Ahenk json dosyası güncellendi')
                 # self.logger.info("Lider Ahenk json dosyası güncellendi")
-                self.msg_box.message_box("Veritabanı bilgileri güncellendi\n"
+                self.msg_box.information("Veritabanı bilgileri güncellendi\n"
                                          "Veritabanı kurulumana başlanacak.")
             else:
                 with open(self.liderdb_path, 'w') as f:
                     json.dump(data, f, ensure_ascii=False)
                     print("Lider Ahenk json dosyası oluşturuldu")
                 # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
-                self.msg_box.message_box("Veritabanı bilgileri kaydedildi\n"
+                self.msg_box.information("Veritabanı bilgileri kaydedildi\n"
                                      "Veritabanı kurulumuna başlanacak.")
 
             #

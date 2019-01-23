@@ -5,16 +5,20 @@
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QApplication, QDialog, QHBoxLayout, QListView, QListWidget, QListWidgetItem, QPushButton,
-                             QStackedWidget, QVBoxLayout, QMessageBox)
+                             QStackedWidget, QVBoxLayout, QMenuBar, QAction, QMessageBox)
 import ui.conf.configdialog_rc
 from ui.ejabberd.ejabberd_page import EjabberdPage
 from ui.database.db_page import DatabasePage
 from ui.ldap.ldap_page import OpenLdapPage
 from ui.lider.lider_page import LiderPage
+from ui.message_box.message_box import MessageBox
+
 
 class ConfigDialog(QDialog):
     def __init__(self, parent=None):
         super(ConfigDialog, self).__init__(parent)
+
+        self.msg_box = MessageBox()
 
         self.contentsWidget = QListWidget()
         self.contentsWidget.setViewMode(QListView.IconMode)
@@ -25,6 +29,10 @@ class ConfigDialog(QDialog):
         self.contentsWidget.setMinimumHeight(512)
         self.contentsWidget.setSpacing(12)
 
+        #aboutAction = QAction('About', self)
+        #aboutAction.setStatusTip('About')
+        #aboutAction.triggered.connect(QMessageBox.information(self, None, "Lider Ahenk Kurulum Uygulaması"))
+
         self.pagesWidget = QStackedWidget()
         # self.pagesWidget.setMinimumHeight(600)
         self.pagesWidget.setMinimumWidth(512)
@@ -34,7 +42,6 @@ class ConfigDialog(QDialog):
         self.pagesWidget.addWidget(EjabberdPage())
         self.pagesWidget.addWidget(LiderPage())
         closeButton = QPushButton("Kapat")
-        self.msgBox = QMessageBox()
         self.createIcons()
         self.contentsWidget.setCurrentRow(0)
         closeButton.clicked.connect(self.close)
@@ -47,8 +54,10 @@ class ConfigDialog(QDialog):
         buttonsLayout.addStretch(1)
         buttonsLayout.addWidget(closeButton)
 
+
         mainLayout = QVBoxLayout()
         mainLayout.addLayout(horizontalLayout)
+        #mainLayout.addWidget(menubar)
         mainLayout.addStretch(1)
         mainLayout.addSpacing(12)
         mainLayout.addLayout(buttonsLayout)
