@@ -2,18 +2,14 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-from PyQt5.QtCore import QDate, QSize, Qt
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
-        QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
-        QListView, QListWidget, QListWidgetItem, QPushButton, QSpinBox,
-        QStackedWidget, QVBoxLayout, QWidget, QRadioButton)
-from ui.ldap_page import OpenLdapPage
-from ui.ejabberd_page import EjabberdPage
-from ui.db_page import DatabasePage
-from ui.connect_page import ConnectPage
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit,
+                             QPushButton, QWidget)
+from ui.ldap.ldap_page import OpenLdapPage
+from ui.ejabberd.ejabberd_page import EjabberdPage
+from ui.database.db_page import DatabasePage
+from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
-from ui.message_box import MessageBox
+from ui.message_box.message_box import MessageBox
 import os
 import json
 
@@ -21,13 +17,13 @@ class LiderPage(QWidget):
     def __init__(self, parent=None):
         super(LiderPage, self).__init__(parent)
 
-        self.liderldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/lider_ldap.json')
-        self.liderejabberd_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../dist/lider_ejabberd.json')
-        self.liderdb_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/liderdb.json')
-        self.lider_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/lider.json')
+        self.liderldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/lider_ldap.json')
+        self.liderejabberd_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../dist/lider_ejabberd.json')
+        self.liderdb_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/liderdb.json')
+        self.lider_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/lider.json')
 
-        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist')):
-            os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist'))
+        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
+            os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
 
         self.ldap_layout = OpenLdapPage()
         self.ejabberd_layout = EjabberdPage()

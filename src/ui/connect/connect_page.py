@@ -3,27 +3,20 @@
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
 import os
-from PyQt5.QtCore import QDate, QSize, Qt
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
-        QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
-        QListView, QListWidget, QListWidgetItem, QPushButton, QSpinBox,
-        QStackedWidget, QVBoxLayout, QWidget, QRadioButton, QMessageBox)
+from PyQt5.QtWidgets import (QComboBox, QGridLayout, QGroupBox, QLabel, QLineEdit,
+                             QPushButton, QWidget)
 from install_manager import InstallManager
 from api.ssh.ssh import Ssh
-from ui.message_box import MessageBox
+from ui.message_box.message_box import MessageBox
 
 
 class ConnectPage(QWidget):
     def __init__(self, parent=None):
         super(ConnectPage, self).__init__(parent)
 
-        self.liderdb_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/liderdb.json')
         # self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log')
-        # self.log_backup_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log.{0}')
-
-        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist')):
-            os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist'))
+        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
+            os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
         self.im = InstallManager()
         self.ssh = Ssh()
         # self.app = ConfigDialog()
@@ -34,7 +27,7 @@ class ConnectPage(QWidget):
         self.serverCombo = QComboBox()
         self.serverCombo.addItem("Uzak Makineye Kur")
         self.serverCombo.addItem("Yerel Makineye Kur")
-        self.serverIpLabel = QLabel("Sunucu Bilgisi:")
+        self.serverIpLabel = QLabel("Sunucu Adresi:")
         self.server_ip = QLineEdit()
         self.server_ip.setPlaceholderText("192.168.*.*")
         self.usernameLabel = QLabel("Kullanıcı Adı:")
@@ -92,19 +85,14 @@ class ConnectPage(QWidget):
             'username': self.username.text(),
             'password': self.password.text(),
         }
-        ssh_status = self.im.ssh_connect(data)
-        if ssh_status == True:
-            print("bağlantı başarılı okkkkkkkkkkk")
-        else:
-            print("nonnneeeeeeeee")
 
         if self.serverCombo.currentIndex() == 1 and data["ip"] == "" or data["username"] == "" or data["password"] == "":
-            self.msgBox.message_box("Lütfen sunucu adresini, kullanıcı adını ve parolasını giriniz!" )
+            self.msgBox.message_box("Lütfen sunucu adresini, kullanıcı adını ve parolasını giriniz!")
 
         else:
             ssh_status = self.im.ssh_connect(data)
             if ssh_status is True:
-                self.msgBox.message_box("Bağlantı Başarılı. Kuruluma İleri Butonuna Tıklayarak Devam Edebilirsiniz.")
+                self.msgBox.message_box("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
             else:
                 msg = "Bağlantı Sağlanamadı. Bağlantı Ayarlarını Kontrol Ederek Daha Sonra Tekrar Deneyiniz!\n"
                 self.msgBox.message_box(msg)

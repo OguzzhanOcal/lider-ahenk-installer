@@ -2,29 +2,25 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-from PyQt5.QtCore import QDate, QSize, Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
-        QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
-        QListView, QListWidget, QListWidgetItem, QPushButton, QSpinBox,
-        QStackedWidget, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (QComboBox, QGridLayout, QGroupBox, QLabel, QLineEdit,
+                             QPushButton, QVBoxLayout, QWidget)
 
-from ui.connect_page import ConnectPage
+from ui.connect.connect_page import ConnectPage
 import json
 import os
 from install_manager import InstallManager
-from ui.message_box import MessageBox
+from ui.message_box.message_box import MessageBox
 
 class OpenLdapPage(QWidget):
 
     def __init__(self, parent=None):
         super(OpenLdapPage, self).__init__(parent)
-        self.liderldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/lider_ldap.json')
+        self.liderldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/lider_ldap.json')
         # self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log')
         # self.log_backup_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log.{0}')
 
-        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist')):
-            os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist'))
+        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
+            os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
 
         self.connect_layout = ConnectPage()
         self.im = InstallManager()
@@ -164,6 +160,6 @@ class OpenLdapPage(QWidget):
                 self.msg_box.message_box("LDAP bilgileri kaydedildi\n"
                                          "LDAP kurulumana başlanacak.")
 
-            # self.im.ssh_connect(data)
-            # self.im.install_ldap(data)
-            # self.im.ssh_disconnect()
+            self.im.ssh_connect(data)
+            self.im.install_ldap(data)
+            self.im.ssh_disconnect()

@@ -2,19 +2,15 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-from PyQt5.QtCore import QDate, QSize, Qt, QStringListModel
+from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
-        QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
-        QListView, QListWidget, QListWidgetItem, QPushButton, QSpinBox,
-        QStackedWidget, QVBoxLayout, QWidget, QMessageBox)
-
-import ui.configdialog_rc
-
-from ui.ejabberd_page import EjabberdPage
-from ui.db_page import DatabasePage
-from ui.ldap_page import OpenLdapPage
-from ui.lider_page import LiderPage
+from PyQt5.QtWidgets import (QApplication, QDialog, QHBoxLayout, QListView, QListWidget, QListWidgetItem, QPushButton,
+                             QStackedWidget, QVBoxLayout, QMessageBox)
+import ui.conf.configdialog_rc
+from ui.ejabberd.ejabberd_page import EjabberdPage
+from ui.database.db_page import DatabasePage
+from ui.ldap.ldap_page import OpenLdapPage
+from ui.lider.lider_page import LiderPage
 
 class ConfigDialog(QDialog):
     def __init__(self, parent=None):
@@ -37,13 +33,10 @@ class ConfigDialog(QDialog):
         self.pagesWidget.addWidget(OpenLdapPage())
         self.pagesWidget.addWidget(EjabberdPage())
         self.pagesWidget.addWidget(LiderPage())
-
         closeButton = QPushButton("Kapat")
-
         self.msgBox = QMessageBox()
         self.createIcons()
         self.contentsWidget.setCurrentRow(0)
-
         closeButton.clicked.connect(self.close)
 
         horizontalLayout = QHBoxLayout()
@@ -67,7 +60,6 @@ class ConfigDialog(QDialog):
     def changePage(self, current, previous):
         if not current:
             current = previous
-
         self.pagesWidget.setCurrentIndex(self.contentsWidget.row(current))
 
     def createIcons(self):
@@ -96,7 +88,6 @@ class ConfigDialog(QDialog):
         configButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
 
         self.contentsWidget.currentItemChanged.connect(self.changePage)
-
 
 if __name__ == '__main__':
 

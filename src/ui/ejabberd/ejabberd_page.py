@@ -2,16 +2,13 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-from PyQt5.QtCore import QDate, QSize, Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
-        QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
-        QListView, QListWidget, QListWidgetItem, QPushButton, QSpinBox, QStackedWidget, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit,
+                             QPushButton, QVBoxLayout, QWidget)
 import json
 import os
 from install_manager import InstallManager
-from ui.message_box import MessageBox
-from ui.connect_page import ConnectPage
+from ui.message_box.message_box import MessageBox
+from ui.connect.connect_page import ConnectPage
 
 class EjabberdPage(QWidget):
     def __init__(self, parent=None):
@@ -19,12 +16,12 @@ class EjabberdPage(QWidget):
 
         self.im = InstallManager()
         self.msg_box = MessageBox()
-        self.liderejabberd_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/lider_ejabberd.json')
+        self.liderejabberd_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/lider_ejabberd.json')
         # self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log')
         # self.log_backup_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log.{0}')
 
-        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist')):
-            os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist'))
+        if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
+            os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
 
         self.connect_layout = ConnectPage()
         self.startUpdateButton = QPushButton("Kaydet Ve Kur")
@@ -150,8 +147,8 @@ class EjabberdPage(QWidget):
                 # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
                 self.msg_box.message_box("XMPP bilgileri kaydedildi\n"
                                          "XMPP kurulumuna başlanacak.")
-            #
-            # self.im.ssh_connect(data)
-            # self.im.install_ejabberd(data)
-            # self.im.ssh_disconnect()
+
+            self.im.ssh_connect(data)
+            self.im.install_ejabberd(data)
+            self.im.ssh_disconnect()
 

@@ -2,19 +2,12 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-from PyQt5.QtCore import QDate, QSize, Qt
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
-        QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
-        QListView, QListWidget, QListWidgetItem, QPushButton, QSpinBox,
-        QStackedWidget, QVBoxLayout, QWidget, QRadioButton)
-import json
+from PyQt5.QtWidgets import (QApplication, QDialog, QGridLayout, QGroupBox, QLabel, QLineEdit,
+                             QVBoxLayout)
 import os
-from ui.connect_page import ConnectPage
+from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
-from ui.message_box import MessageBox
-import time
-
+from ui.message_box.message_box import MessageBox
 
 
 class DatabasePage(QDialog):
