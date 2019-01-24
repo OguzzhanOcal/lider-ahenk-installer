@@ -12,6 +12,8 @@ from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
 import os
 import json
+import time
+from threading import Thread
 
 class LiderPage(QWidget):
     def __init__(self, parent=None):
@@ -31,6 +33,7 @@ class LiderPage(QWidget):
         self.connect_layout = ConnectPage()
         self.im = InstallManager()
         self.msg_box = MessageBox()
+        self.data = None
 
         ## db parameters
         self.dbServerLabel = QLabel("Veritabanı Sunucu Adresi:")
@@ -114,8 +117,7 @@ class LiderPage(QWidget):
 
     def get_data(self):
 
-        if os.path.exists(self.liderdb_path or self.liderldap_path or self.liderejabberd_path):
-
+        if os.path.exists(self.liderldap_path):
 
             ## get data from ldap json file
             with open(self.liderldap_path) as f:
@@ -127,6 +129,11 @@ class LiderPage(QWidget):
             self.ldap_layout.l_config_pwd.setText(ldap_data["l_config_pwd"])
             self.ldap_layout.ladmin_user.setText(ldap_data["ladmin_user"])
             self.ldap_layout.ladmin_pwd.setText(ldap_data["ladmin_pwd"])
+        else:
+            self.msg_box.information("Kayıtlı OpenLDAP bilgileri bulunumadı.\n\n"
+                                     "Lider konfigürasyonu için Lider sayfasındaki alanları doldurarak kuruluma devam edebilirsiniz.")
+
+        if os.path.exists(self.liderejabberd_path):
 
             ## get data from ejabberd json file
             with open(self.liderejabberd_path) as f:
@@ -139,7 +146,11 @@ class LiderPage(QWidget):
             self.ejabberd_layout.ldap_base_dn.setText(ejabberd_data['l_base_dn'])
             self.ejabberd_layout.ldap_admin_pwd.setText(ejabberd_data['l_admin_pwd'])
             self.ejabberd_server.setText(ejabberd_data['ip'])
+        else:
+            self.msg_box.information("Kayıtlı  XMPP bilgileri bulunumadı.\n\n"
+                                     "Lider konfigürasyonu için Lider sayfasındaki alanları doldurarak kuruluma devam edebilirsiniz.")
 
+        if os.path.exists(self.liderdb_path):
             ## get data from database json file
             with open(self.liderdb_path) as f:
                 db_data = json.load(f)
@@ -150,8 +161,10 @@ class LiderPage(QWidget):
             self.db_layout.db_password.setText(db_data["db_password"])
 
         else:
-            self.msg_box.information("Kayıtlı Veritabanı, OpenLDAP veya XMPP bilgileri bulunumadı.\n\n"
+            self.msg_box.information("Kayıtlı Veritabanı bilgileri bulunumadı.\n\n"
                                      "Lider konfigürasyonu için Lider sayfasındaki alanları doldurarak kuruluma devam edebilirsiniz.")
+
+
 
 
     def save_lider_data(self):
@@ -166,7 +179,7 @@ class LiderPage(QWidget):
         l_org_name = self.ldap_layout.ldap_base_dn.text().split('.')
         l_org_name = l_org_name[0]
 
-        data = {
+        self.data = {
             'location': location_server,
 
             # Server Configuration
@@ -207,12 +220,12 @@ class LiderPage(QWidget):
             "fs_agent_file_path": '/usr/share/lider-server',
 
         }
-        print(data)
+        print(self.data)
 
-        if data['l_base_dn'] == "" or data['l_config_pwd'] == "" or data['ladmin_user'] == "" or data['l_admin_pwd'] == "" or data['ladmin_pwd'] == ""\
-                or data['db_name'] == "" or data['db_username'] == "" or data['db_password'] == ""\
-                or data['e_service_name'] == "" or data['e_user_pwd'] == "" or data['ldap_servers'] == "" or data['l_base_dn'] == "" or data['lider_user_pwd'] == "" or data['l_admin_pwd'] ==""\
-                or data['ip'] =="" or data['username'] == "" or data['password'] =="":
+        if self.data['l_base_dn'] == "" or self.data['l_config_pwd'] == "" or self.data['ladmin_user'] == "" or self.data['l_admin_pwd'] == "" or self.data['ladmin_pwd'] == ""\
+                or self.data['db_name'] == "" or self.data['db_username'] == "" or self.data['db_password'] == ""\
+                or self.data['e_service_name'] == "" or self.data['e_user_pwd'] == "" or self.data['ldap_servers'] == "" or self.data['l_base_dn'] == "" or self.data['lider_user_pwd'] == "" or self.data['l_admin_pwd'] ==""\
+                or self.data['ip'] =="" or self.data['username'] == "" or self.data['password'] =="":
             self.msg_box.warning("Lütfen aşağıdaki alanları doldurunuz.\n"
                                      "- Lider sunucu bağlantı bilgileri\n"
                                      "- LDAP bilgileri\n"
@@ -223,7 +236,7 @@ class LiderPage(QWidget):
             if os.path.exists(self.lider_path) and os.stat(self.lider_path).st_size != 0:
                 with open(self.lider_path) as f:
                     read_data = json.load(f)
-                read_data.update(data)
+                read_data.update(self.data)
                 with open(self.lider_path, 'w') as f:
                     json.dump(read_data, f, ensure_ascii=False)
                 print('Lider Ahenk json dosyası güncellendi')
@@ -232,16 +245,35 @@ class LiderPage(QWidget):
                                          "Lider kurulumana başlanacak.")
             else:
                 with open(self.lider_path, 'w') as f:
-                    json.dump(data, f, ensure_ascii=False)
+                    json.dump(self.data, f, ensure_ascii=False)
                     print("Lider Ahenk json dosyası oluşturuldu")
                 # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
                 self.msg_box.information("Lider bilgileri kaydedildi\n"
                                          "Lider kurulumuna başlanacak.")
 
+            try:
+                th1 = Thread(target=self.install_start())
+                th1.start()
+                th2 = Thread(target=self.watch_log())
+                th2.start()
 
-            self.im.ssh_connect(data)
-            self.im.install_lider(data)
-            self.im.ssh_disconnect()
+            except Exception as e:
+                print(e)
+
+    def install_start(self):
+        print("kurulummmm")
+        self.im.ssh_connect(self.data)
+
+        self.im.install_lider(self.data)
+        self.im.ssh_disconnect()
+
+    def watch_log(self):
+        print("loggggg")
+        os.system("/usr/bin/python3 ui/log/watch_log_page.py")
+
+
+
+
 
 
 
