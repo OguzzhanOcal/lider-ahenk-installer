@@ -9,6 +9,7 @@ import os
 from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
+from threading import Thread
 
 
 class DatabasePage(QWidget):
@@ -24,6 +25,7 @@ class DatabasePage(QWidget):
         self.connect_layout = ConnectPage()
         self.im = InstallManager()
         self.msg_box = MessageBox()
+        self.data = None
 
         ## database parameters
         self.dbNameLabel = QLabel("Veritabanı Adı:")
@@ -69,7 +71,7 @@ class DatabasePage(QWidget):
         else:
             location_server = 'local'
 
-        data = {
+        self.data = {
             'location': location_server,
 
             # Server Configuration
@@ -81,10 +83,10 @@ class DatabasePage(QWidget):
             'db_username': self.db_username.text(),
             'db_password': self.db_password.text(),
         }
-        print(data)
+        print(self.data)
 
-        if data['db_name'] == "" or data['db_username'] == "" or data['db_password'] == ""\
-                or data['ip'] =="" or data['username'] == "" or data['password'] =="":
+        if self.data['db_name'] == "" or self.data['db_username'] == "" or self.data['db_password'] == ""\
+                or self.data['ip'] =="" or self.data['username'] == "" or self.data['password'] =="":
             self.msg_box.warning("Lütfen aşağıdaki alanları doldurunuz.\n"
                                      "- Veritabanı sunucu bağlantı bilgileri\n"
                                      "- Veritabanı adı\n"
@@ -93,7 +95,7 @@ class DatabasePage(QWidget):
             if os.path.exists(self.liderdb_path) and os.stat(self.liderdb_path).st_size != 0:
                 with open(self.liderdb_path) as f:
                     read_data = json.load(f)
-                read_data.update(data)
+                read_data.update(self.data)
                 with open(self.liderdb_path, 'w') as f:
                     json.dump(read_data, f, ensure_ascii=False)
                 print('Lider Ahenk json dosyası güncellendi')
@@ -102,17 +104,28 @@ class DatabasePage(QWidget):
                                          "Veritabanı kurulumana başlanacak.")
             else:
                 with open(self.liderdb_path, 'w') as f:
-                    json.dump(data, f, ensure_ascii=False)
+                    json.dump(self.data, f, ensure_ascii=False)
                     print("Lider Ahenk json dosyası oluşturuldu")
                 # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
                 self.msg_box.information("Veritabanı bilgileri kaydedildi\n"
                                      "Veritabanı kurulumuna başlanacak.")
+            try:
+                th1 = Thread(target=self.install_start())
+                th1.start()
+                th1.daemon = None
+                th2 = Thread(target=self.watch_log())
+                th2.start()
 
-            #
-            # self.im.ssh_connect(data)
-            # self.im.install_mariadb(data)
-            # self.im.ssh_disconnect()
+            except Exception as e:
+                print(e)
 
+    def install_start(self):
+        print("kurulummmm")
+        self.im.ssh_connect(self.data)
 
+        # self.im.install_mariadb(self.data)
+        self.im.ssh_disconnect()
 
-
+    def watch_log(self):
+        print("loggggg")
+        os.system("/usr/bin/python3 ui/log/watch_log_page.py")
