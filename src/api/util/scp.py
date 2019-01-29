@@ -2,7 +2,7 @@
 # Copyright (C) 2008 James Bardin <j.bardin@gmail.com>
 
 """
-Utilities for sending files over ssh using the scp1 protocol.
+Utilities for sending files over util using the scp1 protocol.
 """
 
 __version__ = '0.10.2'

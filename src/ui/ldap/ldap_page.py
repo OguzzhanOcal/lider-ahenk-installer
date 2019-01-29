@@ -2,12 +2,10 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-from PyQt5.QtWidgets import (QComboBox, QGridLayout, QGroupBox, QLabel, QLineEdit,
-                             QPushButton, QVBoxLayout, QWidget)
-
-from ui.connect.connect_page import ConnectPage
-import json
 import os
+import json
+from PyQt5.QtWidgets import (QComboBox, QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget)
+from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
 
@@ -15,16 +13,15 @@ class OpenLdapPage(QWidget):
 
     def __init__(self, parent=None):
         super(OpenLdapPage, self).__init__(parent)
-        self.liderldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/lider_ldap.json')
-        # self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log')
-        # self.log_backup_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log.{0}')
 
+        self.liderldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/lider_ldap.json')
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
 
         self.connect_layout = ConnectPage()
         self.im = InstallManager()
         self.msg_box = MessageBox()
+        self.data = None
 
         #OpenLDAP parameters
         self.ldapStatusLabel = QLabel("LDAP İçin İşlem Seçiniz:")
@@ -93,8 +90,6 @@ class OpenLdapPage(QWidget):
 
     def save_ldap_data(self):
 
-
-
         if self.connect_layout.serverCombo.currentIndex() == 0:
             location_server = 'remote'
         else:
@@ -109,7 +104,7 @@ class OpenLdapPage(QWidget):
         l_org_name = self.ldap_base_dn.text().split('.')
         l_org_name = l_org_name[0]
 
-        data = {
+        self.data = {
         'location': location_server,
         # Server Configuration
         'ip': self.connect_layout.server_ip.text(),
@@ -127,11 +122,10 @@ class OpenLdapPage(QWidget):
         'ladmin_pwd': self.ladmin_pwd.text(),
         'ldap_status': ldap_status,
         # yeni ldap kur ya da varolan ldapı konfigüre et 'new' ya da 'update' parametreleri alıyor
-
         }
 
-        if data['l_base_dn'] == "" or data['l_config_pwd'] == "" or data['ladmin_user'] == "" or data['l_admin_pwd'] == "" or data['ladmin_pwd'] == ""\
-                or data['ip'] =="" or data['username'] == "" or data['password'] =="":
+        if self.data['l_base_dn'] == "" or self.data['l_config_pwd'] == "" or self.data['ladmin_user'] == "" or self.data['l_admin_pwd'] == "" or self.data['ladmin_pwd'] == ""\
+                or self.data['ip'] =="" or self.data['username'] == "" or self.data['password'] =="":
             self.msg_box.warning("Lütfen aşağıdaki alanları doldurunuz.\n"
                                      "- LDAP sunucu bağlantı bilgileri\n"
                                      "- LDAP base dn\n"
@@ -144,7 +138,7 @@ class OpenLdapPage(QWidget):
             if os.path.exists(self.liderldap_path) and os.stat(self.liderldap_path).st_size != 0:
                 with open(self.liderldap_path) as f:
                     read_data = json.load(f)
-                read_data.update(data)
+                read_data.update(self.data)
                 with open(self.liderldap_path, 'w') as f:
                     json.dump(read_data, f, ensure_ascii=False)
                 print("Lider Ahenk json dosyası güncellendi")
@@ -153,13 +147,17 @@ class OpenLdapPage(QWidget):
                                          "LDAP kurulumuna başlanacak.")
             else:
                 with open(self.liderldap_path, 'w') as f:
-                    json.dump(data, f, ensure_ascii=False)
+                    json.dump(self.data, f, ensure_ascii=False)
                     print("Lider Ahenk json dosyası oluşturuldu")
                 # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
                 # self.message_box("Lider Ahenk json dosyası oluşturuldu")
                 self.msg_box.information("LDAP bilgileri kaydedildi\n"
                                          "LDAP kurulumana başlanacak.")
 
-            self.im.ssh_connect(data)
-            self.im.install_ldap(data)
-            self.im.ssh_disconnect()
+            if self.data['location'] == 'remote':
+                self.im.ssh_connect(self.data)
+                self.im.install_ldap(self.data)
+                self.im.ssh_disconnect()
+            else:
+                self.im.install_ejabberd(self.data)
+

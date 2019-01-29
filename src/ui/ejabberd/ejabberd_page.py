@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit,
-                             QPushButton, QVBoxLayout, QWidget)
-import json
 import os
+import json
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget)
 from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
 from ui.connect.connect_page import ConnectPage
@@ -14,14 +13,13 @@ class EjabberdPage(QWidget):
     def __init__(self, parent=None):
         super(EjabberdPage, self).__init__(parent)
 
-        self.im = InstallManager()
-        self.msg_box = MessageBox()
         self.liderejabberd_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/lider_ejabberd.json')
-        # self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log')
-        # self.log_backup_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log.{0}')
-
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
+
+        self.data = None
+        self.im = InstallManager()
+        self.msg_box = MessageBox()
 
         self.connect_layout = ConnectPage()
         self.startUpdateButton = QPushButton("Kaydet Ve Kur")
@@ -89,7 +87,6 @@ class EjabberdPage(QWidget):
         self.setLayout(mainLayout)
         self.startUpdateButton.clicked.connect(self.save_ejabberd_data)
 
-
     def save_ejabberd_data(self):
 
         if self.connect_layout.serverCombo.currentIndex() == 0:
@@ -97,7 +94,7 @@ class EjabberdPage(QWidget):
         else:
             location_server = 'local'
 
-        data = {
+        self.data = {
 
             'location': location_server,
             # Server Configuration
@@ -118,9 +115,9 @@ class EjabberdPage(QWidget):
             'l_admin_pwd': self.ldap_admin_pwd.text()
 
         }
-        print(data)
-        if data['e_service_name'] == "" or data['e_user_pwd'] == "" or data['ldap_servers'] == "" or data['l_base_dn'] == "" or data['lider_user_pwd'] == "" or data['l_admin_pwd'] == ""\
-                or data['ip'] =="" or data['username'] == "" or data['password'] =="":
+
+        if self.data['e_service_name'] == "" or self.data['e_user_pwd'] == "" or self.data['ldap_servers'] == "" or self.data['l_base_dn'] == "" or self.data['lider_user_pwd'] == "" or self.data['l_admin_pwd'] == ""\
+                or self.data['ip'] =="" or self.data['username'] == "" or self.data['password'] =="":
             self.msg_box.warning("Lütfen aşağıdaki alanları doldurunuz.\n"
                                      "- XMPP sunucu bağlantı bilgileri\n"
                                      "- XMPP servis adı\n"
@@ -133,7 +130,7 @@ class EjabberdPage(QWidget):
             if os.path.exists(self.liderejabberd_path) and os.stat(self.liderejabberd_path).st_size != 0:
                 with open(self.liderejabberd_path) as f:
                     read_data = json.load(f)
-                read_data.update(data)
+                read_data.update(self.data)
                 with open(self.liderejabberd_path, 'w') as f:
                     json.dump(read_data, f, ensure_ascii=False)
                 print("Lider Ahenk json dosyası güncellendi")
@@ -142,13 +139,16 @@ class EjabberdPage(QWidget):
                                          "XMPP kurulumuna başlanacak.")
             else:
                 with open(self.liderejabberd_path, 'w') as f:
-                    json.dump(data, f, ensure_ascii=False)
+                    json.dump(self.data, f, ensure_ascii=False)
                     print("Lider Ahenk json dosyası oluşturuldu")
                 # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
                 self.msg_box.information("XMPP bilgileri kaydedildi\n"
                                          "XMPP kurulumuna başlanacak.")
 
-            self.im.ssh_connect(data)
-            self.im.install_ejabberd(data)
-            self.im.ssh_disconnect()
+            if self.data['location'] == 'remote':
+                self.im.ssh_connect(self.data)
+                self.im.install_ejabberd(self.data)
+                self.im.ssh_disconnect()
+            else:
+                self.im.install_ejabberd(self.data)
 

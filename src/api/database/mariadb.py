@@ -17,27 +17,65 @@ class MariaDbInstaller(object):
         config_manager = ConfigManager()
         cfg_data = config_manager.read()
         # print(cfg_data)
-        if self.ssh_status == 1 or data['location'] == 'local':
-            self.ssh_api.run_command(cfg_data["cmd_soft_properties"])
-            self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"])
-            self.logger.info("Lider Ahenk repo key dosyası indirildi")
-            self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"])
-            self.logger.info("Lider Ahenk repo adresi eklendi")
-            self.ssh_api.run_command(cfg_data["cmd_update"])
-            self.logger.info("Paket listesi güncellendi(apt update)")
-            self.ssh_api.run_command(cfg_data["cmd_deb_frontend"])
-            self.ssh_api.run_command(cfg_data["db_debconf_pwd"].format(data["db_password"]))
-            self.ssh_api.run_command(cfg_data["db_debconf_pwd_again"].format(data["db_password"]))
-            self.ssh_api.run_command(cfg_data["cmd_db_install"])
-            self.logger.info("Mariadb paketi kuruldu")
-            self.ssh_api.run_command(cfg_data["cmd_db_dep"])
-            self.logger.info("Veritabanı bağımlılıkları kuruldu")
-            self.ssh_api.run_command(cfg_data["cmd_create_db"].format(data["db_password"], data["db_name"]))
-            self.logger.info("liderdb veritabanı oluşturuldu")
-            self.logger.info("Veritabanı grant yetkisi verildi")
-            self.ssh_api.run_command(cfg_data["cmd_db_grant_privileges"].format(data["db_password"]))
+        if self.ssh_status is None or data['location'] == 'local':
+
+            result_code = self.ssh_api.run_command(cfg_data["cmd_soft_properties"])
+            if result_code == 0:
+                self.logger.info("software-properties-common paketi kuruldu")
+            else:
+                self.logger.error("software-properties-common paketi kurulamadı, result_code: "+str(result_code))
+
+            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"])
+            if result_code == 0:
+                self.logger.info("Lider Ahenk repo key dosyası indirildi")
+            else:
+                self.logger.error("Lider Ahenk repo key dosyası indirilemedi, result_code: "+str(result_code))
+
+            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"])
+            if result_code == 0:
+                self.logger.info("Lider Ahenk repo adresi eklendi")
+            else:
+                self.logger.error("Lider Ahenk repo adresi eklenemedi, result_code: "+str(result_code))
+
+            result_code = self.ssh_api.run_command(cfg_data["cmd_update"])
+            if result_code == 0:
+                self.logger.info("Paket listesi güncellendi(apt update)")
+            else:
+                self.logger.error("Paket listesi güncellenemdi, result_code: "+str(result_code))
+
+            result_code = self.ssh_api.run_command(cfg_data["cmd_deb_frontend"])
+            result_code = self.ssh_api.run_command(cfg_data["db_debconf_pwd"].format(data["db_password"]))
+            result_code = self.ssh_api.run_command(cfg_data["db_debconf_pwd_again"].format(data["db_password"]))
+
+            result_code = self.ssh_api.run_command(cfg_data["cmd_db_install"])
+            if result_code == 0:
+                self.logger.info("Mariadb paketi kuruldu")
+            else:
+                self.logger.error("Mariadb paketi kurulamadı, result_code: "+str(result_code))
+
+            result_code = self.ssh_api.run_command(cfg_data["cmd_db_dep"])
+            if result_code == 0:
+                self.logger.info("Veritabanı bağımlılıkları kuruldu")
+            else:
+                self.logger.error("Veritabanı bağımlılıkları kurulamadı, result_code: "+str(result_code))
+
+            result_code = self.ssh_api.run_command(cfg_data["cmd_create_db"].format(data["db_password"], data["db_name"]))
+            if result_code == 0:
+                self.logger.info("liderdb veritabanı oluşturuldu")
+            else:
+                self.logger.error("liderdb veritabanı oluşturulamadı, result_code: "+str(result_code))
+
+            result_code = self.ssh_api.run_command(cfg_data["cmd_db_grant_privileges"].format(data["db_password"]))
+            if result_code == 0:
+                self.logger.info("Veritabanı grant yetkisi verildi")
+            else:
+                self.logger.error("Veritabanı grant yetkisi verilemedi, result_code: "+str(result_code))
+
             # self.ssh_api.run_command(cfg_data["cmd_db_replace_bind_addr"])
-            self.ssh_api.run_command(cfg_data["cmd_db_service"])
-            self.logger.info("Veritabanı servisi başlatıldı.")
+            result_code = self.ssh_api.run_command(cfg_data["cmd_db_service"])
+            if result_code == 0:
+                self.logger.info("Veritabanı servisi başlatıldı.")
+            else:
+                self.logger.error("Veritabanı servisi başlatılamadı, result_code: "+str(result_code))
         else:
             self.logger.error("Veritabanı sunucusuna bağlantı sağlanamadığı için kurulum yapılamadı. Lütfen bağlantı ayarlarını kotrol ediniz!")

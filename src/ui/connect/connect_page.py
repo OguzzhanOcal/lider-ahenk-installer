@@ -6,7 +6,7 @@ import os
 from PyQt5.QtWidgets import (QComboBox, QGridLayout, QGroupBox, QLabel, QLineEdit,
                              QPushButton, QWidget)
 from install_manager import InstallManager
-from api.ssh.ssh import Ssh
+from api.util.util import Util
 from ui.message_box.message_box import MessageBox
 
 
@@ -18,7 +18,7 @@ class ConnectPage(QWidget):
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
         self.im = InstallManager()
-        self.ssh = Ssh()
+        self.util = Util()
         # self.app = ConfigDialog()
         self.msgBox = MessageBox()
 
@@ -28,15 +28,15 @@ class ConnectPage(QWidget):
         self.serverCombo.addItem("Uzak Makineye Kur")
         self.serverCombo.addItem("Yerel Makineye Kur")
         self.serverIpLabel = QLabel("Sunucu Adresi:")
-        self.server_ip = QLineEdit()
-        self.server_ip.setPlaceholderText("192.168.*.*")
+        self.server_ip = QLineEdit("192.168.56.123")
+        # self.server_ip.setPlaceholderText("192.168.*.*")
         self.usernameLabel = QLabel("Kullanıcı Adı:")
-        self.username = QLineEdit()
-        self.username.setPlaceholderText("lider")
+        self.username = QLineEdit("tcolak")
+        # self.username.setPlaceholderText("lider")
         self.passwordLabel = QLabel("Kullanıcı Parolası")
-        self.password = QLineEdit()
-        self.password.setPlaceholderText("****")
-        self.password.setEchoMode(QLineEdit.Password)
+        self.password = QLineEdit("1")
+        # self.password.setPlaceholderText("****")
+        # self.password.setEchoMode(QLineEdit.Password)
         self.checkControlButton = QPushButton("Bağlantı Kontrol")
 
         ## Connect Layout
@@ -92,6 +92,7 @@ class ConnectPage(QWidget):
         else:
             ssh_status = self.im.ssh_connect(data)
             if ssh_status is True:
+
                 self.msgBox.information("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
             else:
                 msg = "Bağlantı Sağlanamadı. Bağlantı Ayarlarını Kontrol Ederek Daha Sonra Tekrar Deneyiniz!\n"

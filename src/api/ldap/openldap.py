@@ -6,7 +6,6 @@ import os
 from api.config.config_manager import ConfigManager
 from api.logger.installer_logger import Logger
 
-
 class OpenLdapInstaller(object):
 
     def __init__(self, ssh_api, ssh_status):
@@ -57,8 +56,7 @@ class OpenLdapInstaller(object):
             self.f1.close()
             self.f2.close()
 
-
-            if self.ssh_status == 1 or data['location'] == 'local':
+            if self.ssh_status is None or data['location'] == 'local':
                 #copy ldap_install  script to ldap server
                 self.ssh_api.scp_file(self.ldap_config_out_path, '/tmp')
                 self.logger.info("ldapconfig betiği OpenLDAP sunucusuna kopyalandı")
@@ -78,11 +76,20 @@ class OpenLdapInstaller(object):
                 self.ssh_api.run_command(cfg_data["ldap_debconf_purgedb"])
                 self.ssh_api.run_command(cfg_data["ldap_debconf_movedb"])
                 self.logger.info("LDAP bilgileri alındı")
-                self.ssh_api.run_command(cfg_data["cmd_ldap_install"])
-                self.logger.info("slapd ve ldap-utils paketleri kuruldu")
+                result_code = self.ssh_api.run_command(cfg_data["cmd_ldap_install"])
+                if result_code == 0:
+                    self.logger.info("slapd ve ldap-utils paketleri kuruldu")
+                else:
+                    self.logger.error("slapd ve ldap-utils paketleri kurulamadı, result_code: "+str(result_code))
+
                 self.ssh_api.run_command(cfg_data["cmd_ldap_reconf"])
+                self.logger.info("slapd paketi reconfigure edildi")
                 self.ssh_api.run_command(cfg_data["cmd_ldapconfig_execute"])
-                self.ssh_api.run_command(cfg_data["cmd_ldapconfig_run"])
+                result_code = self.ssh_api.run_command(cfg_data["cmd_ldapconfig_run"])
+                if result_code == 0:
+                    self.logger.info("ldap config betiği çalıştırıldı ve lider ahenk konfigürasyonları tamamlandı")
+                else:
+                    self.logger.error("ldap config betiği çalıştırılırken hata oluştu ve lider ahenk konfigürasyonları tamamlanamadı")
                 self.logger.info("OpenLDAP kurulumu tamamlandı")
             else:
                  self.logger.error("OpenLDAP sunucusuna bağlantı sağlanamadı için kurulum yapılamadı. Lütfen bağlantı ayarlarını kotrol ediniz!")

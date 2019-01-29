@@ -2,18 +2,16 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit,
-                             QPushButton, QWidget)
+
+import os
+import json
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QWidget)
 from ui.ldap.ldap_page import OpenLdapPage
 from ui.ejabberd.ejabberd_page import EjabberdPage
 from ui.database.db_page import DatabasePage
 from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
-import os
-import json
-import time
-from threading import Thread
 
 class LiderPage(QWidget):
     def __init__(self, parent=None):
@@ -55,7 +53,6 @@ class LiderPage(QWidget):
         self.file_server.setPlaceholderText("192.168.*.*")
         self.file_server.setDisabled(True)
 
-
         self.getDataButton = QPushButton("Verileri Getir")
         self.getDataButton.clicked.connect(self.get_data)
 
@@ -91,7 +88,6 @@ class LiderPage(QWidget):
         self.connect_layout.connectLayout.addWidget(self.fileServerLabel, 4, 0)
         self.connect_layout.connectLayout.addWidget(self.file_server, 4, 1)
         self.connectGroup.setLayout(self.connect_layout.connectLayout)
-
 
         # mainLayout = QVBoxLayout()
         mainLayout = QGridLayout()
@@ -155,7 +151,12 @@ class LiderPage(QWidget):
             with open(self.liderdb_path) as f:
                 db_data = json.load(f)
 
-            self.db_server.setText(db_data["ip"])
+            if db_data["ip"] == self.connect_layout.server_ip.text():
+                db_server = "127.0.0.1"
+            else:
+                db_server = db_data["ip"]
+
+            self.db_server.setText(db_server)
             self.db_layout.db_name.setText(db_data["db_name"])
             self.db_layout.db_username.setText(db_data["db_username"])
             self.db_layout.db_password.setText(db_data["db_password"])
@@ -163,9 +164,6 @@ class LiderPage(QWidget):
         else:
             self.msg_box.information("Kayıtlı Veritabanı bilgileri bulunumadı.\n\n"
                                      "Lider konfigürasyonu için Lider sayfasındaki alanları doldurarak kuruluma devam edebilirsiniz.")
-
-
-
 
     def save_lider_data(self):
 
@@ -218,9 +216,7 @@ class LiderPage(QWidget):
             'fs_plugin_path': '/usr/share/lider-server',
             "fs_agreement_path": '/usr/share/lider-server',
             "fs_agent_file_path": '/usr/share/lider-server',
-
         }
-        print(self.data)
 
         if self.data['l_base_dn'] == "" or self.data['l_config_pwd'] == "" or self.data['ladmin_user'] == "" or self.data['l_admin_pwd'] == "" or self.data['ladmin_pwd'] == ""\
                 or self.data['db_name'] == "" or self.data['db_username'] == "" or self.data['db_password'] == ""\
@@ -251,25 +247,12 @@ class LiderPage(QWidget):
                 self.msg_box.information("Lider bilgileri kaydedildi\n"
                                          "Lider kurulumuna başlanacak.")
 
-            try:
-                th1 = Thread(target=self.install_start())
-                th1.start()
-                th2 = Thread(target=self.watch_log())
-                th2.start()
-
-            except Exception as e:
-                print(e)
-
-    def install_start(self):
-        print("kurulummmm")
-        self.im.ssh_connect(self.data)
-
-        self.im.install_lider(self.data)
-        self.im.ssh_disconnect()
-
-    def watch_log(self):
-        print("loggggg")
-        os.system("/usr/bin/python3 ui/log/watch_log_page.py")
+            if self.data['location'] == 'remote':
+                self.im.ssh_connect(self.data)
+                self.im.install_lider(self.data)
+                self.im.ssh_disconnect()
+            else:
+                self.im.install_lider(self.data)
 
 
 

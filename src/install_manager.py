@@ -4,56 +4,55 @@
 
 import json
 import os
-import sys
 from api.database.mariadb import MariaDbInstaller
 from api.ejabberd.ejabberd import EjabberInstaller
 from api.ldap.openldap import OpenLdapInstaller
 from api.lider.lider import LiderInstaller
 from api.logger.installer_logger import Logger
-from api.ssh.ssh import Ssh
+from api.util.util import Util
 from api.config.config_manager import ConfigManager
 
 class InstallManager(object):
     def __init__(self):
         super(InstallManager, self).__init__()
-        self.ssh = Ssh()
-        self.ssh_status = None
+        self.util = Util()
+        self.ssh_status = ""
         self.logger = Logger()
         self.config_maneger = ConfigManager()
         self.liderahenk_data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/liderahenk.json')
         self.liderldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/lider_ldap.json')
 
     def install_mariadb(self, data):
-        db_installer = MariaDbInstaller(self.ssh, self.ssh_status)
+        db_installer = MariaDbInstaller(self.util, self.ssh_status)
         self.logger.info("------------>>>>>>> Veritabanı sunucu kurulumuna başlanıyor")
         db_installer.install(data)
 
     def install_ejabberd(self, data):
-        ejabberd_installer = EjabberInstaller(self.ssh, self.ssh_status)
+        ejabberd_installer = EjabberInstaller(self.util, self.ssh_status)
         self.logger.info("Ejabberd sunucu kurulumuna başlanıyor.")
         ejabberd_installer.install(data)
 
     def install_ldap(self, data):
 
-        ldap_installer = OpenLdapInstaller(self.ssh, self.ssh_status)
+        ldap_installer = OpenLdapInstaller(self.util, self.ssh_status)
         self.logger.info("OpenLDAP sunucu kurulumuna başlanıyor.")
         ldap_installer.install(data)
 
     def install_lider(self, data):
-        lider_installer = LiderInstaller(self.ssh, self.ssh_status)
+        lider_installer = LiderInstaller(self.util, self.ssh_status)
         self.logger.info("Lider bileşeni Kurulumana başlanıyor.")
         lider_installer.install(data)
 
     def ssh_connect(self, data):
-        ssh_status = self.ssh.connect(data)
+        ssh_status = self.util.connect(data)
         self.ssh_status = ssh_status
-        if ssh_status == 1:
+        if ssh_status is None:
             return True
         else:
             return False
 
     def ssh_disconnect(self):
-        self.ssh.disconnect()
+        self.util.disconnect()
         # self.logger.info("installation successfull")
 
     def start_install(self):
@@ -85,7 +84,7 @@ if __name__ == "__main__":
         # where the application will be installed "remote" or "local" server
         'location': "remote",
 
-        # ssh connection information
+        # util connection information
         'ip': "192.168.56.111",
         'username': "tcolak",
         'password': "1",

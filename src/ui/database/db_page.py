@@ -2,22 +2,17 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit,
-                             QPushButton, QVBoxLayout, QWidget)
-import json
 import os
+import json
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget)
 from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
-from threading import Thread
-
 
 class DatabasePage(QWidget):
     def __init__(self, parent=None):
         super(DatabasePage, self).__init__(parent)
         self.liderdb_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/liderdb.json')
-        # self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log')
-        # self.log_backup_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/installer.log.{0}')
 
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
@@ -29,15 +24,15 @@ class DatabasePage(QWidget):
 
         ## database parameters
         self.dbNameLabel = QLabel("Veritabanı Adı:")
-        self.db_name = QLineEdit()
-        self.db_name.setPlaceholderText("liderdb")
+        self.db_name = QLineEdit("liderdb")
+        # self.db_name.setPlaceholderText("liderdb")
         self.dbUsernameLabel = QLabel("Veritabanı Kullanıcı Adı:")
-        self.db_username = QLineEdit()
-        self.db_username.setPlaceholderText("root")
+        self.db_username = QLineEdit("root")
+        # self.db_username.setPlaceholderText("root")
         self.dbPwdLabel = QLabel("Veritabanı Kullanıcı Parolası:")
-        self.db_password = QLineEdit()
+        self.db_password = QLineEdit("1")
         self.db_password.setEchoMode(QLineEdit.Password)
-        self.db_password.setPlaceholderText("****")
+        # self.db_password.setPlaceholderText("****")
         self.startUpdateButton = QPushButton("Kaydet Ve Kur")
 
         ## Database Layout
@@ -109,23 +104,10 @@ class DatabasePage(QWidget):
                 # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
                 self.msg_box.information("Veritabanı bilgileri kaydedildi\n"
                                      "Veritabanı kurulumuna başlanacak.")
-            try:
-                th1 = Thread(target=self.install_start())
-                th1.start()
-                th1.daemon = None
-                th2 = Thread(target=self.watch_log())
-                th2.start()
 
-            except Exception as e:
-                print(e)
-
-    def install_start(self):
-        print("kurulummmm")
-        self.im.ssh_connect(self.data)
-
-        # self.im.install_mariadb(self.data)
-        self.im.ssh_disconnect()
-
-    def watch_log(self):
-        print("loggggg")
-        os.system("/usr/bin/python3 ui/log/watch_log_page.py")
+            if self.data['location'] == 'remote':
+                self.im.ssh_connect(self.data)
+                self.im.install_mariadb(self.data)
+                self.im.ssh_disconnect()
+            else:
+                self.im.install_mariadb(self.data)

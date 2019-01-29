@@ -20,27 +20,53 @@ class LiderInstaller(object):
 
     def install(self, data):
 
-        if self.ssh_status == 1 or data['location'] == 'local':
+        if self.ssh_status is None or data['location'] == 'local':
             cfg_data = self.config_manager.read()
             self.configure_lider_cfg(data)
             self.configure_db_cfg(data)
-            self.ssh_api.run_command(cfg_data["cmd_soft_properties"])
-            self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"])
-            self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"])
-            self.ssh_api.run_command(cfg_data["cmd_update"])
-            self.ssh_api.run_command(cfg_data["cmd_lider_install"])
-            self.logger.info("lider-server paketi kurulumu yapıldı")
+            result_code = self.ssh_api.run_command(cfg_data["cmd_soft_properties"])
+            if result_code == 0:
+                self.logger.info("software-properties-common paketi kuruldu")
+            else:
+                self.logger.error("software-properties-common paketi kurulamadı, result_code: " + str(result_code))
+
+            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"])
+            if result_code == 0:
+                self.logger.info("Lider Ahenk repo key dosyası indirildi")
+            else:
+                self.logger.error("Lider Ahenk repo key dosyası indirilemedi, result_code: " + str(result_code))
+
+            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"])
+            if result_code == 0:
+                self.logger.info("Lider Ahenk repo adresi eklendi")
+            else:
+                self.logger.error("Lider Ahenk repo adresi eklenemedi, result_code: "+str(result_code))
+
+            result_code = self.ssh_api.run_command(cfg_data["cmd_update"])
+            if result_code == 0:
+                self.logger.info("Paket listesi güncellendi(apt update)")
+            else:
+                self.logger.error("Paket listesi güncellenemdi, result_code: "+str(result_code))
+
+            result_code = self.ssh_api.run_command(cfg_data["cmd_lider_install"])
+            if result_code == 0:
+                self.logger.info("lider-server paketi kurulumu yapıldı")
+            else:
+                self.logger.error("lider-server paketi kurulamadı, result_code: "+str(result_code))
+
             self.ssh_api.scp_file(self.lider_conf_out_path, cfg_data["lider_des_path"])
             self.ssh_api.scp_file(self.db_conf_out_path, cfg_data["lider_des_path"])
             self.ssh_api.run_command(cfg_data["cmd_cp_lider_cfg"])
             self.logger.info("lider konfigürasyon dosyası LİDER sunucusuna kopyalandı")
             self.ssh_api.run_command(cfg_data["cmd_cp_db_cfg"])
             self.logger.info("veritabanı konfigürasyon dosyası LİDER sunucusuna kopyalandı")
-            self.ssh_api.run_command(cfg_data["cmd_lider_service"])
-            self.logger.info("lider servisi başlatıldı")
+            result_code = self.ssh_api.run_command(cfg_data["cmd_lider_service"])
+            if result_code == 0:
+                self.logger.info("lider servisi başlatıldı")
+            else:
+                self.logger.error("lider servisi başlatılamadı, resuşt_code: "+str(result_code))
         else:
             self.logger.error("LİDER sunucusuna bağlantı sağlanamadığı için kurulum yapılamadı. Lütfen bağlantı ayarlarını kotrol ediniz!")
-            # print("bağlantı sağlanamadığı için kurulum yapılamadı..")
 
     def configure_lider_cfg(self, data):
         l_base_dn = self.base_dn_parse(data)
