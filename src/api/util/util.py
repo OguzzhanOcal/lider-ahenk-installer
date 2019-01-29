@@ -87,8 +87,7 @@ class Util(object):
         if self.location == 'remote':
             try:
                 self.scp = SCPClient(self.ssh.get_transport())
-                result_code = self.scp.put(src_path, recursive=True, remote_path=des_path)
-                print("----------------->>>>>>>>"+str(result_code))
+                self.scp.put(src_path, recursive=True, remote_path=des_path)
                 self.logger.info(str(src_path) + " kaynağının " + str(des_path) + " hedefine başarıyla kopyalandı")
             except Exception as e:
                 self.logger.error(str(src_path) + " kaynağının " + str(des_path) + " hedefine kopyalanması sırasında hata oluştu! \n" + str(e))
