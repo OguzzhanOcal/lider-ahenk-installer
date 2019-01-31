@@ -5,6 +5,7 @@
 import os
 from api.config.config_manager import ConfigManager
 from api.logger.installer_logger import Logger
+from api.util.util import Util
 
 class LiderInstaller(object):
 
@@ -12,6 +13,7 @@ class LiderInstaller(object):
         self.ssh_api = ssh_api
         self.ssh_status = ssh_status
         self.logger = Logger()
+        self.util = Util()
         self.config_manager = ConfigManager()
         self.lider_conf_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/tr.org.liderahenk.cfg')
         self.db_conf_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../conf/tr.org.liderahenk.datasource.cfg')
@@ -65,8 +67,23 @@ class LiderInstaller(object):
                 self.logger.info("lider servisi başlatıldı")
             else:
                 self.logger.error("lider servisi başlatılamadı, resuşt_code: "+str(result_code))
+
+            result_code = self.ssh_api.run_command(cfg_data["cmd_fs_dep"])
+            if result_code == 0:
+                self.logger.info("sshpass ve rsync paketleri başarıyla kuruldu")
+            else:
+                self.logger.error("sshpass ve rsync paketleri kurulamadı")
+
+            agent_files_path = data['fs_agent_file_path']+'/agent-files'
+            self.util.create_directory(agent_files_path)
+            self.logger.info("agent-files dizini oluşturuldu")
+            self.util.change_owner(agent_files_path, data['username'], data['username'])
+            self.logger.info("agent-files dizini için owner değiştirildi")
+
         else:
             self.logger.error("LİDER sunucusuna bağlantı sağlanamadığı için kurulum yapılamadı. Lütfen bağlantı ayarlarını kotrol ediniz!")
+
+
 
     def configure_lider_cfg(self, data):
         l_base_dn = self.base_dn_parse(data)
@@ -89,6 +106,7 @@ class LiderInstaller(object):
             "#AGREEMENT_PATH": data['fs_agreement_path'],
             "#AGENT_FILE_PATH": data['fs_agent_file_path']
         }
+
 
         self.f_lider = open(self.lider_conf_path, 'r+')
         lider_text = self.f_lider.read()

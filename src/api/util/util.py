@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
+import os
 import select
 import paramiko
 import subprocess
@@ -105,4 +106,24 @@ class Util(object):
         try:
             shutil.move(src_path, des_path)
         except Exception as e:
+            raise
+
+    def create_directory(self, dir_path):
+        try:
+            return os.makedirs(dir_path)
+        except:
+            raise
+
+    def change_owner(self, full_path, user_name=None, group_name=None):
+        try:
+            shutil.chown(full_path, user_name, group_name)
+        except:
+            raise
+
+    def file_group(self, full_path):
+        try:
+            st = os.stat(full_path)
+            gid = st.st_uid
+            return grp.getgrgid(gid)[0]
+        except:
             raise

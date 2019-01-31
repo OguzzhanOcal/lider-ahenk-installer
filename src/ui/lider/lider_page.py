@@ -213,9 +213,9 @@ class LiderPage(QWidget):
             'file_server': file_server,
             'fs_username': self.connect_layout.username.text(),
             'fs_username_pwd': self.connect_layout.password.text(),
-            'fs_plugin_path': '/usr/share/lider-server',
-            "fs_agreement_path": '/usr/share/lider-server',
-            "fs_agent_file_path": '/usr/share/lider-server',
+            'fs_plugin_path': '/home/{username}'.format(username=self.connect_layout.username.text()),
+            "fs_agreement_path": '/home/{username}'.format(username=self.connect_layout.username.text()),
+            "fs_agent_file_path": '/home/{username}'.format(username=self.connect_layout.username.text()),
         }
 
         if self.data['l_base_dn'] == "" or self.data['l_config_pwd'] == "" or self.data['ladmin_user'] == "" or self.data['l_admin_pwd'] == "" or self.data['ladmin_pwd'] == ""\
@@ -246,6 +246,7 @@ class LiderPage(QWidget):
                 # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
                 self.msg_box.information("Lider bilgileri kaydedildi\n"
                                          "Lider kurulumuna başlanacak.")
+
 
             if self.data['location'] == 'remote':
                 self.im.ssh_connect(self.data)
