@@ -177,6 +177,13 @@ class LiderPage(QWidget):
         l_org_name = self.ldap_layout.ldap_base_dn.text().split('.')
         l_org_name = l_org_name[0]
 
+        if self.db_server.text() == self.connect_layout.server_ip.text():
+            db_server = "127.0.0.1"
+            self.db_server.setText(db_server)
+        else:
+            db_server = self.db_server.text()
+            self.db_server.setText(db_server)
+
         self.data = {
             'location': location_server,
 
@@ -185,7 +192,7 @@ class LiderPage(QWidget):
             'username': self.connect_layout.username.text(),
             'password': self.connect_layout.password.text(),
             # Database Configuration
-            'db_server': self.db_server.text(),
+            'db_server': db_server,
             'db_name': self.db_layout.db_name.text(),
             'db_username': self.db_layout.db_username.text(),
             'db_password': self.db_layout.db_password.text(),
@@ -254,6 +261,8 @@ class LiderPage(QWidget):
                 self.im.ssh_disconnect()
             else:
                 self.im.install_lider(self.data)
+
+            self.msg_box.information("Lider kurulumu tamamlandı")
 
 
 

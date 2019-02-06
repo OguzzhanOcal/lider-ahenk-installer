@@ -152,3 +152,5 @@ class EjabberdPage(QWidget):
             else:
                 self.im.install_ejabberd(self.data)
 
+            self.msg_box.information("XMPP kurulumu tamamlandı")
+

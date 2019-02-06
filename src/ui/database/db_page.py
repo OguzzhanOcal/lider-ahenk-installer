@@ -111,3 +111,5 @@ class DatabasePage(QWidget):
                 self.im.ssh_disconnect()
             else:
                 self.im.install_mariadb(self.data)
+
+            self.msg_box.information("Veritabanı kurulumu tamamlandı")

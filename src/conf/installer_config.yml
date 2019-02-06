@@ -60,5 +60,7 @@ cmd_update: sudo apt-get update
 cmd_cp_lider_cfg: sudo cp /tmp/tr.org.liderahenk.cfg /usr/share/lider-server/etc
 cmd_cp_db_cfg: sudo cp /tmp/tr.org.liderahenk.datasource.cfg /usr/share/lider-server/etc
 lider_des_path : /tmp
+cmd_agents_files: sudo mkdir -p {0}
+cmd_chown_agents_files: sudo chown {0}:{0} {1}
 
 

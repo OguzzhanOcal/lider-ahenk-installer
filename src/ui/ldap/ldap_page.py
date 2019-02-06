@@ -161,3 +161,5 @@ class OpenLdapPage(QWidget):
             else:
                 self.im.install_ejabberd(self.data)
 
+            self.msg_box.information("OpenLDAP kurulumu tamamlandı")
+

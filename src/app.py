@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
+import time
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QApplication, QDialog, QHBoxLayout, QListView, QListWidget, QListWidgetItem, QPushButton,
-                             QStackedWidget, QVBoxLayout, QMenuBar, QAction, QMessageBox)
+                             QStackedWidget, QVBoxLayout, QMenuBar, QAction, QMessageBox, QSlider)
 import ui.conf.configdialog_rc
 from ui.ejabberd.ejabberd_page import EjabberdPage
 from ui.database.db_page import DatabasePage
@@ -54,12 +55,18 @@ class ConfigDialog(QDialog):
         buttonsLayout.addStretch(1)
         buttonsLayout.addWidget(closeButton)
 
+        self.progress = QSlider()
+        self.progress.setOrientation(Qt.Horizontal)
+        # self.progress.setStyleSheet("background-color:turquoise")
+        # self.progress.setOrientation(Qt.AlignTop.())
+        self.progress.setMaximumHeight(50)
 
         mainLayout = QVBoxLayout()
         mainLayout.addLayout(horizontalLayout)
         #mainLayout.addWidget(menubar)
         mainLayout.addStretch(1)
         mainLayout.addSpacing(12)
+        # mainLayout.addWidget(self.progress)
         mainLayout.addLayout(buttonsLayout)
 
         self.setLayout(mainLayout)

@@ -75,11 +75,20 @@ class LiderInstaller(object):
                 self.logger.error("sshpass ve rsync paketleri kurulamadı")
 
             agent_files_path = data['fs_agent_file_path']+'/agent-files'
-            self.util.create_directory(agent_files_path)
-            self.logger.info("agent-files dizini oluşturuldu")
-            self.util.change_owner(agent_files_path, data['username'], data['username'])
-            self.logger.info("agent-files dizini için owner değiştirildi")
-
+            if data['location'] == 'remote':
+                self.ssh_api.run_command(cfg_data["cmd_agents_files"].format(agent_files_path))
+                self.logger.info("agent-files dizini oluşturuldu")
+                self.ssh_api.run_command(cfg_data["cmd_chown_agents_files"].format(data["username"], agent_files_path))
+                self.logger.info("agent-files dizini için owner değiştirildi")
+            else:
+                if not self.util.is_exist(agent_files_path):
+                    self.util.create_directory_local(agent_files_path)
+                    self.logger.info("agent-files dizini oluşturuldu")
+                    self.util.change_owner(agent_files_path, data['username'], data['username'])
+                    self.logger.info("agent-files dizini için owner değiştirildi")
+                else:
+                    self.logger.info("{0} dizini zaten var".format(agent_files_path))
+        
         else:
             self.logger.error("LİDER sunucusuna bağlantı sağlanamadığı için kurulum yapılamadı. Lütfen bağlantı ayarlarını kotrol ediniz!")
 

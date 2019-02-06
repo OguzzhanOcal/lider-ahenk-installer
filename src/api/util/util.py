@@ -9,7 +9,6 @@ import subprocess
 import shutil
 from api.logger.installer_logger import Logger
 from api.util.scp import SCPClient
-# from app import GuiManager
 
 class Util(object):
 
@@ -19,11 +18,11 @@ class Util(object):
         self.password = None
         self.location = None
         self.logger = Logger()
-        # self.gui_manager = GuiManager()
 
     def connect(self, data):
         self.password = data['password']
         self.location = data['location']
+
         try:
             self.ssh = paramiko.SSHClient()
             self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -101,14 +100,7 @@ class Util(object):
             except Exception as e:
                 self.logger.error("kopyalama yaparken beklenmedik hata oluştu" + str(e))
 
-
-    def move_file(self, src_path, des_path):
-        try:
-            shutil.move(src_path, des_path)
-        except Exception as e:
-            raise
-
-    def create_directory(self, dir_path):
+    def create_directory_local(self, dir_path):
         try:
             return os.makedirs(dir_path)
         except:
@@ -125,5 +117,11 @@ class Util(object):
             st = os.stat(full_path)
             gid = st.st_uid
             return grp.getgrgid(gid)[0]
+        except:
+            raise
+
+    def is_exist(self, full_path):
+        try:
+            return os.path.exists(full_path)
         except:
             raise
