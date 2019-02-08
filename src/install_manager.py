@@ -22,6 +22,7 @@ class InstallManager(object):
         self.liderahenk_data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist/liderahenk.json')
         self.liderldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dist/lider_ldap.json')
 
+
     def install_mariadb(self, data):
         db_installer = MariaDbInstaller(self.util, self.ssh_status)
         self.logger.info("------------>>>>>>> Veritabanı sunucu kurulumuna başlanıyor")
@@ -46,7 +47,7 @@ class InstallManager(object):
     def ssh_connect(self, data):
         ssh_status = self.util.connect(data)
         self.ssh_status = ssh_status
-        if ssh_status is None:
+        if self.ssh_status == "Successfully Authenticated":
             return True
         else:
             return False

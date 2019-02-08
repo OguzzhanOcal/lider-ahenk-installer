@@ -28,12 +28,14 @@ class Util(object):
             self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             self.ssh.load_system_host_keys()
             ssh_status = self.ssh.connect(hostname=data['ip'], username=data['username'], password=data['password'], pkey=None, timeout=10)
+            print("***** "+str(ssh_status))
 
             if ssh_status is None:
                 self.logger.info(data['ip'] + " ip'li sunucuya bağlantı başarıyla sağlandı")
-                return ssh_status
+                return "Successfully Authenticated"
         except Exception as e:
             self.logger.error(str(data['ip']) + " ip'li sunucuya bağlantı sırasında beklenmedik hata oluştu \n" + str(e))
+            return "Authentication Failed"
 
     def disconnect(self):
         self.ssh.close()
