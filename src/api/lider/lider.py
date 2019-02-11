@@ -22,7 +22,7 @@ class LiderInstaller(object):
 
     def install(self, data):
 
-        if self.ssh_status is None or data['location'] == 'local':
+        if self.ssh_status == "Successfully Authenticated" or data['location'] == 'local':
             cfg_data = self.config_manager.read()
             self.configure_lider_cfg(data)
             self.configure_db_cfg(data)

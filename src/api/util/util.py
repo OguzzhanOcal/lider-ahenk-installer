@@ -28,7 +28,6 @@ class Util(object):
             self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             self.ssh.load_system_host_keys()
             ssh_status = self.ssh.connect(hostname=data['ip'], username=data['username'], password=data['password'], pkey=None, timeout=10)
-            print("***** "+str(ssh_status))
 
             if ssh_status is None:
                 self.logger.info(data['ip'] + " ip'li sunucuya bağlantı başarıyla sağlandı")
@@ -97,7 +96,6 @@ class Util(object):
             ### copf file to local
             try:
                 shutil.copy2(str(src_path), str(des_path))
-
                 self.logger.info(str(src_path) + " kaynağının " + str(des_path) + " hedefine başarıyla kopyalandı")
             except Exception as e:
                 self.logger.error("kopyalama yaparken beklenmedik hata oluştu" + str(e))

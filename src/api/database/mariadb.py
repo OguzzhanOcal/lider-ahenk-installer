@@ -17,7 +17,7 @@ class MariaDbInstaller(object):
         config_manager = ConfigManager()
         cfg_data = config_manager.read()
         # print(cfg_data)
-        if self.ssh_status is None or data['location'] == 'local':
+        if self.ssh_status == "Successfully Authenticated" or data['location'] == 'local':
 
             result_code = self.ssh_api.run_command(cfg_data["cmd_soft_properties"])
             if result_code == 0:

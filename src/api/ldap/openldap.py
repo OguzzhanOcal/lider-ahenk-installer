@@ -56,7 +56,7 @@ class OpenLdapInstaller(object):
             self.f1.close()
             self.f2.close()
 
-            if self.ssh_status is None or data['location'] == 'local':
+            if self.ssh_status == "Successfully Authenticated" or data['location'] == 'local':
                 #copy ldap_install  script to ldap server
                 self.ssh_api.scp_file(self.ldap_config_out_path, '/tmp')
                 self.logger.info("ldapconfig betiği OpenLDAP sunucusuna kopyalandı")
