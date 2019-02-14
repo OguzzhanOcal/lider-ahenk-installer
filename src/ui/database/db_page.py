@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushBut
 from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
+from ui.log.status_page import StatusPage
 
 class DatabasePage(QWidget):
     def __init__(self, parent=None):
@@ -17,7 +18,10 @@ class DatabasePage(QWidget):
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
 
+        self.log_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/installer.log')
+
         self.connect_layout = ConnectPage()
+        self.status = StatusPage()
         self.im = InstallManager()
         self.msg_box = MessageBox()
         self.data = None
@@ -33,7 +37,7 @@ class DatabasePage(QWidget):
         self.db_password = QLineEdit()
         self.db_password.setEchoMode(QLineEdit.Password)
         self.db_password.setPlaceholderText("****")
-        self.startUpdateButton = QPushButton("Kaydet Ve Kur")
+        self.startUpdateButton = QPushButton("Kuruluma Başla")
 
         ## Database Layout
         dbGroup = QGroupBox("Veritabanı Konfigürasyon Bilgileri")
@@ -49,12 +53,17 @@ class DatabasePage(QWidget):
         connectGroup = QGroupBox("Veritabanı Sunucusu Bağlantı Bilgileri")
         connectGroup.setLayout(self.connect_layout.connectLayout)
 
+        # Install Status Layout
+        statusGroup = QGroupBox()
+        self.status.statusLabel.setText("Veritabanı Kurulum Durumu:")
+        statusGroup.setLayout(self.status.statusLayout)
+
         mainLayout = QVBoxLayout()
-        # mainLayout.addWidget(self.releasesCheckBox)
         mainLayout.addWidget(connectGroup)
         mainLayout.addWidget(dbGroup)
         mainLayout.addSpacing(12)
         mainLayout.addWidget(self.startUpdateButton)
+        mainLayout.addWidget(statusGroup)
         mainLayout.addStretch(1)
         self.setLayout(mainLayout)
         self.startUpdateButton.clicked.connect(self.save_db_data)
@@ -78,7 +87,6 @@ class DatabasePage(QWidget):
             'db_username': self.db_username.text(),
             'db_password': self.db_password.text(),
         }
-        print(self.data)
 
         if self.data['db_name'] == "" or self.data['db_username'] == "" or self.data['db_password'] == ""\
                 or self.data['ip'] =="" or self.data['username'] == "" or self.data['password'] =="":
@@ -87,6 +95,7 @@ class DatabasePage(QWidget):
                                      "- Veritabanı adı\n"
                                      "- Veritabanı kullanıcı adı ve parolası")
         else:
+            self.status.install_status.setText("Veritabanı kurulumu devam ediyor...")
             if os.path.exists(self.liderdb_path) and os.stat(self.liderdb_path).st_size != 0:
                 with open(self.liderdb_path) as f:
                     read_data = json.load(f)
@@ -105,6 +114,7 @@ class DatabasePage(QWidget):
                 self.msg_box.information("Veritabanı bilgileri kaydedildi\n"
                                      "Veritabanı kurulumuna başlanacak.")
 
+
             if self.data['location'] == 'remote':
                 self.im.ssh_connect(self.data)
                 self.im.install_mariadb(self.data)
@@ -112,4 +122,7 @@ class DatabasePage(QWidget):
             else:
                 self.im.install_mariadb(self.data)
 
-            self.msg_box.information("Veritabanı kurulumu tamamlandı")
+            self.status.install_status.setText("Veritabanı kurulumu tamamlandı")
+            self.msg_box.information("Veritabanı kurulumu tamamlandı\n"
+                                     "Kurulum loglarını \n"
+                                     "Log ekranında bulabilirsiniz")

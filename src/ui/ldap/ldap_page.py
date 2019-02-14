@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (QComboBox, QGridLayout, QGroupBox, QLabel, QLineEdi
 from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
+from ui.log.status_page import StatusPage
 
 class OpenLdapPage(QWidget):
 
@@ -21,6 +22,7 @@ class OpenLdapPage(QWidget):
         self.connect_layout = ConnectPage()
         self.im = InstallManager()
         self.msg_box = MessageBox()
+        self.status = StatusPage()
         self.data = None
 
         #OpenLDAP parameters
@@ -49,7 +51,7 @@ class OpenLdapPage(QWidget):
         self.ladmin_pwd.setPlaceholderText("****")
         self.ladmin_pwd.setEchoMode(QLineEdit.Password)
 
-        self.startUpdateButton = QPushButton("Kaydet Ve Kur")
+        self.startUpdateButton = QPushButton("Kuruluma Başla")
 
         ## Connect Layout
         connectGroup = QGroupBox("OpenLDAP Sunucusu Bağlantı Bilgileri")
@@ -58,6 +60,11 @@ class OpenLdapPage(QWidget):
         ## LDAP configuration Layout
         ldapGroup = QGroupBox("OpenLDAP Konfigürasyon Bilgileri")
         self.ldapLayout = QGridLayout()
+
+        # Install Status Layout
+        statusGroup = QGroupBox()
+        self.status.statusLabel.setText("OpenLDAP Kurulum Durumu:")
+        statusGroup.setLayout(self.status.statusLayout)
 
         self.ldapLayout.addWidget(self.ldapStatusLabel, 0, 0)
         self.ldapLayout.addWidget(self.ldapStatusCombo, 0, 1)
@@ -82,6 +89,7 @@ class OpenLdapPage(QWidget):
         # mainLayout.addWidget(packageGroup)
         mainLayout.addSpacing(12)
         mainLayout.addWidget(self.startUpdateButton)
+        mainLayout.addWidget(statusGroup)
         mainLayout.addStretch(1)
 
         self.setLayout(mainLayout)
@@ -134,7 +142,7 @@ class OpenLdapPage(QWidget):
                                      "- Lider arayüz kullanıcı parolası")
 
         else:
-
+            self.status.install_status.setText("OpenLDAP kurulumu devam ediyor...")
             if os.path.exists(self.liderldap_path) and os.stat(self.liderldap_path).st_size != 0:
                 with open(self.liderldap_path) as f:
                     read_data = json.load(f)
@@ -160,6 +168,8 @@ class OpenLdapPage(QWidget):
                 self.im.ssh_disconnect()
             else:
                 self.im.install_ejabberd(self.data)
+
+            self.status.install_status.setText("OpenLDAP kurulumu tamamlandı")
 
             self.msg_box.information("OpenLDAP kurulumu tamamlandı")
 

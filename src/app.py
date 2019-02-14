@@ -6,14 +6,14 @@ import time
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QApplication, QDialog, QHBoxLayout, QListView, QListWidget, QListWidgetItem, QPushButton,
-                             QStackedWidget, QVBoxLayout, QMenuBar, QAction, QMessageBox, QSlider)
+                             QStackedWidget, QVBoxLayout, QMenuBar, QAction, QMessageBox, QSlider, QLineEdit)
 import ui.conf.configdialog_rc
 from ui.ejabberd.ejabberd_page import EjabberdPage
 from ui.database.db_page import DatabasePage
 from ui.ldap.ldap_page import OpenLdapPage
 from ui.lider.lider_page import LiderPage
 from ui.message_box.message_box import MessageBox
-
+from ui.log.watch_log_page import WatchLog
 
 class ConfigDialog(QDialog):
     def __init__(self, parent=None):
@@ -42,6 +42,7 @@ class ConfigDialog(QDialog):
         self.pagesWidget.addWidget(OpenLdapPage())
         self.pagesWidget.addWidget(EjabberdPage())
         self.pagesWidget.addWidget(LiderPage())
+        self.pagesWidget.addWidget(WatchLog())
         closeButton = QPushButton("Kapat")
         self.createIcons()
         self.contentsWidget.setCurrentRow(0)
@@ -66,8 +67,8 @@ class ConfigDialog(QDialog):
         #mainLayout.addWidget(menubar)
         mainLayout.addStretch(1)
         mainLayout.addSpacing(12)
-        # mainLayout.addWidget(self.progress)
         mainLayout.addLayout(buttonsLayout)
+
 
         self.setLayout(mainLayout)
         self.setWindowTitle("Lider Ahenk Kurulum Uygulaması")
@@ -79,17 +80,17 @@ class ConfigDialog(QDialog):
         self.pagesWidget.setCurrentIndex(self.contentsWidget.row(current))
 
     def createIcons(self):
-        queryButton = QListWidgetItem(self.contentsWidget)
-        queryButton.setIcon(QIcon(':/images/database.png'))
-        queryButton.setText("Veritabanı")
-        queryButton.setTextAlignment(Qt.AlignHCenter)
-        queryButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+        dbButton = QListWidgetItem(self.contentsWidget)
+        dbButton.setIcon(QIcon(':/images/database.png'))
+        dbButton.setText("Veritabanı")
+        dbButton.setTextAlignment(Qt.AlignHCenter)
+        dbButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
 
-        updateButton = QListWidgetItem(self.contentsWidget)
-        updateButton.setIcon(QIcon(':/images/ldap.png'))
-        updateButton.setText("OpenLDAP")
-        updateButton.setTextAlignment(Qt.AlignHCenter)
-        updateButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+        ldapButton = QListWidgetItem(self.contentsWidget)
+        ldapButton.setIcon(QIcon(':/images/ldap.png'))
+        ldapButton.setText("OpenLDAP")
+        ldapButton.setTextAlignment(Qt.AlignHCenter)
+        ldapButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
 
         xmppButton = QListWidgetItem(self.contentsWidget)
         xmppButton.setIcon(QIcon(':/images/ejabberd.png'))
@@ -97,11 +98,17 @@ class ConfigDialog(QDialog):
         xmppButton.setTextAlignment(Qt.AlignHCenter)
         xmppButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
 
-        configButton = QListWidgetItem(self.contentsWidget)
-        configButton.setIcon(QIcon(':/images/liderahenk.png'))
-        configButton.setText("Lider")
-        configButton.setTextAlignment(Qt.AlignHCenter)
-        configButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+        liderButton = QListWidgetItem(self.contentsWidget)
+        liderButton.setIcon(QIcon(':/images/liderahenk.png'))
+        liderButton.setText("Lider")
+        liderButton.setTextAlignment(Qt.AlignHCenter)
+        liderButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+
+        logButton = QListWidgetItem(self.contentsWidget)
+        logButton.setIcon(QIcon(':/images/liderahenk.png'))
+        logButton.setText("Log")
+        logButton.setTextAlignment(Qt.AlignHCenter)
+        logButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
 
         self.contentsWidget.currentItemChanged.connect(self.changePage)
 

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-
 import os
 import json
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QWidget)
@@ -12,6 +11,7 @@ from ui.database.db_page import DatabasePage
 from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
+from ui.log.status_page import StatusPage
 
 class LiderPage(QWidget):
     def __init__(self, parent=None):
@@ -31,6 +31,7 @@ class LiderPage(QWidget):
         self.connect_layout = ConnectPage()
         self.im = InstallManager()
         self.msg_box = MessageBox()
+        self.status = StatusPage()
         self.data = None
 
         ## db parameters
@@ -56,12 +57,22 @@ class LiderPage(QWidget):
         self.getDataButton = QPushButton("Verileri Getir")
         self.getDataButton.clicked.connect(self.get_data)
 
-        self.installButton = QPushButton("Kaydet ve Kur")
+        self.installButton = QPushButton("Kuruluma Başla")
         self.installButton.clicked.connect(self.save_lider_data)
 
         self.liderLdapGroup = QGroupBox("LDAP Konfigürasyon Bilgileri")
         self.liderXmppGroup = QGroupBox("XMPP Konfigürasyon Bilgileri")
         self.liderDbGroup = QGroupBox("Veritabanı Konfigürasyon Bilgileri")
+
+        # Install Status Layout
+        # statusGroup = QGroupBox()
+        # self.status.statusLabel.setText("Lider Kurulum Durumu:")
+        # statusGroup.setLayout(self.status.statusLayout)
+
+
+        self.statusLabel =  QLabel("Lider Kurulum Durumu:")
+        self.status = QLineEdit()
+
 
         # add server ip to database layout
         self.db_layout.dbLayout.addWidget(self.dbServerLabel, 3, 0)
@@ -91,17 +102,20 @@ class LiderPage(QWidget):
 
         # mainLayout = QVBoxLayout()
         mainLayout = QGridLayout()
-        # mainLayout.addWidget(self.releasesCheckBox)
         mainLayout.addWidget(self.connectGroup,0,0)
         mainLayout.addWidget(self.liderLdapGroup,0,1)
         mainLayout.addWidget(self.liderXmppGroup,1,0)
         mainLayout.addWidget(self.liderDbGroup,1,1)
         # mainLayout.addSpacing(12)
-        mainLayout.addWidget(self.getDataButton)
-        mainLayout.addWidget(self.installButton)
+        mainLayout.addWidget(self.getDataButton,2,0)
+        mainLayout.addWidget(self.installButton,2,1)
+        # mainLayout.addWidget(statusGroup)
+        mainLayout.addWidget(self.statusLabel)
+        mainLayout.addWidget(self.status)
         # mainLayout.addStretch(1)
 
         self.setLayout(mainLayout)
+
 
     def check_control_button(self, idx):
         ## if select location is remote server
@@ -125,6 +139,7 @@ class LiderPage(QWidget):
             self.ldap_layout.l_config_pwd.setText(ldap_data["l_config_pwd"])
             self.ldap_layout.ladmin_user.setText(ldap_data["ladmin_user"])
             self.ldap_layout.ladmin_pwd.setText(ldap_data["ladmin_pwd"])
+            self.ldap_server.setText(ldap_data["ip"])
         else:
             self.msg_box.information("Kayıtlı OpenLDAP bilgileri bulunumadı.\n\n"
                                      "Lider konfigürasyonu için Lider sayfasındaki alanları doldurarak kuruluma devam edebilirsiniz.")
@@ -138,7 +153,6 @@ class LiderPage(QWidget):
             self.ejabberd_layout.e_service_name.setText(ejabberd_data["e_service_name"])
             self.ejabberd_layout.e_user_pwd.setText(ejabberd_data["e_user_pwd"])
             self.ejabberd_layout.lider_user_pwd.setText(ejabberd_data["lider_user_pwd"])
-            self.ldap_server.setText(ejabberd_data["ldap_servers"])
             self.ejabberd_layout.ldap_base_dn.setText(ejabberd_data['l_base_dn'])
             self.ejabberd_layout.ldap_admin_pwd.setText(ejabberd_data['l_admin_pwd'])
             self.ejabberd_server.setText(ejabberd_data['ip'])
@@ -235,7 +249,7 @@ class LiderPage(QWidget):
                                      "- Veritabanı bilgileri\n"
                                      "- XMPP bilgileri")
         else:
-
+            self.status.setText("Lider kurulumu devam ediyor...")
             if os.path.exists(self.lider_path) and os.stat(self.lider_path).st_size != 0:
                 with open(self.lider_path) as f:
                     read_data = json.load(f)
@@ -257,10 +271,11 @@ class LiderPage(QWidget):
 
             if self.data['location'] == 'remote':
                 self.im.ssh_connect(self.data)
-                self.im.install_lider(self.data)
+                # self.im.install_lider(self.data)
                 self.im.ssh_disconnect()
             else:
                 self.im.install_lider(self.data)
+            self.status.setText("Lider kurulumu tamamlandı")
 
             self.msg_box.information("Lider kurulumu tamamlandı")
 

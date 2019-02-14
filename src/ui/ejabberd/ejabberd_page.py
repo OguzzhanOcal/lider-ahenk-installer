@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushBut
 from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
 from ui.connect.connect_page import ConnectPage
+from ui.log.status_page import StatusPage
 
 class EjabberdPage(QWidget):
     def __init__(self, parent=None):
@@ -20,9 +21,10 @@ class EjabberdPage(QWidget):
         self.data = None
         self.im = InstallManager()
         self.msg_box = MessageBox()
+        self.status = StatusPage()
 
         self.connect_layout = ConnectPage()
-        self.startUpdateButton = QPushButton("Kaydet Ve Kur")
+        self.startUpdateButton = QPushButton("Kuruluma Başla")
         ## Ejabberd parameters
         self.ejabberdServiceLabel = QLabel("XMPP Servis Adı:")
         self.e_service_name = QLineEdit()
@@ -56,6 +58,11 @@ class EjabberdPage(QWidget):
         connectGroup = QGroupBox("XMPP Sunucusu Bağlantı Bilgileri")
         connectGroup.setLayout(self.connect_layout.connectLayout)
 
+        # Install Status Layout
+        statusGroup = QGroupBox()
+        self.status.statusLabel.setText("XMPP Kurulum Durumu:")
+        statusGroup.setLayout(self.status.statusLayout)
+
         ## XMPP configuration Layout
         ejabberdGroup = QGroupBox("XMPP Sunucu Konfigürasyon Bilgileri")
         self.ejabberdLayout = QGridLayout()
@@ -83,6 +90,7 @@ class EjabberdPage(QWidget):
         mainLayout.addWidget(ejabberdGroup)
         mainLayout.addSpacing(12)
         mainLayout.addWidget(self.startUpdateButton)
+        mainLayout.addWidget(statusGroup)
         mainLayout.addStretch(1)
         self.setLayout(mainLayout)
         self.startUpdateButton.clicked.connect(self.save_ejabberd_data)
@@ -126,7 +134,7 @@ class EjabberdPage(QWidget):
                                      "- LDAP bilgileri")
 
         else:
-
+            self.status.install_status.setText("XMPP kurulumu devam ediyor...")
             if os.path.exists(self.liderejabberd_path) and os.stat(self.liderejabberd_path).st_size != 0:
                 with open(self.liderejabberd_path) as f:
                     read_data = json.load(f)
@@ -151,6 +159,8 @@ class EjabberdPage(QWidget):
                 self.im.ssh_disconnect()
             else:
                 self.im.install_ejabberd(self.data)
+
+            self.status.install_status.setText("XMPP kurulumu tamamlandı")
 
             self.msg_box.information("XMPP kurulumu tamamlandı")
 

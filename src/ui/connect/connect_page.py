@@ -28,12 +28,12 @@ class ConnectPage(QWidget):
         self.serverCombo.addItem("Uzak Makineye Kur")
         self.serverCombo.addItem("Yerel Makineye Kur")
         self.serverIpLabel = QLabel("Sunucu Adresi:")
-        self.server_ip = QLineEdit("")
+        self.server_ip = QLineEdit()
         self.server_ip.setPlaceholderText("192.168.*.*")
         self.usernameLabel = QLabel("Kullanıcı Adı:")
-        self.username = QLineEdit("")
+        self.username = QLineEdit()
         self.username.setPlaceholderText("lider")
-        self.passwordLabel = QLabel("Kullanıcı Parolası")
+        self.passwordLabel = QLabel("Kullanıcı Parolası:")
         self.password = QLineEdit()
         self.password.setPlaceholderText("****")
         self.password.setEchoMode(QLineEdit.Password)
@@ -92,7 +92,6 @@ class ConnectPage(QWidget):
         else:
             ssh_status = self.im.ssh_connect(data)
             if ssh_status is True:
-
                 self.msgBox.information("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
             else:
                 msg = "Bağlantı Sağlanamadı. Bağlantı Ayarlarını Kontrol Ederek Daha Sonra Tekrar Deneyiniz!\n"
