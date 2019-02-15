@@ -62,7 +62,7 @@ class LiderPage(QWidget):
         self.liderXmppGroup = QGroupBox("XMPP Konfigürasyon Bilgileri")
         self.liderDbGroup = QGroupBox("Veritabanı Konfigürasyon Bilgileri")
 
-        self.statusLabel =  QLabel("Lider Kurulum Durumu:")
+        self.statusLabel = QLabel("Lider Kurulum Durumu:")
         self.status = QLineEdit()
         self.status.setPlaceholderText("Lider kurulumu...")
         self.status.setReadOnly(True)
