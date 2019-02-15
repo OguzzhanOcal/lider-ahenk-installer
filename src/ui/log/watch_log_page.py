@@ -3,7 +3,8 @@
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
 import os
-from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QVBoxLayout, QWidget, QTextEdit, QPushButton)
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QVBoxLayout, QWidget, QTextEdit, QPushButton)
+from ui.message_box.message_box import MessageBox
 
 class WatchLog(QWidget):
     def __init__(self, parent=None):
@@ -16,12 +17,12 @@ class WatchLog(QWidget):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
 
         self.data = None
+        self.msg = MessageBox()
 
         ## database parameters
         self.log_name = QTextEdit()
         self.log_name.setReadOnly(True)
         self.log_name.setMinimumSize(200, 500)
-
         self.refreshButton = QPushButton("Yenile")
 
         ## Log Layout
@@ -32,20 +33,32 @@ class WatchLog(QWidget):
         logGroup.setLayout(self.logLayout)
 
         mainLayout = QVBoxLayout()
-        # mainLayout.addWidget(self.releasesCheckBox)
         mainLayout.addWidget(logGroup)
         mainLayout.addSpacing(12)
         mainLayout.addWidget(self.refreshButton)
         mainLayout.addStretch(1)
         self.setLayout(mainLayout)
         self.append_logger()
-
-        self.refreshButton.clicked.connect(self.append_logger)
+        self.refreshButton.clicked.connect(self.refresh_log)
 
 
     def append_logger(self):
-        with open(self.log_out_path) as f:
-            for line in f:
-                # print(line)
-                self.log_name.append(str(line))
+        if os.path.exists(self.log_out_path):
+            self.log_name.setText("")
+            with open(self.log_out_path) as f:
+                for line in f:
+                    self.log_name.append(str(line))
+
+    def refresh_log(self):
+        if os.path.exists(self.log_out_path):
+            self.log_name.setText("")
+            with open(self.log_out_path) as f:
+                for line in f:
+                    self.log_name.append(str(line))
+        else:
+            self.log_name.setText("")
+            self.msg.information("installer.log dosyası bulunamadı")
+
+
+
 
