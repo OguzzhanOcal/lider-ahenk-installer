@@ -11,7 +11,6 @@ from ui.database.db_page import DatabasePage
 from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
-from ui.log.status_page import StatusPage
 
 class LiderPage(QWidget):
     def __init__(self, parent=None):
@@ -31,7 +30,6 @@ class LiderPage(QWidget):
         self.connect_layout = ConnectPage()
         self.im = InstallManager()
         self.msg_box = MessageBox()
-        self.status = StatusPage()
         self.data = None
 
         ## db parameters
@@ -64,14 +62,10 @@ class LiderPage(QWidget):
         self.liderXmppGroup = QGroupBox("XMPP Konfigürasyon Bilgileri")
         self.liderDbGroup = QGroupBox("Veritabanı Konfigürasyon Bilgileri")
 
-        # Install Status Layout
-        # statusGroup = QGroupBox()
-        # self.status.statusLabel.setText("Lider Kurulum Durumu:")
-        # statusGroup.setLayout(self.status.statusLayout)
-
-
         self.statusLabel =  QLabel("Lider Kurulum Durumu:")
         self.status = QLineEdit()
+        self.status.setPlaceholderText("Lider kurulumu...")
+        self.status.setReadOnly(True)
 
 
         # add server ip to database layout
