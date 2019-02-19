@@ -6,14 +6,16 @@ import time
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QApplication, QDialog, QHBoxLayout, QListView, QListWidget, QListWidgetItem, QPushButton,
-                             QStackedWidget, QVBoxLayout, QMenuBar, QAction, QMessageBox, QSlider, QLineEdit)
+                             QStackedWidget, QVBoxLayout, QMenuBar, QAction, QMessageBox, QSlider, QLineEdit, QHeaderView)
 import ui.conf.configdialog_rc
 from ui.ejabberd.ejabberd_page import EjabberdPage
 from ui.database.db_page import DatabasePage
 from ui.ldap.ldap_page import OpenLdapPage
 from ui.lider.lider_page import LiderPage
 from ui.message_box.message_box import MessageBox
+from ui.ahenk.ahenk_page import AhenkPage
 from ui.log.watch_log_page import WatchLog
+
 
 class ConfigDialog(QDialog):
     def __init__(self, parent=None):
@@ -35,13 +37,14 @@ class ConfigDialog(QDialog):
         #aboutAction.triggered.connect(QMessageBox.information(self, None, "Lider Ahenk Kurulum Uygulaması"))
 
         self.pagesWidget = QStackedWidget()
-        # self.pagesWidget.setMinimumHeight(600)
+        self.pagesWidget.setMinimumHeight(620)
         self.pagesWidget.setMinimumWidth(512)
 
         self.pagesWidget.addWidget(DatabasePage())
         self.pagesWidget.addWidget(OpenLdapPage())
         self.pagesWidget.addWidget(EjabberdPage())
         self.pagesWidget.addWidget(LiderPage())
+        self.pagesWidget.addWidget(AhenkPage())
         self.pagesWidget.addWidget(WatchLog())
         closeButton = QPushButton("Kapat")
         self.createIcons()
@@ -104,8 +107,14 @@ class ConfigDialog(QDialog):
         liderButton.setTextAlignment(Qt.AlignHCenter)
         liderButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
 
+        ahenkButton = QListWidgetItem(self.contentsWidget)
+        ahenkButton.setIcon(QIcon(':/images/ahenk-register.png'))
+        ahenkButton.setText("Ahenk")
+        ahenkButton.setTextAlignment(Qt.AlignHCenter)
+        ahenkButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+
         logButton = QListWidgetItem(self.contentsWidget)
-        logButton.setIcon(QIcon(':/images/liderahenk.png'))
+        logButton.setIcon(QIcon(':/images/log.png'))
         logButton.setText("Log")
         logButton.setTextAlignment(Qt.AlignHCenter)
         logButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)

@@ -4,6 +4,8 @@
 
 import json
 import os
+
+from api.ahenk.ahenk import AhenkInstaller
 from api.database.mariadb import MariaDbInstaller
 from api.ejabberd.ejabberd import EjabberInstaller
 from api.ldap.openldap import OpenLdapInstaller
@@ -43,6 +45,12 @@ class InstallManager(object):
         lider_installer = LiderInstaller(self.util, self.ssh_status)
         self.logger.info("Lider bileşeni Kurulumana başlanıyor.")
         lider_installer.install(data)
+
+    def install_ahenk(self, data):
+        print("ahenk kurulumu: "+str(data))
+        # ahenk_installer = AhenkInstaller(self.util, self.ssh_status)
+        # self.logger.info("Lider bileşeni Kurulumana başlanıyor.")
+        # ahenk_installer.install(data)
 
     def ssh_connect(self, data):
         ssh_status = self.util.connect(data)
