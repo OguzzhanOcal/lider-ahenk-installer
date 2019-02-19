@@ -90,9 +90,6 @@ class AhenkPage(QWidget):
         headers.setSectionResizeMode(1, QHeaderView.Stretch)
         headers.setSectionResizeMode(2, QHeaderView.Stretch)
         self.tableWidget.setHorizontalHeaderLabels(["İstemci Adresi", "Kullanıcı Adı", "Kullanıcı Parolası", "İşlem"])
-
-
-
         self.ahenklistLayout.addWidget(self.tableWidget)
         self.ahenklistGroup.setLayout(self.ahenklistLayout)
 
@@ -187,51 +184,4 @@ class AhenkPage(QWidget):
                     for col in range(3):
                         self.tableWidget.item(row,col).setBackground(QtGui.QColor(125,125,125))
                     self.msg_box.information(msg)
-
-
-
-
-
-
-        # self.msg_box.information(self.data)
-
-        # if self.data['db_name'] == "" or self.data['db_username'] == "" or self.data['db_password'] == ""\
-        #         or self.data['ip'] =="" or self.data['username'] == "" or self.data['password'] =="":
-        #     self.msg_box.warning("Lütfen aşağıdaki alanları doldurunuz.\n"
-        #                              "- Veritabanı sunucu bağlantı bilgileri\n"
-        #                              "- Veritabanı adı\n"
-        #                              "- Veritabanı kullanıcı adı ve parolası")
-        # else:
-        #     self.status.install_status.setText("Veritabanı kurulumu devam ediyor...")
-        #     if os.path.exists(self.liderdb_path) and os.stat(self.liderdb_path).st_size != 0:
-        #         with open(self.liderdb_path) as f:
-        #             read_data = json.load(f)
-        #         read_data.update(self.data)
-        #         with open(self.liderdb_path, 'w') as f:
-        #             json.dump(read_data, f, ensure_ascii=False)
-        #         print('Lider Ahenk json dosyası güncellendi')
-        #         # self.logger.info("Lider Ahenk json dosyası güncellendi")
-        #         self.msg_box.information("Veritabanı bilgileri güncellendi\n"
-        #                                  "Veritabanı kurulumana başlanacak.")
-        #     else:
-        #         with open(self.liderdb_path, 'w') as f:
-        #             json.dump(self.data, f, ensure_ascii=False)
-        #             print("Lider Ahenk json dosyası oluşturuldu")
-        #         # self.logger.info("Lider Ahenk json dosyası oluşturuldu")
-        #         self.msg_box.information("Veritabanı bilgileri kaydedildi\n"
-        #                              "Veritabanı kurulumuna başlanacak.")
-        #
-        #
-        #     if self.data['location'] == 'remote':
-        #         self.im.ssh_connect(self.data)
-        #         self.im.install_mariadb(self.data)
-        #         self.im.ssh_disconnect()
-        #     else:
-        #         self.im.install_mariadb(self.data)
-        #
-        #     self.status.install_status.setText("Veritabanı kurulumu tamamlandı")
-        #     self.msg_box.information("Veritabanı kurulumu tamamlandı\n"
-        #                              "Kurulum loglarını \n"
-        #                              "Log ekranında bulabilirsiniz")
-
 
