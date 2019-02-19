@@ -16,7 +16,7 @@ from ui.message_box.message_box import MessageBox
 class AhenkPage(QWidget):
     def __init__(self, parent=None):
         super(AhenkPage, self).__init__(parent)
-        self.liderdb_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/liderdb.json')
+        self.ahenk_list_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/ahenk_list.txt')
 
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
@@ -116,38 +116,55 @@ class AhenkPage(QWidget):
         username = self.username.text()
         password = self.password.text()
 
-        if ip is "" or username is "" or password is "":
-            self.msg_box.information("Lütfen istemci adresini, kullanıcı adını ve kullanıcı parolası giriniz!")
+        ip_status = self.check_ip(ip)
+        if ip_status is False:
+
+            if ip is "" or username is "" or password is "":
+                self.msg_box.warning("Lütfen istemci adresini, kullanıcı adını ve kullanıcı parolası giriniz!")
+            else:
+                self.server_ip.setText("")
+                self.username.setText("")
+                self.password.setText("")
+
+                rowPosition = self.tableWidget.rowCount()
+                self.tableWidget.insertRow(rowPosition)
+                numcols = self.tableWidget.columnCount()
+                numrows = self.tableWidget.rowCount()
+                self.tableWidget.setRowCount(numrows)
+                self.tableWidget.setColumnCount(numcols)
+                self.tableWidget.setItem(numrows - 1, 0, QTableWidgetItem(ip))
+                self.tableWidget.setItem(numrows - 1, 1, QTableWidgetItem(username))
+                self.tableWidget.setItem(numrows - 1, 2, QTableWidgetItem(password))
+
+                self.delButton = QPushButton(self.tableWidget)
+                self.delButton.setText('Sil')
+                self.delButton.clicked.connect(self.del_ahenk)
+                self.tableWidget.setCellWidget(numrows - 1, 3, self.delButton)
         else:
-            ## set client connect layout
-            self.server_ip.setText("")
-            self.username.setText("")
-            self.password.setText("")
+            self.msg_box.warning("Kayıt zaten var")
 
-            rowPosition = self.tableWidget.rowCount()
-            self.tableWidget.insertRow(rowPosition)
-            numcols = self.tableWidget.columnCount()
-            numrows = self.tableWidget.rowCount()
-            self.tableWidget.setRowCount(numrows)
-            self.tableWidget.setColumnCount(numcols)
-            self.tableWidget.setItem(numrows - 1, 0, QTableWidgetItem(ip))
-            self.tableWidget.setItem(numrows - 1, 1, QTableWidgetItem(username))
-            self.tableWidget.setItem(numrows - 1, 2, QTableWidgetItem(password))
+    def check_ip(self, ip):
 
-            self.delButton = QPushButton(self.tableWidget)
-            self.delButton.setText('Sil')
-            self.delButton.clicked.connect(self.del_ahenk)
-            self.tableWidget.setCellWidget(numrows - 1, 3, self.delButton)
+        row_count = self.tableWidget.rowCount()
+        if row_count != 0:
+            for row in range(row_count):
+                ip_item = self.tableWidget.item(row, 0)
+                ip_addr = ip_item.text()
+                if ip_addr == ip:
+                    return True
+                else:
+                    return False
+        else:
+            return False
 
     def del_ahenk(self):
 
         rows = sorted(set(index.row() for index in
                           self.tableWidget.selectedIndexes()))
         for row in rows:
-            print('Row %d is selected' % row)
             self.tableWidget.selectRow(row)
             self.tableWidget.removeRow(self.tableWidget.currentRow())
-            self.msg_box.information("Kayıt Silindi".format(row))
+            self.msg_box.information("Kayıt Silindi")
 
     def install_ahenk(self):
 
@@ -173,6 +190,9 @@ class AhenkPage(QWidget):
                 'host': self.host.text()
             }
 
+            f = open(self.ahenk_list_file, "a+")
+            f.write(ip + "\n")
+
             ssh_status = self.im.ssh_connect(self.data)
             if ssh_status is True:
                 # self.msg_box.information("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
@@ -182,6 +202,6 @@ class AhenkPage(QWidget):
             else:
                 msg = "Bağlantı Sağlanamadı. Bağlantı Ayarlarını Kontrol Ederek Daha Sonra Tekrar Deneyiniz!\n"
                 for col in range(3):
-                    self.tableWidget.item(row,col).setBackground(QtGui.QColor(125,125,125))
-                self.msg_box.information(msg)
+                    self.tableWidget.item(row, col).setBackground(QtGui.QColor(125, 125, 125))
+                #self.msg_box.information(msg)
 
