@@ -116,25 +116,28 @@ class AhenkPage(QWidget):
         username = self.username.text()
         password = self.password.text()
 
-        ## set client connect layout
-        self.server_ip.setText("")
-        self.username.setText("")
-        self.password.setText("")
+        if ip is "" or username is "" or password is "":
+            self.msg_box.information("Lütfen istemci adresini, kullanıcı adını ve kullanıcı parolası giriniz!")
+        else:
+            ## set client connect layout
+            self.server_ip.setText("")
+            self.username.setText("")
+            self.password.setText("")
 
-        rowPosition = self.tableWidget.rowCount()
-        self.tableWidget.insertRow(rowPosition)
-        numcols = self.tableWidget.columnCount()
-        numrows = self.tableWidget.rowCount()
-        self.tableWidget.setRowCount(numrows)
-        self.tableWidget.setColumnCount(numcols)
-        self.tableWidget.setItem(numrows - 1, 0, QTableWidgetItem(ip))
-        self.tableWidget.setItem(numrows - 1, 1, QTableWidgetItem(username))
-        self.tableWidget.setItem(numrows - 1, 2, QTableWidgetItem(password))
+            rowPosition = self.tableWidget.rowCount()
+            self.tableWidget.insertRow(rowPosition)
+            numcols = self.tableWidget.columnCount()
+            numrows = self.tableWidget.rowCount()
+            self.tableWidget.setRowCount(numrows)
+            self.tableWidget.setColumnCount(numcols)
+            self.tableWidget.setItem(numrows - 1, 0, QTableWidgetItem(ip))
+            self.tableWidget.setItem(numrows - 1, 1, QTableWidgetItem(username))
+            self.tableWidget.setItem(numrows - 1, 2, QTableWidgetItem(password))
 
-        self.delButton = QPushButton(self.tableWidget)
-        self.delButton.setText('Sil')
-        self.delButton.clicked.connect(self.del_ahenk)
-        self.tableWidget.setCellWidget(numrows - 1, 3, self.delButton)
+            self.delButton = QPushButton(self.tableWidget)
+            self.delButton.setText('Sil')
+            self.delButton.clicked.connect(self.del_ahenk)
+            self.tableWidget.setCellWidget(numrows - 1, 3, self.delButton)
 
     def del_ahenk(self):
 
@@ -169,19 +172,16 @@ class AhenkPage(QWidget):
                 # ahenk.conf Configuration
                 'host': self.host.text()
             }
-            if username is "" or password is "" or ip is "":
-                self.msg_box.information("Ahenk kurulucak istemci bilgisine ulaşılamadı")
 
+            ssh_status = self.im.ssh_connect(self.data)
+            if ssh_status is True:
+                # self.msg_box.information("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
+
+                self.im.install_ahenk(self.data)
+                self.im.ssh_disconnect()
             else:
-                ssh_status = self.im.ssh_connect(self.data)
-                if ssh_status is True:
-                    # self.msg_box.information("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
-
-                    self.im.install_ahenk(self.data)
-                    self.im.ssh_disconnect()
-                else:
-                    msg = "Bağlantı Sağlanamadı. Bağlantı Ayarlarını Kontrol Ederek Daha Sonra Tekrar Deneyiniz!\n"
-                    for col in range(3):
-                        self.tableWidget.item(row,col).setBackground(QtGui.QColor(125,125,125))
-                    self.msg_box.information(msg)
+                msg = "Bağlantı Sağlanamadı. Bağlantı Ayarlarını Kontrol Ederek Daha Sonra Tekrar Deneyiniz!\n"
+                for col in range(3):
+                    self.tableWidget.item(row,col).setBackground(QtGui.QColor(125,125,125))
+                self.msg_box.information(msg)
 
