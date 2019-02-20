@@ -4,12 +4,15 @@
 
 import os
 import json
-from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QWidget)
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QWidget, QVBoxLayout)
+
+from ui.conf.repo_page import RepoPage
 from ui.ldap.ldap_page import OpenLdapPage
 from ui.ejabberd.ejabberd_page import EjabberdPage
 from ui.database.db_page import DatabasePage
 from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
+from ui.log.status_page import StatusPage
 from ui.message_box.message_box import MessageBox
 
 class LiderPage(QWidget):
@@ -30,6 +33,8 @@ class LiderPage(QWidget):
         self.connect_layout = ConnectPage()
         self.im = InstallManager()
         self.msg_box = MessageBox()
+        self.repo = RepoPage()
+        self.status = StatusPage()
         self.data = None
 
         ## db parameters
@@ -62,10 +67,10 @@ class LiderPage(QWidget):
         self.liderXmppGroup = QGroupBox("XMPP Konfigürasyon Bilgileri")
         self.liderDbGroup = QGroupBox("Veritabanı Konfigürasyon Bilgileri")
 
-        self.statusLabel = QLabel("Lider Kurulum Durumu:")
-        self.status = QLineEdit()
-        self.status.setPlaceholderText("Lider kurulumu...")
-        self.status.setReadOnly(True)
+        # Install Status Layout
+        statusGroup = QGroupBox()
+        self.status.statusLabel.setText("Lider Kurulum Durumu:")
+        statusGroup.setLayout(self.status.statusLayout)
 
 
         # add server ip to database layout
@@ -94,21 +99,34 @@ class LiderPage(QWidget):
         self.connect_layout.connectLayout.addWidget(self.file_server, 4, 1)
         self.connectGroup.setLayout(self.connect_layout.connectLayout)
 
-        # mainLayout = QVBoxLayout()
-        mainLayout = QGridLayout()
-        mainLayout.addWidget(self.connectGroup,0,0)
-        mainLayout.addWidget(self.liderLdapGroup,0,1)
-        mainLayout.addWidget(self.liderXmppGroup,1,0)
-        mainLayout.addWidget(self.liderDbGroup,1,1)
-        # mainLayout.addSpacing(12)
-        mainLayout.addWidget(self.getDataButton,2,0)
-        mainLayout.addWidget(self.installButton,2,1)
-        # mainLayout.addWidget(statusGroup)
-        mainLayout.addWidget(self.statusLabel)
-        mainLayout.addWidget(self.status)
-        # mainLayout.addStretch(1)
+        # repo layout
+        repoGroup = QGroupBox("Repo Sunucusu Bilgileri")
+        repoGroup.setLayout(self.repo.repoLayout)
+
+        liderGroup = QGroupBox("Lider Konfigürasyon Bilgileri")
+        # liderLayout = QVBoxLayout()
+        liderLayout = QGridLayout()
+        liderLayout.addWidget(self.connectGroup,0,0)
+        liderLayout.addWidget(self.liderLdapGroup,0,1)
+        liderLayout.addWidget(self.liderXmppGroup,1,0)
+        liderLayout.addWidget(self.liderDbGroup,1,1)
+        # liderLayout.addSpacing(12)
+        liderLayout.addWidget(self.getDataButton,2,0)
+        liderLayout.addWidget(self.installButton,2,1)
+        # liderLayout.addWidget(repoGroup)
+        # liderLayout.addStretch(1)
+        liderGroup.setLayout(liderLayout)
+
+        mainLayout = QVBoxLayout()
+        mainLayout.addWidget(repoGroup)
+        mainLayout.addWidget(liderGroup)
+        mainLayout.addWidget(statusGroup)
+        # mainLayout.addWidget(packageGroup)
+        mainLayout.addSpacing(12)
+        mainLayout.addStretch(1)
 
         self.setLayout(mainLayout)
+
 
 
     def check_control_button(self, idx):
@@ -229,8 +247,12 @@ class LiderPage(QWidget):
             'fs_username': self.connect_layout.username.text(),
             'fs_username_pwd': self.connect_layout.password.text(),
             'fs_plugin_path': '/home/{username}'.format(username=self.connect_layout.username.text()),
-            "fs_agreement_path": '/home/{username}'.format(username=self.connect_layout.username.text()),
-            "fs_agent_file_path": '/home/{username}'.format(username=self.connect_layout.username.text()),
+            'fs_agreement_path': '/home/{username}'.format(username=self.connect_layout.username.text()),
+            'fs_agent_file_path': '/home/{username}'.format(username=self.connect_layout.username.text()),
+
+            # repository parameters
+            'repo_key': self.repo.repo_key.text(),
+            'repo_addr': self.repo.repo_addr.text()
         }
 
         if self.data['l_base_dn'] == "" or self.data['l_config_pwd'] == "" or self.data['ladmin_user'] == "" or self.data['l_admin_pwd'] == "" or self.data['ladmin_pwd'] == ""\
@@ -243,7 +265,7 @@ class LiderPage(QWidget):
                                      "- Veritabanı bilgileri\n"
                                      "- XMPP bilgileri")
         else:
-            self.status.setText("Lider kurulumu devam ediyor...")
+            self.status.install_status.setText("Lider kurulumu devam ediyor...")
             if os.path.exists(self.lider_path) and os.stat(self.lider_path).st_size != 0:
                 with open(self.lider_path) as f:
                     read_data = json.load(f)
@@ -265,11 +287,11 @@ class LiderPage(QWidget):
 
             if self.data['location'] == 'remote':
                 self.im.ssh_connect(self.data)
-                # self.im.install_lider(self.data)
+                self.im.install_lider(self.data)
                 self.im.ssh_disconnect()
             else:
                 self.im.install_lider(self.data)
-            self.status.setText("Lider kurulumu tamamlandı")
+            self.status.install_status.setText("Lider kurulumu tamamlandı")
 
             self.msg_box.information("Lider kurulumu tamamlandı")
 

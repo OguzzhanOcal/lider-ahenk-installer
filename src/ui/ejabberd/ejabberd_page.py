@@ -6,6 +6,7 @@ import os
 import json
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget)
 from install_manager import InstallManager
+from ui.conf.repo_page import RepoPage
 from ui.message_box.message_box import MessageBox
 from ui.connect.connect_page import ConnectPage
 from ui.log.status_page import StatusPage
@@ -22,6 +23,7 @@ class EjabberdPage(QWidget):
         self.im = InstallManager()
         self.msg_box = MessageBox()
         self.status = StatusPage()
+        self.repo = RepoPage()
 
         self.connect_layout = ConnectPage()
         self.startUpdateButton = QPushButton("Kuruluma Başla")
@@ -58,6 +60,10 @@ class EjabberdPage(QWidget):
         connectGroup = QGroupBox("XMPP Sunucusu Bağlantı Bilgileri")
         connectGroup.setLayout(self.connect_layout.connectLayout)
 
+        # repo layout
+        repoGroup = QGroupBox("Repo Sunucusu Bilgileri")
+        repoGroup.setLayout(self.repo.repoLayout)
+
         # Install Status Layout
         statusGroup = QGroupBox()
         self.status.statusLabel.setText("XMPP Kurulum Durumu:")
@@ -87,6 +93,7 @@ class EjabberdPage(QWidget):
 
         mainLayout = QVBoxLayout()
         mainLayout.addWidget(connectGroup)
+        mainLayout.addWidget(repoGroup)
         mainLayout.addWidget(ejabberdGroup)
         mainLayout.addSpacing(12)
         mainLayout.addWidget(self.startUpdateButton)
@@ -120,8 +127,9 @@ class EjabberdPage(QWidget):
             # Lider Configuration
             'lider_username': 'lider_sunucu',
             'lider_user_pwd': self.lider_user_pwd.text(),
-            'l_admin_pwd': self.ldap_admin_pwd.text()
-
+            'l_admin_pwd': self.ldap_admin_pwd.text(),
+            'repo_key': self.repo.repo_key.text(),
+            'repo_addr': self.repo.repo_addr.text()
         }
 
         if self.data['e_service_name'] == "" or self.data['e_user_pwd'] == "" or self.data['ldap_servers'] == "" or self.data['l_base_dn'] == "" or self.data['lider_user_pwd'] == "" or self.data['l_admin_pwd'] == ""\

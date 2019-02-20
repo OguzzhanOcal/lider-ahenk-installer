@@ -22,6 +22,9 @@ class LiderInstaller(object):
 
     def install(self, data):
 
+        repo_key = data["repo_key"]
+        repo_key = repo_key.rsplit("/")[-1]
+
         if self.ssh_status == "Successfully Authenticated" or data['location'] == 'local':
             cfg_data = self.config_manager.read()
             self.configure_lider_cfg(data)
@@ -32,13 +35,13 @@ class LiderInstaller(object):
             else:
                 self.logger.error("software-properties-common paketi kurulamadı, result_code: " + str(result_code))
 
-            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"])
+            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"].format(data["repo_key"], repo_key))
             if result_code == 0:
                 self.logger.info("Lider Ahenk repo key dosyası indirildi")
             else:
                 self.logger.error("Lider Ahenk repo key dosyası indirilemedi, result_code: " + str(result_code))
 
-            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"])
+            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"].format(data["repo_addr"]))
             if result_code == 0:
                 self.logger.info("Lider Ahenk repo adresi eklendi")
             else:

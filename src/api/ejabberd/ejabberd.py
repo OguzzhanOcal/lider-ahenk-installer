@@ -23,6 +23,10 @@ class EjabberInstaller(object):
         # configuration ejabberd.yml
         base_dn = self.base_dn_parse(data)
         ldap_root_dn = "cn=admin,"+str(base_dn) #cn=admnin,dc=liderahenk,dc=org
+
+        repo_key = data["repo_key"]
+        repo_key = repo_key.rsplit("/")[-1]
+
         cfg_data = config_manager.read()
         conf_data = {
             "#HOST": data['e_hosts'],
@@ -52,13 +56,13 @@ class EjabberInstaller(object):
             else:
                 self.logger.error("software-properties-common paketi kurulamadı, result_code: "+str(result_code))
 
-            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"])
+                result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"].format(data["repo_key"], repo_key))
             if result_code == 0:
                 self.logger.info("Lider Ahenk repo key dosyası indirildi")
             else:
                 self.logger.error("Lider Ahenk repo key dosyası indirilemedi, result_code: "+str(result_code))
 
-            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"])
+            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"].format(data["repo_addr"]))
             if result_code == 0:
                 self.logger.info("Lider Ahenk repo adresi eklendi")
             else:

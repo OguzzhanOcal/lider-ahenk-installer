@@ -54,8 +54,8 @@ cmd_lider_install: sudo apt-get install -y lider-server
 cmd_lider_service: sudo systemctl restart lider.service
 cmd_soft_properties: sudo apt-get install -y software-properties-common
 cmd_fs_dep: sudo apt-get install -y sshpass rsync
-cmd_liderahenk_repo_key: sudo wget http://repo.liderahenk.org/liderahenk-archive-keyring.asc && sudo apt-key add liderahenk-archive-keyring.asc &&  rm -r --interactive=never liderahenk-archive-keyring.asc
-cmd_liderahenk_repo_add: sudo add-apt-repository 'deb [arch=amd64] http://repo.liderahenk.org/liderahenk stable main'
+cmd_liderahenk_repo_key: sudo wget {0} && sudo apt-key add {1} &&  rm -r --interactive=never {1}
+cmd_liderahenk_repo_add: sudo add-apt-repository '{0}'
 cmd_update: sudo apt-get update
 cmd_cp_lider_cfg: sudo cp /tmp/tr.org.liderahenk.cfg /usr/share/lider-server/etc
 cmd_cp_db_cfg: sudo cp /tmp/tr.org.liderahenk.datasource.cfg /usr/share/lider-server/etc

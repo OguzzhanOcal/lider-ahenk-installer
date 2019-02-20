@@ -5,6 +5,8 @@
 import os
 import json
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget)
+
+from ui.conf.repo_page import RepoPage
 from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
@@ -24,6 +26,7 @@ class DatabasePage(QWidget):
         self.status = StatusPage()
         self.im = InstallManager()
         self.msg_box = MessageBox()
+        self.repo = RepoPage()
         self.data = None
 
         ## database parameters
@@ -58,8 +61,13 @@ class DatabasePage(QWidget):
         self.status.statusLabel.setText("Veritabanı Kurulum Durumu:")
         statusGroup.setLayout(self.status.statusLayout)
 
+        # repo layout
+        repoGroup = QGroupBox("Repo Sunucusu Bilgileri")
+        repoGroup.setLayout(self.repo.repoLayout)
+
         mainLayout = QVBoxLayout()
         mainLayout.addWidget(connectGroup)
+        mainLayout.addWidget(repoGroup)
         mainLayout.addWidget(dbGroup)
         mainLayout.addSpacing(12)
         mainLayout.addWidget(self.startUpdateButton)
@@ -86,6 +94,8 @@ class DatabasePage(QWidget):
             'db_name': self.db_name.text(),
             'db_username': self.db_username.text(),
             'db_password': self.db_password.text(),
+            'repo_key': self.repo.repo_key.text(),
+            'repo_addr': self.repo.repo_addr.text()
         }
 
         if self.data['db_name'] == "" or self.data['db_username'] == "" or self.data['db_password'] == ""\

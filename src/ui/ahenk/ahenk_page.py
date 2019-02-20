@@ -8,6 +8,7 @@ from PyQt5 import QtGui
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QTableWidget,
                              QHeaderView, QTableWidgetItem)
 from install_manager import InstallManager
+from ui.conf.repo_page import RepoPage
 from ui.log.status_page import StatusPage
 from ui.message_box.message_box import MessageBox
 
@@ -26,6 +27,7 @@ class AhenkPage(QWidget):
         self.im = InstallManager()
         self.msg_box = MessageBox()
         self.data = None
+        self.repo = RepoPage()
 
         ## client connect parameters
         self.serverIpLabel = QLabel("İstemci Adresi:")
@@ -51,6 +53,9 @@ class AhenkPage(QWidget):
         self.connectLayout.addWidget(self.password, 2, 1)
         self.connectLayout.addWidget(self.checkControlButton, 0, 2)
         self.connectGroup.setLayout(self.connectLayout)
+
+        repoGroup = QGroupBox("Repo Sunucusu Bilgileri")
+        repoGroup.setLayout(self.repo.repoLayout)
 
         ## ahenk parameters
         self.hostLabel = QLabel("XMPP Sunucu Adresi:")
@@ -80,7 +85,7 @@ class AhenkPage(QWidget):
         self.ahenklistGroup = QGroupBox("Ahenk Kurulucak İstemci Listesi")
         self.ahenklistLayout = QGridLayout()
         self.tableWidget = QTableWidget()
-        self.tableWidget.setMinimumHeight(250)
+        # self.tableWidget.setMinimumHeight(250)
         ## set read only table
         self.tableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
         # set column count
@@ -100,6 +105,7 @@ class AhenkPage(QWidget):
 
         mainLayout = QVBoxLayout()
         mainLayout.addWidget(self.ahenkGroup)
+        mainLayout.addWidget(repoGroup)
         mainLayout.addWidget(self.connectGroup)
         mainLayout.addWidget(self.ahenklistGroup)
         mainLayout.addSpacing(12)
@@ -146,11 +152,9 @@ class AhenkPage(QWidget):
     def check_ip(self, ip):
 
         row_count = self.tableWidget.rowCount()
-        print("kayıt sayısı: "+str(row_count))
         ip_list = []
         if row_count != 0:
             for row in range(row_count):
-                print(row)
                 ip_item = self.tableWidget.item(row, 0)
                 ip_addr = ip_item.text()
                 ip_list.append(ip_addr)
@@ -187,6 +191,9 @@ class AhenkPage(QWidget):
                 password_item = self.tableWidget.item(row, 2)
                 password = password_item.text()
 
+                repo_key = self.repo.repo_key.text()
+                repo_addr = self.repo.repo_addr.text()
+
                 self.data = {
                     # Client Configuration
                     'location': "remote",
@@ -194,7 +201,9 @@ class AhenkPage(QWidget):
                     'username': username,
                     'password': password,
                     # ahenk.conf Configuration
-                    'host': self.host.text()
+                    'host': self.host.text(),
+                    'repo_key': repo_key,
+                    'repo_addr': repo_addr
                 }
 
                 f = open(self.ahenk_list_file, "a+")
@@ -203,9 +212,11 @@ class AhenkPage(QWidget):
                 ssh_status = self.im.ssh_connect(self.data)
                 if ssh_status is True:
                     # self.msg_box.information("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
-
+                    self.status.install_status.setText("Ahenk kurulumu devam ediyor...")
                     self.im.install_ahenk(self.data)
                     self.im.ssh_disconnect()
+                    self.status.install_status.setText("Ahenk kurulumu tamamlandı")
+
                 else:
                     msg = "Bağlantı Sağlanamadı. Bağlantı Ayarlarını Kontrol Ederek Daha Sonra Tekrar Deneyiniz!\n"
                     for col in range(3):

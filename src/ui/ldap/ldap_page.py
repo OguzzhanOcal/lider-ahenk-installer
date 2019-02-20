@@ -5,6 +5,8 @@
 import os
 import json
 from PyQt5.QtWidgets import (QComboBox, QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget)
+
+from ui.conf.repo_page import RepoPage
 from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
@@ -23,6 +25,7 @@ class OpenLdapPage(QWidget):
         self.im = InstallManager()
         self.msg_box = MessageBox()
         self.status = StatusPage()
+        self.repo = RepoPage()
         self.data = None
 
         #OpenLDAP parameters
@@ -57,6 +60,10 @@ class OpenLdapPage(QWidget):
         connectGroup = QGroupBox("OpenLDAP Sunucusu Bağlantı Bilgileri")
         connectGroup.setLayout(self.connect_layout.connectLayout)
 
+        # repo layout
+        repoGroup = QGroupBox("Repo Sunucusu Bilgileri")
+        repoGroup.setLayout(self.repo.repoLayout)
+
         ## LDAP configuration Layout
         ldapGroup = QGroupBox("OpenLDAP Konfigürasyon Bilgileri")
         self.ldapLayout = QGridLayout()
@@ -85,6 +92,7 @@ class OpenLdapPage(QWidget):
 
         mainLayout = QVBoxLayout()
         mainLayout.addWidget(connectGroup)
+        mainLayout.addWidget(repoGroup)
         mainLayout.addWidget(ldapGroup)
         # mainLayout.addWidget(packageGroup)
         mainLayout.addSpacing(12)
@@ -113,22 +121,25 @@ class OpenLdapPage(QWidget):
         l_org_name = l_org_name[0]
 
         self.data = {
-        'location': location_server,
-        # Server Configuration
-        'ip': self.connect_layout.server_ip.text(),
-        'username': self.connect_layout.username.text(),
-        'password': self.connect_layout.password.text(),
 
-        # OpenLDAP Configuration
-        'l_base_dn': self.ldap_base_dn.text(),
-        'l_config_pwd': self.l_config_pwd.text(),
-        'l_org_name': l_org_name,
-        'l_config_admin_dn': "cn=admin,cn=config",
-        'l_admin_cn': 'admin',
-        'ladmin_user': self.ladmin_user.text(),
-        'l_admin_pwd': self.ldap_admin_pwd.text(),
-        'ladmin_pwd': self.ladmin_pwd.text(),
-        'ldap_status': ldap_status,
+            'location': location_server,
+            # Server Configuration
+            'ip': self.connect_layout.server_ip.text(),
+            'username': self.connect_layout.username.text(),
+            'password': self.connect_layout.password.text(),
+
+            # OpenLDAP Configuration
+            'l_base_dn': self.ldap_base_dn.text(),
+            'l_config_pwd': self.l_config_pwd.text(),
+            'l_org_name': l_org_name,
+            'l_config_admin_dn': "cn=admin,cn=config",
+            'l_admin_cn': 'admin',
+            'ladmin_user': self.ladmin_user.text(),
+            'l_admin_pwd': self.ldap_admin_pwd.text(),
+            'ladmin_pwd': self.ladmin_pwd.text(),
+            'ldap_status': ldap_status,
+            'repo_key': self.repo.repo_key.text(),
+            'repo_addr': self.repo.repo_addr.text()
         # yeni ldap kur ya da varolan ldapı konfigüre et 'new' ya da 'update' parametreleri alıyor
         }
 
