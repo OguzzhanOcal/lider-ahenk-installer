@@ -22,7 +22,7 @@ class WatchLog(QWidget):
         ## database parameters
         self.log_name = QTextEdit()
         self.log_name.setReadOnly(True)
-        self.log_name.setMinimumSize(200, 500)
+        self.log_name.setMinimumSize(200, 600)
         self.refreshButton = QPushButton("Yenile")
 
         ## Log Layout

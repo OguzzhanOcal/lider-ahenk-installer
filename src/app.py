@@ -29,7 +29,7 @@ class ConfigDialog(QDialog):
         self.contentsWidget.setMovement(QListView.Static)
         self.contentsWidget.setMaximumWidth(128)
         self.contentsWidget.setMinimumWidth(128)
-        self.contentsWidget.setMinimumHeight(512)
+        self.contentsWidget.setMinimumHeight(700)
         self.contentsWidget.setSpacing(12)
 
         #aboutAction = QAction('About', self)
@@ -37,7 +37,7 @@ class ConfigDialog(QDialog):
         #aboutAction.triggered.connect(QMessageBox.information(self, None, "Lider Ahenk Kurulum Uygulaması"))
 
         self.pagesWidget = QStackedWidget()
-        self.pagesWidget.setMinimumHeight(620)
+        self.pagesWidget.setMinimumHeight(700)
         self.pagesWidget.setMinimumWidth(512)
 
         self.pagesWidget.addWidget(DatabasePage())
