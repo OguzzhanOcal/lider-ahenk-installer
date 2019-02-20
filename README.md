@@ -23,4 +23,4 @@
 Application is started with ***python3 app.py*** command under the src directory
 
 
-![Lider Ahenk Installer](liderahenk_installer_1.png)
+![Lider Ahenk Installer](liderahenk_installer_home_page.png)
