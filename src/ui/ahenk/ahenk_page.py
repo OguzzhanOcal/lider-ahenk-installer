@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
-import json
 import os
 
 from PyQt5 import QtGui
@@ -81,6 +80,7 @@ class AhenkPage(QWidget):
         self.ahenklistGroup = QGroupBox("Ahenk Kurulucak İstemci Listesi")
         self.ahenklistLayout = QGridLayout()
         self.tableWidget = QTableWidget()
+        self.tableWidget.setMinimumHeight(250)
         ## set read only table
         self.tableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
         # set column count
@@ -146,14 +146,20 @@ class AhenkPage(QWidget):
     def check_ip(self, ip):
 
         row_count = self.tableWidget.rowCount()
+        print("kayıt sayısı: "+str(row_count))
+        ip_list = []
         if row_count != 0:
             for row in range(row_count):
+                print(row)
                 ip_item = self.tableWidget.item(row, 0)
                 ip_addr = ip_item.text()
-                if ip_addr == ip:
-                    return True
-                else:
-                    return False
+                ip_list.append(ip_addr)
+
+            # check if ip exist in a list return True
+            if ip in ip_list:
+                return True
+            else:
+                return False
         else:
             return False
 
@@ -170,38 +176,42 @@ class AhenkPage(QWidget):
 
         ## get item from ahenk list table
         row_count = self.tableWidget.rowCount()
-        for row in range(row_count):
-            ip_item = self.tableWidget.item(row, 0)
-            ip = ip_item.text()
+        if row_count != 0:
+            for row in range(row_count):
+                ip_item = self.tableWidget.item(row, 0)
+                ip = ip_item.text()
 
-            username_item = self.tableWidget.item(row, 1)
-            username = username_item.text()
+                username_item = self.tableWidget.item(row, 1)
+                username = username_item.text()
 
-            password_item = self.tableWidget.item(row, 2)
-            password = password_item.text()
+                password_item = self.tableWidget.item(row, 2)
+                password = password_item.text()
 
-            self.data = {
-                # Client Configuration
-                'location': "remote",
-                'ip': ip,
-                'username': username,
-                'password': password,
-                # ahenk.conf Configuration
-                'host': self.host.text()
-            }
+                self.data = {
+                    # Client Configuration
+                    'location': "remote",
+                    'ip': ip,
+                    'username': username,
+                    'password': password,
+                    # ahenk.conf Configuration
+                    'host': self.host.text()
+                }
 
-            f = open(self.ahenk_list_file, "a+")
-            f.write(ip + "\n")
+                f = open(self.ahenk_list_file, "a+")
+                f.write(ip + "\n")
 
-            ssh_status = self.im.ssh_connect(self.data)
-            if ssh_status is True:
-                # self.msg_box.information("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
+                ssh_status = self.im.ssh_connect(self.data)
+                if ssh_status is True:
+                    # self.msg_box.information("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
 
-                self.im.install_ahenk(self.data)
-                self.im.ssh_disconnect()
-            else:
-                msg = "Bağlantı Sağlanamadı. Bağlantı Ayarlarını Kontrol Ederek Daha Sonra Tekrar Deneyiniz!\n"
-                for col in range(3):
-                    self.tableWidget.item(row, col).setBackground(QtGui.QColor(125, 125, 125))
-                #self.msg_box.information(msg)
+                    self.im.install_ahenk(self.data)
+                    self.im.ssh_disconnect()
+                else:
+                    msg = "Bağlantı Sağlanamadı. Bağlantı Ayarlarını Kontrol Ederek Daha Sonra Tekrar Deneyiniz!\n"
+                    for col in range(3):
+                        self.tableWidget.item(row, col).setBackground(QtGui.QColor(125, 125, 125))
+                    #self.msg_box.information(msg)
 
+        else:
+            self.msg_box.warning("Kayıt bulunamadı!\n"
+                                 "Lütfen istemci bilgisi giriniz")
