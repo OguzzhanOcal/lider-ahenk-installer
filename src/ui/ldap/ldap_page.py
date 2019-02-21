@@ -5,7 +5,6 @@
 import os
 import json
 from PyQt5.QtWidgets import (QComboBox, QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget)
-
 from ui.conf.repo_page import RepoPage
 from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
@@ -53,7 +52,6 @@ class OpenLdapPage(QWidget):
         self.ladmin_pwd = QLineEdit()
         self.ladmin_pwd.setPlaceholderText("****")
         self.ladmin_pwd.setEchoMode(QLineEdit.Password)
-
         self.startUpdateButton = QPushButton("Kuruluma Başla")
 
         ## Connect Layout
@@ -89,7 +87,6 @@ class OpenLdapPage(QWidget):
         self.ldapLayout.addWidget(self.ladmin_pwd, 6, 1)
 
         ldapGroup.setLayout(self.ldapLayout)
-
         mainLayout = QVBoxLayout()
         mainLayout.addWidget(connectGroup)
         mainLayout.addWidget(repoGroup)
@@ -102,7 +99,6 @@ class OpenLdapPage(QWidget):
 
         self.setLayout(mainLayout)
         self.startUpdateButton.clicked.connect(self.save_ldap_data)
-
 
     def save_ldap_data(self):
 

@@ -26,13 +26,13 @@ class AhenkPage(QWidget):
 
         ## client connect parameters
         self.serverIpLabel = QLabel("İstemci Adresi:")
-        self.server_ip = QLineEdit("192.168.56.123")
-        # self.server_ip.setPlaceholderText("192.168.*.*")
+        self.server_ip = QLineEdit()
+        self.server_ip.setPlaceholderText("192.168.*.*")
         self.usernameLabel = QLabel("Kullanıcı Adı:")
-        self.username = QLineEdit("tcolak")
-        # self.username.setPlaceholderText("lider")
+        self.username = QLineEdit()
+        self.username.setPlaceholderText("lider")
         self.passwordLabel = QLabel("Kullanıcı Parolası:")
-        self.password = QLineEdit("1")
+        self.password = QLineEdit()
         # self.password.setPlaceholderText("****")
         self.password.setEchoMode(QLineEdit.Password)
         self.checkControlButton = QPushButton("Ekle")

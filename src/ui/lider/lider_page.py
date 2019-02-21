@@ -5,7 +5,6 @@
 import os
 import json
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QWidget, QVBoxLayout)
-
 from ui.conf.repo_page import RepoPage
 from ui.ldap.ldap_page import OpenLdapPage
 from ui.ejabberd.ejabberd_page import EjabberdPage
@@ -72,7 +71,6 @@ class LiderPage(QWidget):
         self.status.statusLabel.setText("Lider Kurulum Durumu:")
         statusGroup.setLayout(self.status.statusLayout)
 
-
         # add server ip to database layout
         self.db_layout.dbLayout.addWidget(self.dbServerLabel, 3, 0)
         self.db_layout.dbLayout.addWidget(self.db_server, 3, 1)
@@ -126,8 +124,6 @@ class LiderPage(QWidget):
         mainLayout.addStretch(1)
 
         self.setLayout(mainLayout)
-
-
 
     def check_control_button(self, idx):
         ## if select location is remote server

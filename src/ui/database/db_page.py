@@ -125,7 +125,6 @@ class DatabasePage(QWidget):
                 self.msg_box.information("Veritabanı bilgileri kaydedildi\n"
                                      "Veritabanı kurulumuna başlanacak.")
 
-
             if self.data['location'] == 'remote':
                 self.im.ssh_connect(self.data)
                 self.im.install_mariadb(self.data)
