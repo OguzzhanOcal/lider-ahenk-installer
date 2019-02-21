@@ -266,6 +266,7 @@ class LiderPage(QWidget):
                                      "- XMPP bilgileri")
         else:
             self.status.install_status.setText("Lider kurulumu devam ediyor...")
+            self.status.install_status.setStyleSheet("background-color: green")
             if os.path.exists(self.lider_path) and os.stat(self.lider_path).st_size != 0:
                 with open(self.lider_path) as f:
                     read_data = json.load(f)
@@ -292,7 +293,7 @@ class LiderPage(QWidget):
             else:
                 self.im.install_lider(self.data)
             self.status.install_status.setText("Lider kurulumu tamamlandı")
-
+            self.status.install_status.setStyleSheet("background-color: cyan")
             self.msg_box.information("Lider kurulumu tamamlandı")
 
 

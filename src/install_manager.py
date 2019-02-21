@@ -47,10 +47,9 @@ class InstallManager(object):
         lider_installer.install(data)
 
     def install_ahenk(self, data):
-        print("ahenk kurulumu: "+str(data))
-        # ahenk_installer = AhenkInstaller(self.util, self.ssh_status)
-        # self.logger.info("Lider bileşeni Kurulumana başlanıyor.")
-        # ahenk_installer.install(data)
+        ahenk_installer = AhenkInstaller(self.util, self.ssh_status)
+        self.logger.info("Ahenk Kurulumana başlanıyor.")
+        ahenk_installer.install(data)
 
     def ssh_connect(self, data):
         ssh_status = self.util.connect(data)

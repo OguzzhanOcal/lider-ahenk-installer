@@ -106,6 +106,7 @@ class DatabasePage(QWidget):
                                      "- Veritabanı kullanıcı adı ve parolası")
         else:
             self.status.install_status.setText("Veritabanı kurulumu devam ediyor...")
+            self.status.install_status.setStyleSheet("background-color: green")
             if os.path.exists(self.liderdb_path) and os.stat(self.liderdb_path).st_size != 0:
                 with open(self.liderdb_path) as f:
                     read_data = json.load(f)
@@ -133,6 +134,7 @@ class DatabasePage(QWidget):
                 self.im.install_mariadb(self.data)
 
             self.status.install_status.setText("Veritabanı kurulumu tamamlandı")
+            self.status.install_status.setStyleSheet("background-color: cyan")
             self.msg_box.information("Veritabanı kurulumu tamamlandı\n"
                                      "Kurulum loglarını \n"
                                      "Log ekranında bulabilirsiniz")

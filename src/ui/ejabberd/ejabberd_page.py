@@ -143,6 +143,7 @@ class EjabberdPage(QWidget):
 
         else:
             self.status.install_status.setText("XMPP kurulumu devam ediyor...")
+            self.status.install_status.setStyleSheet("background-color: green")
             if os.path.exists(self.liderejabberd_path) and os.stat(self.liderejabberd_path).st_size != 0:
                 with open(self.liderejabberd_path) as f:
                     read_data = json.load(f)
@@ -169,6 +170,6 @@ class EjabberdPage(QWidget):
                 self.im.install_ejabberd(self.data)
 
             self.status.install_status.setText("XMPP kurulumu tamamlandı")
-
+            self.status.install_status.setStyleSheet("background-color: cyan")
             self.msg_box.information("XMPP kurulumu tamamlandı")
 

@@ -14,10 +14,13 @@ class AhenkInstaller(object):
 
     def install(self, data):
 
+        repo_key = data["repo_key"]
+        repo_key = repo_key.rsplit("/")[-1]
+
         config_manager = ConfigManager()
         cfg_data = config_manager.read()
         # print(cfg_data)
-        if self.ssh_status == "Successfully Authenticated" or data['location'] == 'local':
+        if self.ssh_status == "Successfully Authenticated":
 
             result_code = self.ssh_api.run_command(cfg_data["cmd_soft_properties"])
             if result_code == 0:
@@ -25,13 +28,13 @@ class AhenkInstaller(object):
             else:
                 self.logger.error("software-properties-common paketi kurulamadı, result_code: "+str(result_code))
 
-            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"])
+            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_key"].format(data["repo_key"], repo_key))
             if result_code == 0:
                 self.logger.info("Lider Ahenk repo key dosyası indirildi")
             else:
                 self.logger.error("Lider Ahenk repo key dosyası indirilemedi, result_code: "+str(result_code))
 
-            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"])
+            result_code = self.ssh_api.run_command(cfg_data["cmd_liderahenk_repo_add"].format(data["repo_addr"]))
             if result_code == 0:
                 self.logger.info("Lider Ahenk repo adresi eklendi")
             else:
@@ -43,39 +46,18 @@ class AhenkInstaller(object):
             else:
                 self.logger.error("Paket listesi güncellenemdi, result_code: "+str(result_code))
 
-            result_code = self.ssh_api.run_command(cfg_data["cmd_deb_frontend"])
-            result_code = self.ssh_api.run_command(cfg_data["db_debconf_pwd"].format(data["db_password"]))
-            result_code = self.ssh_api.run_command(cfg_data["db_debconf_pwd_again"].format(data["db_password"]))
-
-            result_code = self.ssh_api.run_command(cfg_data["cmd_db_install"])
+            result_code = self.ssh_api.run_command(cfg_data["cmd_ahenk_install"])
             if result_code == 0:
-                self.logger.info("Mariadb paketi kuruldu")
+                self.logger.info("Ahenk paketi kuruldu")
             else:
-                self.logger.error("Mariadb paketi kurulamadı, result_code: "+str(result_code))
+                self.logger.error("Ahenk paketi kurulamadı, result_code: "+str(result_code))
 
-            result_code = self.ssh_api.run_command(cfg_data["cmd_db_dep"])
+            result_code = self.ssh_api.run_command(cfg_data["cmd_ahenk_dep"])
             if result_code == 0:
-                self.logger.info("Veritabanı bağımlılıkları kuruldu")
+                self.logger.info("Ahenk bağımlılıkları kuruldu")
+                self.logger.info("Ahenk kurulumu tamamlandı")
             else:
-                self.logger.error("Veritabanı bağımlılıkları kurulamadı, result_code: "+str(result_code))
+                self.logger.error("Ahenk bağımlılıkları kurulamadı, result_code: "+str(result_code))
 
-            result_code = self.ssh_api.run_command(cfg_data["cmd_create_db"].format(data["db_password"], data["db_name"]))
-            if result_code == 0:
-                self.logger.info("liderdb veritabanı oluşturuldu")
-            else:
-                self.logger.error("liderdb veritabanı oluşturulamadı, result_code: "+str(result_code))
-
-            result_code = self.ssh_api.run_command(cfg_data["cmd_db_grant_privileges"].format(data["db_password"]))
-            if result_code == 0:
-                self.logger.info("Veritabanı grant yetkisi verildi")
-            else:
-                self.logger.error("Veritabanı grant yetkisi verilemedi, result_code: "+str(result_code))
-
-            # self.ssh_api.run_command(cfg_data["cmd_db_replace_bind_addr"])
-            result_code = self.ssh_api.run_command(cfg_data["cmd_db_service"])
-            if result_code == 0:
-                self.logger.info("Veritabanı servisi başlatıldı.")
-            else:
-                self.logger.error("Veritabanı servisi başlatılamadı, result_code: "+str(result_code))
         else:
-            self.logger.error("Veritabanı sunucusuna bağlantı sağlanamadığı için kurulum yapılamadı. Lütfen bağlantı ayarlarını kotrol ediniz!")
+            self.logger.error("Ahenk kurulacak istemciye bağlantı sağlanamadığı için kurulum yapılamadı. Lütfen bağlantı ayarlarını kotrol ediniz!")

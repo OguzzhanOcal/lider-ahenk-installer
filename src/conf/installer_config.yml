@@ -52,15 +52,23 @@ cmd_ldap_remove: sudo apt-get purge -y slapd ldap-utils && sudo rm -rf /var/ldap
 #Lider configuration
 cmd_lider_install: sudo apt-get install -y lider-server
 cmd_lider_service: sudo systemctl restart lider.service
-cmd_soft_properties: sudo apt-get install -y software-properties-common
 cmd_fs_dep: sudo apt-get install -y sshpass rsync
-cmd_liderahenk_repo_key: sudo wget {0} && sudo apt-key add {1} &&  rm -r --interactive=never {1}
-cmd_liderahenk_repo_add: sudo add-apt-repository '{0}'
-cmd_update: sudo apt-get update
 cmd_cp_lider_cfg: sudo cp /tmp/tr.org.liderahenk.cfg /usr/share/lider-server/etc
 cmd_cp_db_cfg: sudo cp /tmp/tr.org.liderahenk.datasource.cfg /usr/share/lider-server/etc
 lider_des_path : /tmp
 cmd_agents_files: sudo mkdir -p {0}
 cmd_chown_agents_files: sudo chown {0}:{0} {1}
+
+#------------------------------------------------------------------------------------------------------------------------------------------------
+# Ahenk configuration
+cmd_ahenk_install: sudo apt-get install -y ahenk
+cmd_ahenk_dep: sudo apt-get -f install
+
+#------------------------------------------------------------------------------------------------------------------------------------------------
+# Lider ahenk repository configuration
+cmd_soft_properties: sudo apt-get install -y software-properties-common
+cmd_liderahenk_repo_key: sudo wget {0} && sudo apt-key add {1} &&  rm -r --interactive=never {1}
+cmd_liderahenk_repo_add: sudo add-apt-repository '{0}'
+cmd_update: sudo apt-get update
 
 

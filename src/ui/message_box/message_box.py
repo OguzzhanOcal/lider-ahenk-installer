@@ -12,7 +12,6 @@ except AttributeError:
     def _fromUtf8(s):
         return s
 
-
 class MessageBox(QWidget):
 
     def __init__(self):
@@ -30,6 +29,7 @@ class MessageBox(QWidget):
         self.msgBox.setInformativeText(_fromUtf8(str(message)))
         self.msgBox.setDefaultButton(QMessageBox.Ok)
         self.msgBox.exec_()
+        self.msgBox.setDefaultButton(QMessageBox.No)
 
     def about(self, message):
         QMessageBox.about(self, "Lider Ahenk Kurulum Uygulaması", message)
@@ -39,7 +39,6 @@ class MessageBox(QWidget):
         self.msgBox.setMinimumSize(self.width, self.height)
         self.msgBox.setIcon(self.msgBox.Warning)
         self.msgBox.setWindowTitle("UYARI")
-
         self.msgBox.setInformativeText(_fromUtf8(str(message)))
         self.msgBox.setDefaultButton(QMessageBox.Ok)
         self.msgBox.exec_()

@@ -3,7 +3,6 @@
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
 import os
-
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QTableWidget,
                              QHeaderView, QTableWidgetItem)
@@ -12,16 +11,12 @@ from ui.conf.repo_page import RepoPage
 from ui.log.status_page import StatusPage
 from ui.message_box.message_box import MessageBox
 
-
 class AhenkPage(QWidget):
     def __init__(self, parent=None):
         super(AhenkPage, self).__init__(parent)
         self.ahenk_list_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/ahenk_list.txt')
-
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
-
-        self.log_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/installer.log')
 
         self.status = StatusPage()
         self.im = InstallManager()
@@ -31,14 +26,14 @@ class AhenkPage(QWidget):
 
         ## client connect parameters
         self.serverIpLabel = QLabel("İstemci Adresi:")
-        self.server_ip = QLineEdit()
-        self.server_ip.setPlaceholderText("192.168.*.*")
+        self.server_ip = QLineEdit("192.168.56.123")
+        # self.server_ip.setPlaceholderText("192.168.*.*")
         self.usernameLabel = QLabel("Kullanıcı Adı:")
-        self.username = QLineEdit()
-        self.username.setPlaceholderText("lider")
+        self.username = QLineEdit("tcolak")
+        # self.username.setPlaceholderText("lider")
         self.passwordLabel = QLabel("Kullanıcı Parolası:")
-        self.password = QLineEdit()
-        self.password.setPlaceholderText("****")
+        self.password = QLineEdit("1")
+        # self.password.setPlaceholderText("****")
         self.password.setEchoMode(QLineEdit.Password)
         self.checkControlButton = QPushButton("Ekle")
 
@@ -54,6 +49,7 @@ class AhenkPage(QWidget):
         self.connectLayout.addWidget(self.checkControlButton, 0, 2)
         self.connectGroup.setLayout(self.connectLayout)
 
+        ## repository layout
         repoGroup = QGroupBox("Repo Sunucusu Bilgileri")
         repoGroup.setLayout(self.repo.repoLayout)
 
@@ -64,10 +60,6 @@ class AhenkPage(QWidget):
         # self.serviceNameLabel = QLabel("XMPP Servis Adı:")
         # self.service_name = QLineEdit()
         # self.service_name.setPlaceholderText("im.liderahenk.org")
-        # self.resourceLabel = QLabel("Receiverresource:")
-        # self.resource = QLineEdit()
-        # self.resource.setEchoMode(QLineEdit.Password)
-        # self.resource.setPlaceholderText("Smack")
         self.startUpdateButton = QPushButton("Kuruluma Başla")
 
         ## ahenk Layout
@@ -77,8 +69,6 @@ class AhenkPage(QWidget):
         self.ahenkLayout.addWidget(self.host, 0, 1)
         # self.ahenkLayout.addWidget(self.serviceNameLabel, 1, 0)
         # self.ahenkLayout.addWidget(self.service_name, 1, 1)
-        # self.ahenkLayout.addWidget(self.resourceLabel, 2, 0)
-        # self.ahenkLayout.addWidget(self.resource, 2, 1)
         self.ahenkGroup.setLayout(self.ahenkLayout)
 
         ## ahenk list table
@@ -86,8 +76,10 @@ class AhenkPage(QWidget):
         self.ahenklistLayout = QGridLayout()
         self.tableWidget = QTableWidget()
         # self.tableWidget.setMinimumHeight(250)
+
         ## set read only table
         self.tableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
+
         # set column count
         self.tableWidget.setColumnCount(4)
         headers = self.tableWidget.horizontalHeader()
@@ -121,7 +113,6 @@ class AhenkPage(QWidget):
         ip = self.server_ip.text()
         username = self.username.text()
         password = self.password.text()
-
         ip_status = self.check_ip(ip)
         if ip_status is False:
 
@@ -170,7 +161,7 @@ class AhenkPage(QWidget):
     def del_ahenk(self):
 
         rows = sorted(set(index.row() for index in
-                          self.tableWidget.selectedIndexes()))
+        self.tableWidget.selectedIndexes()))
         for row in rows:
             self.tableWidget.selectRow(row)
             self.tableWidget.removeRow(self.tableWidget.currentRow())
@@ -181,7 +172,13 @@ class AhenkPage(QWidget):
         ## get item from ahenk list table
         row_count = self.tableWidget.rowCount()
         if row_count != 0:
+
+            self.status.install_status.setText("Ahenk kurulumu devam ediyor...")
+            self.status.install_status.setStyleSheet("background-color: green")
+            self.msg_box.information("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
+
             for row in range(row_count):
+
                 ip_item = self.tableWidget.item(row, 0)
                 ip = ip_item.text()
 
@@ -211,17 +208,18 @@ class AhenkPage(QWidget):
 
                 ssh_status = self.im.ssh_connect(self.data)
                 if ssh_status is True:
-                    # self.msg_box.information("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
-                    self.status.install_status.setText("Ahenk kurulumu devam ediyor...")
                     self.im.install_ahenk(self.data)
                     self.im.ssh_disconnect()
-                    self.status.install_status.setText("Ahenk kurulumu tamamlandı")
-
+                    for col in range(3):
+                        self.tableWidget.item(row, col).setBackground(QtGui.QColor("cyan"))
                 else:
                     msg = "Bağlantı Sağlanamadı. Bağlantı Ayarlarını Kontrol Ederek Daha Sonra Tekrar Deneyiniz!\n"
                     for col in range(3):
-                        self.tableWidget.item(row, col).setBackground(QtGui.QColor(125, 125, 125))
+                        self.tableWidget.item(row, col).setBackground(QtGui.QColor("grey"))
                     #self.msg_box.information(msg)
+
+            self.status.install_status.setText("Ahenk kurulumu tamamlandı")
+            self.status.install_status.setStyleSheet("background-color: cyan")
 
         else:
             self.msg_box.warning("Kayıt bulunamadı!\n"

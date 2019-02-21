@@ -1,14 +1,11 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-   <file>images/config.png</file>
-   <file>images/query.png</file>
    <file>images/ldap.png</file>
    <file>images/liderahenk-32.png</file>
    <file>images/ejabberd.png</file>
    <file>images/database.png</file>
-   <file>images/liderahenk-48.png</file>
    <file>images/liderahenk.png</file>
    <file>images/log.png</file>
-   <file>images/ahenk-register.png</file>
+   <file>images/ahenk.png</file>
 </qresource>
 </RCC>

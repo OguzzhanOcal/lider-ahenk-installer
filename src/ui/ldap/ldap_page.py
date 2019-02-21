@@ -154,6 +154,7 @@ class OpenLdapPage(QWidget):
 
         else:
             self.status.install_status.setText("OpenLDAP kurulumu devam ediyor...")
+            self.status.install_status.setStyleSheet("background-color: green")
             if os.path.exists(self.liderldap_path) and os.stat(self.liderldap_path).st_size != 0:
                 with open(self.liderldap_path) as f:
                     read_data = json.load(f)
@@ -181,6 +182,6 @@ class OpenLdapPage(QWidget):
                 self.im.install_ejabberd(self.data)
 
             self.status.install_status.setText("OpenLDAP kurulumu tamamlandı")
-
+            self.status.install_status.setStyleSheet("background-color: cyan")
             self.msg_box.information("OpenLDAP kurulumu tamamlandı")
 
