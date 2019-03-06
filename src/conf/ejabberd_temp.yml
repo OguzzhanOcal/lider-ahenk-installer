@@ -268,7 +268,7 @@ s2s_use_starttls: optional
 ##
 ## Outgoing S2S options
 ##
-## Preferred address families (which to try first) and connect timeout
+## Preferred address families (which to try first) and settings timeout
 ## in seconds.
 ##
 ## outgoing_s2s_families:
@@ -327,7 +327,7 @@ ldap_servers:
 ## ldap_encrypt: none
 ## ldap_encrypt: tls
 ##
-## Port to connect to on LDAP servers:
+## Port to settings to on LDAP servers:
 ldap_port: 389
 ## ldap_port: 636
 ##
@@ -578,7 +578,7 @@ access_rules:
 ##
 ## By default "console commands" section allow executing all commands
 ## issued using ejabberdctl command, and "admin access" section allows
-## users in admin acl that connect from 127.0.0.1 to  execute all
+## users in admin acl that settings from 127.0.0.1 to  execute all
 ## commands except start and stop with any available access method
 ## (ejabberdctl, http-api, xmlrpc depending what is enabled on server).
 ##

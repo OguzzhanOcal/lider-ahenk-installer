@@ -59,5 +59,11 @@ class AhenkInstaller(object):
             else:
                 self.logger.error("Ahenk bağımlılıkları kurulamadı, result_code: "+str(result_code))
 
+            result_code = self.ssh_api.run_command(cfg_data["cmd_ahenk_register"].format(data["host"], data["ldap_user"], data["ldap_user_pwd"]))
+            if result_code == 0:
+                self.logger.info("Ahenk  etki alanına başarıyla alındı")
+            else:
+                self.logger.error("Ahenk etki alanına alınamadı, result_code: "+str(result_code))
+
         else:
             self.logger.error("Ahenk kurulacak istemciye bağlantı sağlanamadığı için kurulum yapılamadı. Lütfen bağlantı ayarlarını kotrol ediniz!")

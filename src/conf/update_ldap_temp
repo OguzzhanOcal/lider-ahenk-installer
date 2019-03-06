@@ -13,6 +13,7 @@ LIDERAHENK_SCHEMA_PATH="/tmp/liderahenk.ldif"
 
 LIDERCONSOLEUSER="#LIDERCONSOLEUSER"
 LIDERCONSOLEPWD="#LIDERCONSOLEPWD"
+LIDER_SERVER_ADDR="#LIDER_SERVER_ADDR"
 ADMINDN="$ADMINCN,$BASEDN"
 
 # add liderahenk.ldif file to ldap
@@ -22,7 +23,7 @@ ldapadd -x -D "$ADMINDN" -w $ADMINPASSWD << EOL
 dn: cn=liderAhenkConfig,$BASEDN
 changetype: add
 objectClass: pardusLiderAhenkConfig
-liderServiceAddress: http://lider.$CNAME:8181
+liderServiceAddress: http://$LIDER_SERVER_ADDR:8181
 cn: liderAhenkConfig
 
 dn: cn=$LIDERCONSOLEUSER,$BASEDN
@@ -42,6 +43,7 @@ description: user of lider console
 
 dn: ou=Ahenkler,$BASEDN
 objectClass: organizationalUnit
+objectClass: pardusLider
 objectClass: top
 ou: Ahenkler
 description: pardusDeviceGroup

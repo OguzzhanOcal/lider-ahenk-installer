@@ -4,10 +4,8 @@
 
 import os
 import json
-from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QTableWidget)
 
-from ui.conf.repo_page import RepoPage
-from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
 from ui.log.status_page import StatusPage
@@ -16,17 +14,13 @@ class DatabasePage(QWidget):
     def __init__(self, parent=None):
         super(DatabasePage, self).__init__(parent)
         self.liderdb_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/liderdb.json')
-
+        self.server_list_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/server_list.json')
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
 
-        self.log_out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/installer.log')
-
-        self.connect_layout = ConnectPage()
         self.status = StatusPage()
         self.im = InstallManager()
         self.msg_box = MessageBox()
-        self.repo = RepoPage()
         self.data = None
 
         ## database parameters
@@ -43,7 +37,7 @@ class DatabasePage(QWidget):
         self.startUpdateButton = QPushButton("Kuruluma Başla")
 
         ## Database Layout
-        dbGroup = QGroupBox("Veritabanı Konfigürasyon Bilgileri")
+        self.dbGroup = QGroupBox("Veritabanı Konfigürasyon Bilgileri")
         self.dbLayout = QGridLayout()
         self.dbLayout.addWidget(self.dbNameLabel, 0, 0)
         self.dbLayout.addWidget(self.db_name, 0, 1)
@@ -51,55 +45,56 @@ class DatabasePage(QWidget):
         self.dbLayout.addWidget(self.db_username, 1, 1)
         self.dbLayout.addWidget(self.dbPwdLabel, 2, 0)
         self.dbLayout.addWidget(self.db_password, 2, 1)
-        dbGroup.setLayout(self.dbLayout)
-
-        connectGroup = QGroupBox("Veritabanı Sunucusu Bağlantı Bilgileri")
-        connectGroup.setLayout(self.connect_layout.connectLayout)
+        self.dbGroup.setLayout(self.dbLayout)
 
         # Install Status Layout
-        statusGroup = QGroupBox()
+        self.statusGroup = QGroupBox()
         self.status.statusLabel.setText("Veritabanı Kurulum Durumu:")
-        statusGroup.setLayout(self.status.statusLayout)
+        self.statusGroup.setLayout(self.status.statusLayout)
 
-        # repo layout
-        repoGroup = QGroupBox("Repo Sunucusu Bilgileri")
-        repoGroup.setLayout(self.repo.repoLayout)
+        self.mainLayout = QVBoxLayout()
+        self.mainLayout.addWidget(self.dbGroup)
+        self.mainLayout.addSpacing(12)
+        self.mainLayout.addWidget(self.startUpdateButton)
+        self.mainLayout.addWidget(self.statusGroup)
+        self.mainLayout.addStretch(1)
+        self.setLayout(self.mainLayout)
 
-        mainLayout = QVBoxLayout()
-        mainLayout.addWidget(connectGroup)
-        mainLayout.addWidget(repoGroup)
-        mainLayout.addWidget(dbGroup)
-        mainLayout.addSpacing(12)
-        mainLayout.addWidget(self.startUpdateButton)
-        mainLayout.addWidget(statusGroup)
-        mainLayout.addStretch(1)
-        self.setLayout(mainLayout)
         self.startUpdateButton.clicked.connect(self.save_db_data)
+
 
     def save_db_data(self):
 
-        if self.connect_layout.serverCombo.currentIndex() == 0:
-            location_server = 'remote'
-        else:
-            location_server = 'local'
+        with open(self.server_list_path) as f:
+            server_data = json.load(f)
+            if server_data["selection"] == "multi":
+                ip = server_data["Veritabanı"][0]["ip"]
+                username = server_data["Veritabanı"][0]["username"]
+                password = server_data["Veritabanı"][0]["password"]
+                location = server_data["Veritabanı"][0]["location"]
+            else:
+                ip = server_data["ip"]
+                username = server_data["username"]
+                password = server_data["password"]
+                location = server_data["location"]
 
         self.data = {
-            'location': location_server,
+            'location': location,
 
             # Server Configuration
-            'ip': self.connect_layout.server_ip.text(),
-            'username': self.connect_layout.username.text(),
-            'password': self.connect_layout.password.text(),
+            'ip': ip,
+            'username': username,
+            'password': password,
             # Database Configuration
             'db_name': self.db_name.text(),
             'db_username': self.db_username.text(),
             'db_password': self.db_password.text(),
-            'repo_key': self.repo.repo_key.text(),
-            'repo_addr': self.repo.repo_addr.text()
+            # Repo Configuration
+            'repo_addr': server_data["repo_addr"],
+            'repo_key': server_data["repo_key"]
         }
 
-        if self.data['db_name'] == "" or self.data['db_username'] == "" or self.data['db_password'] == ""\
-                or self.data['ip'] =="" or self.data['username'] == "" or self.data['password'] =="":
+        if self.data['db_name'] == "" or self.data['db_username'] == "" or self.data['db_password'] == "":
             self.msg_box.warning("Lütfen aşağıdaki alanları doldurunuz.\n"
                                      "- Veritabanı sunucu bağlantı bilgileri\n"
                                      "- Veritabanı adı\n"

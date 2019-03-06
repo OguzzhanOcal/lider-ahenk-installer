@@ -27,28 +27,28 @@ class InstallManager(object):
 
     def install_mariadb(self, data):
         db_installer = MariaDbInstaller(self.util, self.ssh_status)
-        self.logger.info("------------>>>>>>> Veritabanı sunucu kurulumuna başlanıyor")
+        self.logger.info("======>>>>> Veritabanı sunucu kurulumuna başlanıyor <<<<<======")
         db_installer.install(data)
 
     def install_ejabberd(self, data):
         ejabberd_installer = EjabberInstaller(self.util, self.ssh_status)
-        self.logger.info("Ejabberd sunucu kurulumuna başlanıyor.")
+        self.logger.info("======>>>>> Ejabberd sunucu kurulumuna başlanıyor. <<<<<======")
         ejabberd_installer.install(data)
 
     def install_ldap(self, data):
 
         ldap_installer = OpenLdapInstaller(self.util, self.ssh_status)
-        self.logger.info("OpenLDAP sunucu kurulumuna başlanıyor.")
+        self.logger.info("======>>>>> OpenLDAP sunucu kurulumuna başlanıyor. <<<<<======")
         ldap_installer.install(data)
 
     def install_lider(self, data):
         lider_installer = LiderInstaller(self.util, self.ssh_status)
-        self.logger.info("Lider bileşeni Kurulumana başlanıyor.")
+        self.logger.info("======>>>>> Lider sunucu Kurulumana başlanıyor. <<<<<======")
         lider_installer.install(data)
 
     def install_ahenk(self, data):
         ahenk_installer = AhenkInstaller(self.util, self.ssh_status)
-        self.logger.info("Ahenk Kurulumana başlanıyor.")
+        self.logger.info("======>>>>> Ahenk Kurulumana başlanıyor. <<<<<======")
         ahenk_installer.install(data)
 
     def ssh_connect(self, data):
@@ -93,9 +93,9 @@ if __name__ == "__main__":
         'location': "remote",
 
         # util connection information
-        'ip': "192.168.56.111",
-        'username': "tcolak",
-        'password': "1",
+        'ip': "192.168.*.*",
+        'username': "username",
+        'password': "password",
 
         # Database Configuration
         'db_name': "liderdb",
@@ -106,7 +106,7 @@ if __name__ == "__main__":
         'e_username': "admin",
         'e_user_pwd': "1222",
         'e_hosts': "im.liderahenk.org",
-        'ldap_servers': "192.168.56.111",
+        'ldap_servers': "192.168.*.*",
 
         # OpenLDAP Configuration
         'l_admin_pwd': "1",

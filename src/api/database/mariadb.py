@@ -68,7 +68,7 @@ class MariaDbInstaller(object):
             else:
                 self.logger.error("liderdb veritabanı oluşturulamadı, result_code: "+str(result_code))
 
-            result_code = self.ssh_api.run_command(cfg_data["cmd_db_grant_privileges"].format(data["db_password"]))
+            result_code = self.ssh_api.run_command(cfg_data["cmd_db_grant_privileges"].format(data["db_password"], data["db_password"]))
             if result_code == 0:
                 self.logger.info("Veritabanı grant yetkisi verildi")
             else:

@@ -125,7 +125,7 @@ class LiderInstaller(object):
 
         txt = self.config_manager.replace_all(lider_text, lider_data)
         self.f_lider_out = open(self.lider_conf_out_path, 'w+')
-        self.f_lider_out.write(txt)
+        self.f_lider_out.write(str(txt))
         self.f_lider.close()
         self.f_lider_out.close()
         self.logger.info("tr.org.liderahenk.cfg dosyası oluşturuldu")

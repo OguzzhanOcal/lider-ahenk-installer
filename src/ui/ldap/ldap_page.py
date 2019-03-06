@@ -4,9 +4,9 @@
 
 import os
 import json
+import subprocess
+
 from PyQt5.QtWidgets import (QComboBox, QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget)
-from ui.conf.repo_page import RepoPage
-from ui.connect.connect_page import ConnectPage
 from install_manager import InstallManager
 from ui.message_box.message_box import MessageBox
 from ui.log.status_page import StatusPage
@@ -17,14 +17,14 @@ class OpenLdapPage(QWidget):
         super(OpenLdapPage, self).__init__(parent)
 
         self.liderldap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/lider_ldap.json')
+        self.log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/installer.log')
+        self.server_list_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/server_list.json')
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
 
-        self.connect_layout = ConnectPage()
         self.im = InstallManager()
         self.msg_box = MessageBox()
         self.status = StatusPage()
-        self.repo = RepoPage()
         self.data = None
 
         #OpenLDAP parameters
@@ -54,14 +54,6 @@ class OpenLdapPage(QWidget):
         self.ladmin_pwd.setEchoMode(QLineEdit.Password)
         self.startUpdateButton = QPushButton("Kuruluma Başla")
 
-        ## Connect Layout
-        connectGroup = QGroupBox("OpenLDAP Sunucusu Bağlantı Bilgileri")
-        connectGroup.setLayout(self.connect_layout.connectLayout)
-
-        # repo layout
-        repoGroup = QGroupBox("Repo Sunucusu Bilgileri")
-        repoGroup.setLayout(self.repo.repoLayout)
-
         ## LDAP configuration Layout
         ldapGroup = QGroupBox("OpenLDAP Konfigürasyon Bilgileri")
         self.ldapLayout = QGridLayout()
@@ -88,8 +80,6 @@ class OpenLdapPage(QWidget):
 
         ldapGroup.setLayout(self.ldapLayout)
         mainLayout = QVBoxLayout()
-        mainLayout.addWidget(connectGroup)
-        mainLayout.addWidget(repoGroup)
         mainLayout.addWidget(ldapGroup)
         # mainLayout.addWidget(packageGroup)
         mainLayout.addSpacing(12)
@@ -102,10 +92,19 @@ class OpenLdapPage(QWidget):
 
     def save_ldap_data(self):
 
-        if self.connect_layout.serverCombo.currentIndex() == 0:
-            location_server = 'remote'
-        else:
-            location_server = 'local'
+        with open(self.server_list_path) as f:
+            server_data = json.load(f)
+            if server_data["selection"] == "multi":
+                ip = server_data["OpenLDAP"][0]["ip"]
+                username = server_data["OpenLDAP"][0]["username"]
+                password = server_data["OpenLDAP"][0]["password"]
+                location = server_data["OpenLDAP"][0]["location"]
+            else:
+                ip = server_data["ip"]
+                username = server_data["username"]
+                password = server_data["password"]
+                location = server_data["location"]
+
 
         if self.ldapStatusCombo.currentIndex() == 0:
             ldap_status = 'new'
@@ -118,11 +117,11 @@ class OpenLdapPage(QWidget):
 
         self.data = {
 
-            'location': location_server,
+            'location': location,
             # Server Configuration
-            'ip': self.connect_layout.server_ip.text(),
-            'username': self.connect_layout.username.text(),
-            'password': self.connect_layout.password.text(),
+            'ip': ip,
+            'username': username,
+            'password': password,
 
             # OpenLDAP Configuration
             'l_base_dn': self.ldap_base_dn.text(),
@@ -134,8 +133,8 @@ class OpenLdapPage(QWidget):
             'l_admin_pwd': self.ldap_admin_pwd.text(),
             'ladmin_pwd': self.ladmin_pwd.text(),
             'ldap_status': ldap_status,
-            'repo_key': self.repo.repo_key.text(),
-            'repo_addr': self.repo.repo_addr.text()
+            'repo_addr': server_data["repo_addr"],
+            'repo_key': server_data["repo_key"]
         # yeni ldap kur ya da varolan ldapı konfigüre et 'new' ya da 'update' parametreleri alıyor
         }
 
@@ -170,9 +169,15 @@ class OpenLdapPage(QWidget):
                 self.msg_box.information("LDAP bilgileri kaydedildi\n"
                                          "LDAP kurulumana başlanacak.")
 
+            subprocess.Popen(["xterm", "-e", "tail", "-f",
+                              self.log_path])
+            # subprocess.Popen(["xterm", "-e", "tail", "-f",
+            #                               "/home/tcolak/dev/lider-ahenk/lider-ahenk-installer/src/dist/installer.log"])
+
+
             if self.data['location'] == 'remote':
                 self.im.ssh_connect(self.data)
-                self.im.install_ldap(self.data)
+                # self.im.install_ldap(self.data)
                 self.im.ssh_disconnect()
             else:
                 self.im.install_ejabberd(self.data)

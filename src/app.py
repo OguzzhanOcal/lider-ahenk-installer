@@ -8,6 +8,8 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QApplication, QDialog, QHBoxLayout, QListView, QListWidget, QListWidgetItem, QPushButton,
                              QStackedWidget, QVBoxLayout, QSlider)
 import ui.conf.configdialog_rc
+from ui.conf.home_page import HomePage
+from ui.settings.settings_page import SettingsPage
 from ui.ejabberd.ejabberd_page import EjabberdPage
 from ui.database.db_page import DatabasePage
 from ui.ldap.ldap_page import OpenLdapPage
@@ -21,10 +23,11 @@ class ConfigDialog(QDialog):
         super(ConfigDialog, self).__init__(parent)
 
         self.msg_box = MessageBox()
+        self.ejabberd = EjabberdPage()
 
         self.contentsWidget = QListWidget()
         self.contentsWidget.setViewMode(QListView.IconMode)
-        self.contentsWidget.setIconSize(QSize(76, 76))
+        self.contentsWidget.setIconSize(QSize(64, 64))
         self.contentsWidget.setMovement(QListView.Static)
         self.contentsWidget.setMaximumWidth(128)
         self.contentsWidget.setMinimumWidth(128)
@@ -33,11 +36,12 @@ class ConfigDialog(QDialog):
 
         self.pagesWidget = QStackedWidget()
         self.pagesWidget.setMinimumHeight(700)
-        self.pagesWidget.setMinimumWidth(512)
+        self.pagesWidget.setMinimumWidth(720)
 
-        self.pagesWidget.addWidget(DatabasePage())
-        self.pagesWidget.addWidget(OpenLdapPage())
-        self.pagesWidget.addWidget(EjabberdPage())
+        self.pagesWidget.addWidget(SettingsPage())
+        # self.pagesWidget.addWidget(DatabasePage())
+        # self.pagesWidget.addWidget(OpenLdapPage())
+        # self.pagesWidget.addWidget(EjabberdPage())
         self.pagesWidget.addWidget(LiderPage())
         self.pagesWidget.addWidget(AhenkPage())
         self.pagesWidget.addWidget(WatchLog())
@@ -70,23 +74,33 @@ class ConfigDialog(QDialog):
         self.pagesWidget.setCurrentIndex(self.contentsWidget.row(current))
 
     def createIcons(self):
-        dbButton = QListWidgetItem(self.contentsWidget)
-        dbButton.setIcon(QIcon(':/images/database.png'))
-        dbButton.setText("Veritabanı")
-        dbButton.setTextAlignment(Qt.AlignHCenter)
-        dbButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
 
-        ldapButton = QListWidgetItem(self.contentsWidget)
-        ldapButton.setIcon(QIcon(':/images/ldap.png'))
-        ldapButton.setText("OpenLDAP")
-        ldapButton.setTextAlignment(Qt.AlignHCenter)
-        ldapButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+        # asdButton = QListWidgetItem(self.contentsWidget)
 
-        xmppButton = QListWidgetItem(self.contentsWidget)
-        xmppButton.setIcon(QIcon(':/images/ejabberd.png'))
-        xmppButton.setText("Ejabberd")
-        xmppButton.setTextAlignment(Qt.AlignHCenter)
-        xmppButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+        vagrantButton = QListWidgetItem(self.contentsWidget)
+        vagrantButton.setIcon(QIcon(':/images/settings.png'))
+        vagrantButton.setText("Ayarlar")
+        vagrantButton.setTextAlignment(Qt.AlignHCenter)
+        vagrantButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+
+        #
+        # dbButton = QListWidgetItem(self.contentsWidget)
+        # dbButton.setIcon(QIcon(':/images/database.png'))
+        # dbButton.setText("Veritabanı")
+        # dbButton.setTextAlignment(Qt.AlignHCenter)
+        # dbButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+        #
+        # ldapButton = QListWidgetItem(self.contentsWidget)
+        # ldapButton.setIcon(QIcon(':/images/ldap.png'))
+        # ldapButton.setText("OpenLDAP")
+        # ldapButton.setTextAlignment(Qt.AlignHCenter)
+        # ldapButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+        #
+        # xmppButton = QListWidgetItem(self.contentsWidget)
+        # xmppButton.setIcon(QIcon(':/images/ejabberd.png'))
+        # xmppButton.setText("Ejabberd")
+        # xmppButton.setTextAlignment(Qt.AlignHCenter)
+        # xmppButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
 
         liderButton = QListWidgetItem(self.contentsWidget)
         liderButton.setIcon(QIcon(':/images/liderahenk.png'))
@@ -105,6 +119,8 @@ class ConfigDialog(QDialog):
         logButton.setText("Log")
         logButton.setTextAlignment(Qt.AlignHCenter)
         logButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+
+
 
         self.contentsWidget.currentItemChanged.connect(self.changePage)
 

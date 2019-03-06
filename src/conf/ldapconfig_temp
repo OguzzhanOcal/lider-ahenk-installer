@@ -16,7 +16,7 @@ LIDERCONSOLEUSER="#LIDERCONSOLEUSER"
 LIDERCONSOLEPWD="#LIDERCONSOLEPWD"
 ADMINDN="$ADMINCN,$BASEDN"
 ADMINGROUPDN="cn=adminGroups,ou=Groups,$BASEDN"
-
+LIDER_SERVER_ADDR="#LIDER_SERVER_ADDR"
 DEFAULTPOLICYDN="cn=Default,ou=Policies,$BASEDN"
 #ADMINPASSWDHASH=$(slappasswd -h {SSHA} -s $ADMINPASSWD)
 
@@ -107,7 +107,7 @@ ldapadd -x -D "$ADMINDN" -w $ADMINPASSWD << EOL
 dn: cn=liderAhenkConfig,$BASEDN
 changetype: add
 objectClass: pardusLiderAhenkConfig
-liderServiceAddress: http://lider.$CNAME:8181
+liderServiceAddress: http://$LIDER_SERVER_ADDR:8181
 cn: liderAhenkConfig
 
 dn: cn=$LIDERCONSOLEUSER,$BASEDN
@@ -126,14 +126,41 @@ liderPrivilege: [TASK:$BASEDN:ALL]
 
 dn: ou=Ahenkler,$BASEDN
 objectClass: organizationalUnit
+objectClass: pardusLider
 objectClass: top
 ou: Ahenkler
 description: pardusDeviceGroup
 
 dn: ou=Groups,$BASEDN
 objectClass: organizationalUnit
+objectClass: pardusLider
 objectClass: top
 ou: Groups
+
+dn: ou=People,ou=Groups,$BASEDN
+objectClass: organizationalUnit
+objectClass: pardusLider
+objectClass: top
+ou: People
+
+dn: uid=test_ldap_user,ou=People,ou=Groups,$BASEDN
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: pardusAccount
+objectClass: pardusLider
+objectClass: person
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: top
+cn: test_ldap_user
+sn: test_ldap_user
+uid: test_ldap_user
+uidNumber: 5000
+gidNumber: 5000
+homeDirectory: /home/test_ldap_user
+userPassword: secret
+loginShell: /bin/bash
+description: test ldap user
 
 dn: cn=adminGroups,ou=Groups,$BASEDN
 objectClass: groupOfNames
@@ -158,6 +185,7 @@ sudoCommand: ALL
 
 dn: ou=Policies,$BASEDN
 objectClass: organizationalUnit
+objectClass: pardusLider
 objectClass: top
 ou: Policies
 description: password policy group

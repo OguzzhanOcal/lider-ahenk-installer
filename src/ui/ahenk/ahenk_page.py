@@ -3,11 +3,12 @@
 # Author: Tuncay ÇOLAK <tuncay.colak@tubitak.gov.tr>
 
 import os
+import subprocess
+
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QTableWidget,
-                             QHeaderView, QTableWidgetItem)
+                             QHeaderView, QTableWidgetItem, QCheckBox)
 from install_manager import InstallManager
-from ui.conf.repo_page import RepoPage
 from ui.log.status_page import StatusPage
 from ui.message_box.message_box import MessageBox
 
@@ -15,6 +16,7 @@ class AhenkPage(QWidget):
     def __init__(self, parent=None):
         super(AhenkPage, self).__init__(parent)
         self.ahenk_list_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/ahenk_list.txt')
+        self.log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist/installer.log')
         if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist')):
             os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../dist'))
 
@@ -22,9 +24,8 @@ class AhenkPage(QWidget):
         self.im = InstallManager()
         self.msg_box = MessageBox()
         self.data = None
-        self.repo = RepoPage()
 
-        ## client connect parameters
+        ## client settings parameters
         self.serverIpLabel = QLabel("İstemci Adresi:")
         self.server_ip = QLineEdit()
         self.server_ip.setPlaceholderText("192.168.*.*")
@@ -35,7 +36,7 @@ class AhenkPage(QWidget):
         self.password = QLineEdit()
         # self.password.setPlaceholderText("****")
         self.password.setEchoMode(QLineEdit.Password)
-        self.checkControlButton = QPushButton("Ekle")
+        self.addButton = QPushButton("Ekle")
 
         ## Connect Layout
         self.connectGroup = QGroupBox("Ahenk Kurulucak İstemci Erişim Bilgileri")
@@ -46,12 +47,33 @@ class AhenkPage(QWidget):
         self.connectLayout.addWidget(self.username, 1, 1)
         self.connectLayout.addWidget(self.passwordLabel, 2, 0)
         self.connectLayout.addWidget(self.password, 2, 1)
-        self.connectLayout.addWidget(self.checkControlButton, 0, 2)
+        self.connectLayout.addWidget(self.addButton, 0, 2)
         self.connectGroup.setLayout(self.connectLayout)
 
         ## repository layout
-        repoGroup = QGroupBox("Repo Sunucusu Bilgileri")
-        repoGroup.setLayout(self.repo.repoLayout)
+        self.repoMainBox = QCheckBox("Ana Paket Deposu")
+        self.repoTestBox = QCheckBox("Test Paket Deposu")
+        self.repoMainBox.setChecked(True)
+
+        self.repoLabel = QLabel("Depo Adresi:")
+        self.repo_addr = QLineEdit("deb [arch=amd64] http://repo.liderahenk.org/liderahenk stable main")
+
+        self.repoKeyLdabel = QLabel("Depo Key Dosyası:")
+        self.repo_key = QLineEdit("http://repo.liderahenk.org/liderahenk-archive-keyring.asc")
+
+        self.repoMainBox.stateChanged.connect(self.main_repo)
+        self.repoTestBox.stateChanged.connect(self.test_repo)
+
+        ## Repository Layout
+        self.repoGroup = QGroupBox("Lider Ahenk Paket Deposu Ayarları")
+        self.repoLayout = QGridLayout()
+        self.repoLayout.addWidget(self.repoMainBox, 0, 0)
+        self.repoLayout.addWidget(self.repoTestBox, 0, 1)
+        self.repoLayout.addWidget(self.repoLabel, 1, 0)
+        self.repoLayout.addWidget(self.repo_addr, 1, 1)
+        self.repoLayout.addWidget(self.repoKeyLdabel, 2, 0)
+        self.repoLayout.addWidget(self.repo_key, 2, 1)
+        self.repoGroup.setLayout(self.repoLayout)
 
         ## ahenk parameters
         self.hostLabel = QLabel("XMPP Sunucu Adresi:")
@@ -97,7 +119,7 @@ class AhenkPage(QWidget):
 
         mainLayout = QVBoxLayout()
         mainLayout.addWidget(self.ahenkGroup)
-        mainLayout.addWidget(repoGroup)
+        mainLayout.addWidget(self.repoGroup)
         mainLayout.addWidget(self.connectGroup)
         mainLayout.addWidget(self.ahenklistGroup)
         mainLayout.addSpacing(12)
@@ -106,7 +128,19 @@ class AhenkPage(QWidget):
         mainLayout.addStretch(1)
         self.setLayout(mainLayout)
         self.startUpdateButton.clicked.connect(self.install_ahenk)
-        self.checkControlButton.clicked.connect(self.add_ahenk)
+        self.addButton.clicked.connect(self.add_ahenk)
+
+    def main_repo(self):
+
+        if self.repoMainBox.isChecked() is True:
+            self.repo_addr.setText("deb [arch=amd64] http://repo.liderahenk.org/liderahenk stable main")
+            self.repoTestBox.setChecked(False)
+
+    def test_repo(self):
+
+        if self.repoTestBox.isChecked() is True:
+            self.repo_addr.setText("deb [arch=amd64] http://repo.liderahenk.org/liderahenk-test testing main")
+            self.repoMainBox.setChecked(False)
 
     def add_ahenk(self):
 
@@ -122,21 +156,21 @@ class AhenkPage(QWidget):
                 self.server_ip.setText("")
                 self.username.setText("")
                 self.password.setText("")
-
                 rowPosition = self.tableWidget.rowCount()
                 self.tableWidget.insertRow(rowPosition)
                 numcols = self.tableWidget.columnCount()
                 numrows = self.tableWidget.rowCount()
+                self.tableWidget.setAlternatingRowColors(True)
                 self.tableWidget.setRowCount(numrows)
                 self.tableWidget.setColumnCount(numcols)
                 self.tableWidget.setItem(numrows - 1, 0, QTableWidgetItem(ip))
                 self.tableWidget.setItem(numrows - 1, 1, QTableWidgetItem(username))
                 self.tableWidget.setItem(numrows - 1, 2, QTableWidgetItem(password))
-
                 self.delButton = QPushButton(self.tableWidget)
                 self.delButton.setText('Sil')
                 self.delButton.clicked.connect(self.del_ahenk)
                 self.tableWidget.setCellWidget(numrows - 1, 3, self.delButton)
+                self.tableWidget.selectRow(numrows - 1)
         else:
             self.msg_box.warning("Kayıt zaten var")
 
@@ -177,6 +211,9 @@ class AhenkPage(QWidget):
             self.status.install_status.setStyleSheet("background-color: green")
             self.msg_box.information("Bağlantı Başarılı. Kuruluma Devam Edebilirsiniz.")
 
+            subprocess.Popen(["xterm", "-e", "tail", "-f",
+                              self.log_path])
+
             for row in range(row_count):
 
                 ip_item = self.tableWidget.item(row, 0)
@@ -188,8 +225,8 @@ class AhenkPage(QWidget):
                 password_item = self.tableWidget.item(row, 2)
                 password = password_item.text()
 
-                repo_key = self.repo.repo_key.text()
-                repo_addr = self.repo.repo_addr.text()
+                repo_key = self.repo_key.text()
+                repo_addr = self.repo_addr.text()
 
                 self.data = {
                     # Client Configuration
@@ -200,7 +237,9 @@ class AhenkPage(QWidget):
                     # ahenk.conf Configuration
                     'host': self.host.text(),
                     'repo_key': repo_key,
-                    'repo_addr': repo_addr
+                    'repo_addr': repo_addr,
+                    'ldap_user': "test_ldap_user",
+                    'ldap_user_pwd': "secret"
                 }
 
                 f = open(self.ahenk_list_file, "a+")
@@ -218,8 +257,12 @@ class AhenkPage(QWidget):
                         self.tableWidget.item(row, col).setBackground(QtGui.QColor("grey"))
                     #self.msg_box.information(msg)
 
-            self.status.install_status.setText("Ahenk kurulumu tamamlandı")
+            self.status.install_status.setText("Ahenk kurulumları tamamlandı")
             self.status.install_status.setStyleSheet("background-color: cyan")
+            self.msg_box.information("Ahenk kurulumları tamamlandı\n"
+                                     "Bağlantı sağlanamayan istemciler gri renktedirler\n"
+                                     "Ayrıntı için\n"
+                                     "Log ekranını inceleyiniz")
 
         else:
             self.msg_box.warning("Kayıt bulunamadı!\n"

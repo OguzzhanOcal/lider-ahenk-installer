@@ -145,7 +145,7 @@ ldap_servers:
 ## ldap_encrypt: none
 ## ldap_encrypt: tls
 ##
-## Port to connect to on LDAP servers:
+## Port to settings to on LDAP servers:
 ldap_port: 389
 ## ldap_port: 636
 ##
