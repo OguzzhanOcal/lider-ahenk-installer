@@ -98,8 +98,7 @@ class EjabberdPage(QWidget):
 
         self.ldapSelection.stateChanged.connect(self.get_ldap_data)
         self.ldapSelection.setChecked(False)
-        if self.ldapSelection.isChecked() is False:
-            self.get_ldap_data()
+
 
     def save_ejabberd_data(self):
 

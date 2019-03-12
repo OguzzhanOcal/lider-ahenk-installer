@@ -120,8 +120,6 @@ class ConfigDialog(QDialog):
         logButton.setTextAlignment(Qt.AlignHCenter)
         logButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
 
-
-
         self.contentsWidget.currentItemChanged.connect(self.changePage)
 
 if __name__ == '__main__':
