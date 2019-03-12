@@ -36,8 +36,8 @@ class LiderPage(QWidget):
         self.im = InstallManager()
         self.msg_box = MessageBox()
         self.status = StatusPage()
-        self.data = None
         self.lider_sunucu_pwd = None
+        self.db_password = None
 
         ## db parameters
         self.dbServerLabel = QLabel("Veritabanı Sunucu Adresi:")
@@ -105,7 +105,7 @@ class LiderPage(QWidget):
         self.liderGroup.setLayout(liderLayout)
 
         mainLayout = QVBoxLayout()
-        mainLayout.addWidget(self.liderDbGroup)
+        # mainLayout.addWidget(self.liderDbGroup)
         mainLayout.addWidget(self.liderLdapGroup)
         mainLayout.addWidget(self.liderXmppGroup)
         mainLayout.addWidget(self.liderGroup)
@@ -130,25 +130,29 @@ class LiderPage(QWidget):
 
     def lider_ahenk_install(self):
 
-        self.status.install_status.setText("Lider Ahenk kurulumu devam ediyor")
-        self.status.install_status.setStyleSheet("background-color: green")
+        if self.ldap_layout.ldap_base_dn.text() == "" or self.ldap_layout.ldap_admin_pwd.text() == "" or self.ldap_layout.l_config_pwd.text() == "" \
+                or self.ldap_layout.ladmin_user.text() == "" or self.ldap_layout.ladmin_pwd.text() == "" or self.ejabberd_layout.e_user_pwd.text() == "":
+            self.msg_box.information("Lütfen LDAP ve XMPP bilgilerini giriniz")
+        else:
+            self.status.install_status.setText("Lider Ahenk kurulumu devam ediyor")
+            self.status.install_status.setStyleSheet("background-color: green")
 
-        self.msg_box.information("Lider Ahenk sunucu kurulumana başlanacak.")
+            self.msg_box.information("Lider Ahenk sunucu kurulumana başlanacak.")
 
-        subprocess.Popen(["xterm", "-e", "tail", "-f",
-                          self.log_path])
+            subprocess.Popen(["xterm", "-e", "tail", "-f",
+                              self.log_path])
 
-        ## get connect and repo settings data
-        with open(self.server_list_path) as f:
-            server_data = json.load(f)
+            ## get connect and repo settings data
+            with open(self.server_list_path) as f:
+                server_data = json.load(f)
 
-            self.database_install(server_data)
-            time.sleep(5)
-            self.ldap_install(server_data)
-            time.sleep(5)
-            self.ejabberd_install(server_data)
-            time.sleep(5)
-            self.lider_install(server_data)
+                self.database_install(server_data)
+                time.sleep(5)
+                self.ldap_install(server_data)
+                time.sleep(5)
+                self.ejabberd_install(server_data)
+                time.sleep(5)
+                self.lider_install(server_data)
 
     def database_install(self, server_data):
 
@@ -165,6 +169,11 @@ class LiderPage(QWidget):
             password = server_data["password"]
             location = server_data["location"]
 
+        ## Random Password Generator for "databases user's password"
+        chars = string.ascii_letters + string.digits
+        rnd = random.SystemRandom()
+        self.db_password = ''.join(rnd.choice(chars) for i in range(10))
+
         self.data = {
             'location': location,
             # Server Configuration
@@ -172,9 +181,9 @@ class LiderPage(QWidget):
             'username': username,
             'password': password,
             # Database Configuration
-            'db_name': self.db_layout.db_name.text(),
-            'db_username': self.db_layout.db_username.text(),
-            'db_password': self.db_layout.db_password.text(),
+            'db_name': "liderdb",
+            'db_username': "root",
+            'db_password': self.db_password,
             # Repo Configuration
             'repo_addr': server_data["repo_addr"],
             'repo_key': server_data["repo_key"]
@@ -194,6 +203,7 @@ class LiderPage(QWidget):
             self.im.install_mariadb(self.data)
 
     def ldap_install(self, server_data):
+
         if server_data["selection"] == "advanced":
             ip = server_data["OpenLDAP"][0]["ip"]
             username = server_data["OpenLDAP"][0]["username"]
@@ -345,9 +355,9 @@ class LiderPage(QWidget):
             'password': password,
             # Database Configuration
             'db_server': self.db_server,
-            'db_name': self.db_layout.db_name.text(),
-            'db_username': self.db_layout.db_username.text(),
-            'db_password': self.db_layout.db_password.text(),
+            'db_name': "liderdb",
+            'db_username': "root",
+            'db_password': self.db_password,
 
             # Ejabberd Configuration
             'e_service_name': "im.liderahenk.org",
