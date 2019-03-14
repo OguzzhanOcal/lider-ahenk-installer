@@ -189,9 +189,6 @@ class LiderPage(QWidget):
             'repo_key': server_data["repo_key"]
         }
 
-        self.status.install_status.setText("Veritabanı kurulumu devam ediyor...")
-        self.status.install_status.setStyleSheet("background-color: green")
-
         with open(self.liderdb_path, 'w') as f:
             json.dump(self.data, f, ensure_ascii=False)
 
@@ -249,7 +246,6 @@ class LiderPage(QWidget):
             'repo_key': server_data["repo_key"],
             'lider_server_addr': lider_server_addr,
             # yeni ldap kur ya da varolan ldapı konfigüre et 'new' ya da 'update' parametreleri alıyor
-
         }
 
         with open(self.liderldap_path, 'w') as f:
@@ -306,9 +302,6 @@ class LiderPage(QWidget):
             'repo_key': server_data["repo_key"],
             'repo_addr': server_data["repo_addr"]
         }
-
-        self.status.install_status.setText("XMPP kurulumu devam ediyor...")
-        self.status.install_status.setStyleSheet("background-color: green")
 
         with open(self.liderejabberd_path, 'w') as f:
             json.dump(self.data, f, ensure_ascii=False)
