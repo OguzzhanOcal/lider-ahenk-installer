@@ -169,6 +169,7 @@ class SettingsPage(QWidget):
             self.serverSelectionLabel.setVisible(False)
             self.serverlistGroup.setVisible(False)
             self.addButton.setVisible(False)
+            self.saveButton.setEnabled(True)
 
     def advanced_selection(self):
 
@@ -179,6 +180,13 @@ class SettingsPage(QWidget):
             self.serverSelectionLabel.setVisible(True)
             self.serverlistGroup.setVisible(True)
             self.addButton.setVisible(True)
+
+            if self.tableWidget.rowCount() == 4:
+                self.saveButton.setEnabled(True)
+            else:
+                self.saveButton.setDisabled(True)
+
+
 
     def add_server(self):
 
@@ -213,6 +221,11 @@ class SettingsPage(QWidget):
                     self.delButton.clicked.connect(self.del_ahenk)
                     self.tableWidget.setCellWidget(numrows - 1, 4, self.delButton)
                     self.tableWidget.selectRow(numrows - 1)
+
+                    if self.tableWidget.rowCount() == 4:
+                        self.saveButton.setEnabled(True)
+                    else:
+                        self.saveButton.setDisabled(True)
             else:
                 self.msg_box.warning("Kayıt zaten var")
 
