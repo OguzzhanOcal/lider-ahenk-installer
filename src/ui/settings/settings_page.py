@@ -186,8 +186,6 @@ class SettingsPage(QWidget):
             else:
                 self.saveButton.setDisabled(True)
 
-
-
     def add_server(self):
 
         if self.advancedSelectionBox.isChecked() is True:

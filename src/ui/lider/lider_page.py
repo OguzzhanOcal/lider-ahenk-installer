@@ -389,6 +389,7 @@ class LiderPage(QWidget):
 
         self.msg_box.information("Lider Ahenk kurulumu tamamlandı.\n"
                                  "Kurulum loglarını Log sayfasından inceleyebilirsiniz")
+        self.status.install_status.setText("Lider Ahenk kurulumu tamamlandı")
         self.status.install_status.setStyleSheet("background-color: cyan")
 
 

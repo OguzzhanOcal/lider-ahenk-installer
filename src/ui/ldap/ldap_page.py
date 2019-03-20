@@ -34,7 +34,7 @@ class OpenLdapPage(QWidget):
         self.ldapStatusCombo.addItem("OpenLDAP Güncelle")
         self.ldapAdminLabel = QLabel("LDAP Admin:")
         self.ldap_admin = QLineEdit()
-        self.ldapAdminPwdLabel = QLabel("Ldap Admin Parolası:")
+        self.ldapAdminPwdLabel = QLabel("LDAP Admin Parolası:")
         self.ldap_admin_pwd = QLineEdit()
         self.ldap_admin_pwd.setPlaceholderText("****")
         self.ldap_admin_pwd.setEchoMode(QLineEdit.Password)
