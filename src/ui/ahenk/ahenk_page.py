@@ -39,7 +39,7 @@ class AhenkPage(QWidget):
         self.addButton = QPushButton("Ekle")
 
         ## Connect Layout
-        self.connectGroup = QGroupBox("Ahenk Kurulucak İstemci Erişim Bilgileri")
+        self.connectGroup = QGroupBox("Ahenk Kurulacak İstemci Erişim Bilgileri")
         self.connectLayout = QGridLayout()
         self.connectLayout.addWidget(self.serverIpLabel, 0, 0)
         self.connectLayout.addWidget(self.server_ip, 0, 1)
@@ -94,7 +94,7 @@ class AhenkPage(QWidget):
         self.ahenkGroup.setLayout(self.ahenkLayout)
 
         ## ahenk list table
-        self.ahenklistGroup = QGroupBox("Ahenk Kurulucak İstemci Listesi")
+        self.ahenklistGroup = QGroupBox("Ahenk Kurulacak İstemci Listesi")
         self.ahenklistLayout = QGridLayout()
         self.tableWidget = QTableWidget()
         # self.tableWidget.setMinimumHeight(250)

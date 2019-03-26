@@ -17,6 +17,7 @@ from ui.lider.lider_page import LiderPage
 from ui.message_box.message_box import MessageBox
 from ui.ahenk.ahenk_page import AhenkPage
 from ui.log.watch_log_page import WatchLog
+from ui.lider_console.lider_console_page import LiderConsolePage
 
 class ConfigDialog(QDialog):
     def __init__(self, parent=None):
@@ -43,6 +44,7 @@ class ConfigDialog(QDialog):
         # self.pagesWidget.addWidget(OpenLdapPage())
         # self.pagesWidget.addWidget(EjabberdPage())
         self.pagesWidget.addWidget(LiderPage())
+        self.pagesWidget.addWidget(LiderConsolePage())
         self.pagesWidget.addWidget(AhenkPage())
         self.pagesWidget.addWidget(WatchLog())
         closeButton = QPushButton("Kapat")
@@ -107,6 +109,12 @@ class ConfigDialog(QDialog):
         liderButton.setText("Lider")
         liderButton.setTextAlignment(Qt.AlignHCenter)
         liderButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+
+        consoleButton = QListWidgetItem(self.contentsWidget)
+        consoleButton.setIcon(QIcon(':/images/lider_console.png'))
+        consoleButton.setText("Lider\nArayüz")
+        consoleButton.setTextAlignment(Qt.AlignHCenter)
+        consoleButton.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
 
         ahenkButton = QListWidgetItem(self.contentsWidget)
         ahenkButton.setIcon(QIcon(':/images/ahenk.png'))
