@@ -9,6 +9,7 @@ from api.ahenk.ahenk import AhenkInstaller
 from api.database.mariadb import MariaDbInstaller
 from api.ejabberd.ejabberd import EjabberInstaller
 from api.ldap.openldap import OpenLdapInstaller
+from api.lider_console.lider_console import LiderConsoleInstaller
 from api.lider.lider import LiderInstaller
 from api.logger.installer_logger import Logger
 from api.util.util import Util
@@ -43,12 +44,17 @@ class InstallManager(object):
 
     def install_lider(self, data):
         lider_installer = LiderInstaller(self.util, self.ssh_status)
-        self.logger.info("======>>>>> Lider sunucu Kurulumana başlanıyor. <<<<<======")
+        self.logger.info("======>>>>> Lider sunucu Kurulumuna başlanıyor. <<<<<======")
         lider_installer.install(data)
+
+    def install_lider_console(self, data):
+        lider_console_installer = LiderConsoleInstaller(self.util, self.ssh_status)
+        self.logger.info("======>>>>> Lider Arayüz Kurulumuna başlanıyor. <<<<<======")
+        lider_console_installer.install(data)
 
     def install_ahenk(self, data):
         ahenk_installer = AhenkInstaller(self.util, self.ssh_status)
-        self.logger.info("======>>>>> Ahenk Kurulumana başlanıyor. <<<<<======")
+        self.logger.info("======>>>>> Ahenk Kurulumuna başlanıyor. <<<<<======")
         ahenk_installer.install(data)
 
     def ssh_connect(self, data):
