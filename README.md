@@ -154,7 +154,22 @@ Kurulum devam ediyor. Kurulum Logları açılan XTerm ekranında da takip edileb
 
 Kurulum bittikten sonra Log Menüsünde kurulum detayları görülür.
 
-### 3. Ahenk Menüsü
+### 3. Lider Arayüz Menüsü
+
+Lider Arayüz Menüsü, lider ahenk merkezi yönetim sisteminin yönetim uygulama arayüzünün kurulmasını sağlar.
+
+![8](img/8.png)
+
+Lider Arayüz, lider ahenk kurulum uygulamasının çalıştırıldığı makineye kurulur.
+
+Lider Ahenk Paket Deposu Ayarları, Ana Paket Deposu ve Test Paket Deposu olmak üzere 2 seçenekten oluşur. Ana Paket Deposu geliştirmelerin tamamlandığı kararlı paket deposudur, Test Paket Deposu ise yeni geliştirmelerin yayınlandğı test paket deposudur.
+
+Kurulmak istenen depo paketi seçildikten sonra, kurulum uygulamasının çalıştırıldığı makinenin **sudo** yetkili kullanıcı adı ve parolası, Erişim Bilgileri alanına girilir.
+
+**Kuruluma Başla** butonuna tıklanarak kurulum başlatılır.
+
+
+### 4. Ahenk Menüsü
 
 Ahenk Menüsü, istemcileri etki alanına dahil etmek için kullanılan menüdür.
 
@@ -178,7 +193,7 @@ Kurulacak İstemci Listesi alanında kurulum bittikten sonra Ahenk  erişim sağ
 Kurulum sırasındaki bilgiler Log Menüsünde görülür.
 
 
-### 4. Log Menüsü
+### 5. Log Menüsü
 
 Log Menüsüde ise kurulumda gerçekleşen komutları, bilgileri, hataların görüldüğü menüdür.
 
